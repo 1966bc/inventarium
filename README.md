@@ -152,9 +152,11 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-## Author
+## Authors
 
 **Giuseppe Costanzi** ([@1966bc](https://github.com/1966bc))
+
+**HAL 9000** ([Claude](https://claude.ai) by [Anthropic](https://anthropic.com))
 
 ---
 
