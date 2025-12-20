@@ -65,7 +65,18 @@ def load_db_path() -> str:
     config_path = get_config_path()
 
     if not os.path.exists(config_path):
-        return None
+        # Try to create from template
+        template_path = os.path.join(os.path.dirname(__file__), "config.ini.example")
+        if os.path.exists(template_path):
+            try:
+                import shutil
+                shutil.copy(template_path, config_path)
+                log_to_file("Created config.ini from template")
+            except Exception as e:
+                log_to_file(f"Could not create config.ini from template: {e}", "WARNING")
+                return None
+        else:
+            return None
 
     config = configparser.ConfigParser()
     config.read(config_path)
