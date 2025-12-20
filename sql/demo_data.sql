@@ -22,42 +22,42 @@ DELETE FROM sqlite_sequence;
 -- Categories (reference_id: 1=Products, 2=Locations)
 -- =============================================================================
 INSERT INTO categories (category_id, reference_id, description, status) VALUES
-(1, 1, 'Reagenti Chimici', 1),
-(2, 1, 'Standard di Riferimento', 1),
-(3, 1, 'Solventi', 1),
-(4, 1, 'Gas Tecnici', 1),
-(5, 1, 'Consumabili', 1),
-(6, 2, 'Armadio Reagenti', 1),
-(7, 2, 'Frigorifero', 1),
-(8, 2, 'Congelatore', 1);
+(1, 1, 'Chemical Reagents', 1),
+(2, 1, 'Reference Standards', 1),
+(3, 1, 'Solvents', 1),
+(4, 1, 'Technical Gases', 1),
+(5, 1, 'Consumables', 1),
+(6, 2, 'Reagent Cabinet', 1),
+(7, 2, 'Refrigerator', 1),
+(8, 2, 'Freezer', 1);
 
 -- =============================================================================
 -- Conservations (Storage conditions)
 -- =============================================================================
 INSERT INTO conservations (conservation_id, description, status) VALUES
-(1, 'Temperatura ambiente (15-25°C)', 1),
-(2, 'Refrigerato (2-8°C)', 1),
-(3, 'Congelato (-20°C)', 1),
-(4, 'Congelato (-80°C)', 1),
-(5, 'Sotto azoto', 1);
+(1, 'Room temperature (15-25°C)', 1),
+(2, 'Refrigerated (2-8°C)', 1),
+(3, 'Frozen (-20°C)', 1),
+(4, 'Deep frozen (-80°C)', 1),
+(5, 'Under nitrogen', 1);
 
 -- =============================================================================
 -- Locations
 -- =============================================================================
 INSERT INTO locations (location_id, code, room, description, category_id, conservation_id, status) VALUES
-(1, 'ARM-01', 'Lab Spettrometria', 'Armadio reagenti principale', 6, 1, 1),
-(2, 'FRG-01', 'Lab Spettrometria', 'Frigorifero Liebherr', 7, 2, 1),
-(3, 'FRZ-01', 'Lab Spettrometria', 'Congelatore -20', 8, 3, 1),
-(4, 'ARM-02', 'Lab Spettrometria', 'Armadio solventi', 6, 1, 1),
-(5, 'FRZ-02', 'Lab Spettrometria', 'Congelatore -80 Thermo', 8, 4, 1);
+(1, 'CAB-01', 'Spectrometry Lab', 'Main reagent cabinet', 6, 1, 1),
+(2, 'FRG-01', 'Spectrometry Lab', 'Liebherr refrigerator', 7, 2, 1),
+(3, 'FRZ-01', 'Spectrometry Lab', 'Freezer -20', 8, 3, 1),
+(4, 'CAB-02', 'Spectrometry Lab', 'Solvent cabinet', 6, 1, 1),
+(5, 'FRZ-02', 'Spectrometry Lab', 'Thermo -80 freezer', 8, 4, 1);
 
 -- =============================================================================
 -- Funding Sources
 -- =============================================================================
 INSERT INTO funding_sources (funding_id, code, description, status) VALUES
-(1, 'ORD', 'Budget Ordinario', 1),
-(2, 'PRJ-001', 'Progetto Ricerca Alpha', 1),
-(3, 'PRJ-002', 'Progetto EU Horizon', 1);
+(1, 'ORD', 'Regular Budget', 1),
+(2, 'PRJ-001', 'Research Project Alpha', 1),
+(3, 'PRJ-002', 'EU Horizon Project', 1);
 
 -- =============================================================================
 -- Suppliers
@@ -84,33 +84,33 @@ INSERT INTO products (product_id, reference, description, status) VALUES
 (8, 'STD-CAF', 'Caffeine Standard 1mg/mL', 1),
 (9, 'STD-PAR', 'Paracetamol Standard 1mg/mL', 1),
 (10, 'STD-IBU', 'Ibuprofen Standard 1mg/mL', 1),
-(11, 'COL-C18', 'Colonna C18 150x2.1mm 1.8um', 1),
-(12, 'COL-HILIC', 'Colonna HILIC 100x2.1mm 1.7um', 1),
+(11, 'COL-C18', 'C18 Column 150x2.1mm 1.8um', 1),
+(12, 'COL-HILIC', 'HILIC Column 100x2.1mm 1.7um', 1),
 (13, 'VIAL-2ML', 'Vials 2mL amber with cap', 1),
-(14, 'FILT-02', 'Filtri siringa 0.2um PVDF', 1),
-(15, 'TIP-1000', 'Puntali 1000uL filter tips', 1);
+(14, 'FILT-02', 'Syringe filters 0.2um PVDF', 1),
+(15, 'TIP-1000', 'Pipette tips 1000uL filtered', 1);
 
 -- =============================================================================
 -- Packages (SKUs linking products to suppliers)
 -- =============================================================================
 INSERT INTO packages (package_id, product_id, supplier_id, reference, labels, packaging, conservation_id, in_the_dark, category_id, location_id, order_by_piece, pieces_per_label, reorder, funding_id, status) VALUES
--- Solventi
+-- Solvents
 (1, 1, 1, '34851-2.5L', 1, '2.5L', 1, 0, 3, 4, 1, 1, 2, 1, 1),
 (2, 2, 1, '34860-2.5L', 1, '2.5L', 1, 0, 3, 4, 1, 1, 2, 1, 1),
 (3, 3, 2, 'W6-4', 1, '4L', 1, 0, 3, 4, 1, 1, 2, 1, 1),
 (4, 4, 1, '56302-50ML', 1, '50mL', 1, 0, 1, 1, 1, 1, 1, 1, 1),
 (5, 5, 1, '45754-100ML', 1, '100mL', 1, 0, 1, 1, 1, 1, 1, 1, 1),
--- Sali
+-- Salts
 (6, 6, 4, '1.01116.0500', 1, '500g', 1, 0, 1, 1, 1, 1, 1, 1, 1),
 (7, 7, 1, '09830-500G', 1, '500g', 1, 0, 1, 1, 1, 1, 1, 1, 1),
 -- Standards
 (8, 8, 1, 'C0750-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 2, 2, 1),
 (9, 9, 1, 'PHR1005-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 2, 2, 1),
 (10, 10, 1, 'PHR1004-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 2, 2, 1),
--- Colonne
-(11, 11, 5, '959758-902', 1, '1 pz', 1, 0, 5, 1, 1, 1, 1, 1, 1),
-(12, 12, 6, '186003462', 1, '1 pz', 1, 0, 5, 1, 1, 1, 1, 1, 1),
--- Consumabili
+-- Columns
+(11, 11, 5, '959758-902', 1, '1 pc', 1, 0, 5, 1, 1, 1, 1, 1, 1),
+(12, 12, 6, '186003462', 1, '1 pc', 1, 0, 5, 1, 1, 1, 1, 1, 1),
+-- Consumables
 (13, 13, 3, '548-0053', 100, 'Box 100', 1, 0, 5, 1, 0, 100, 1, 1, 1),
 (14, 14, 3, '514-0061', 100, 'Box 100', 1, 0, 5, 1, 0, 100, 1, 1, 1),
 (15, 15, 3, '613-2697', 96, 'Rack 96', 1, 0, 5, 1, 0, 96, 2, 1, 1);
@@ -133,12 +133,12 @@ INSERT INTO batches (batch_id, package_id, description, expiration, status) VALU
 (7, 8, 'LRAC5678', '2026-03-31', 1),
 (8, 9, 'PHR20234', '2025-09-30', 1),
 (9, 10, 'PHR10456', '2026-01-31', 1),
--- Colonne
+-- Columns
 (10, 11, 'USGH12345', '2028-12-31', 1),
 (11, 12, '0234567890', '2028-12-31', 1),
 -- Vials
 (12, 13, 'VL2024001', '2030-12-31', 1),
--- Filtri
+-- Filters
 (13, 14, 'FLT2024A', '2026-12-31', 1),
 -- Tips
 (14, 15, 'TIP2024X', '2027-06-30', 1);
@@ -200,7 +200,7 @@ INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
 (12, '2024-01-01', NULL, 1),
 (12, '2024-01-01', '2024-08-01', 0);
 
--- Filtri - 2 boxes
+-- Filters - 2 boxes
 INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
 (13, '2024-03-01', NULL, 1),
 (13, '2024-03-01', NULL, 1);
@@ -259,7 +259,7 @@ INSERT OR REPLACE INTO settings (key, value) VALUES
 ('lab', 'Spectrometry Laboratory'),
 ('manager', 'Dr. Demo User'),
 ('room', 'Building A - Room 101'),
-('phone', '+39 000 000 0000'),
-('language', 'it'),
+('phone', '+1 555 000 0000'),
+('language', 'en'),
 ('idle_timeout', '30'),
 ('default_vat', '22');
