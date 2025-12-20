@@ -41,7 +41,7 @@ class UI(tk.Toplevel):
         self.bind("<Escape>", self.on_cancel)
 
         self._build_ui()
-        self.engine.center_window_on_screen(self)
+        self.engine.center_window(self)
         self._is_init = True
 
     def _build_ui(self):
