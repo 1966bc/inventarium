@@ -10,6 +10,7 @@ Architecture (Mixin Pattern):
     - DBMS: Database connection and query execution
     - Controller: SQL builders and domain logic
     - Tools: Shared utility functions
+    - Launcher: Cross-platform file opener
 
 Key Responsibilities:
     - Global state management
@@ -17,53 +18,43 @@ Key Responsibilities:
     - Cross-component communication and coordination
     - Error logging (on_log method)
 
-Classes:
-    Engine: Main orchestrator combining all mixins
-
 Author: 1966bc (Giuseppe Costanzi)
 License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import os
 import sys
-import inspect
 import traceback
 import datetime
 import time
-from typing import Dict, Any, Optional
+from typing import Optional
 
 from tools import Tools
 from dbms import DBMS
 from controller import Controller
 from launcher import Launcher
-from i18n import get_translator, set_language, _
+from i18n import set_language, _
 
 APP_TITLE = "Inventarium"
 
 
 class Engine(DBMS, Controller, Tools, Launcher):
     """
-    Main orchestrator for Inventarium - combines all system components via mixin inheritance.
+    Main orchestrator for Inventarium.
 
-    The Engine class is the central hub of Inventarium, combining multiple specialized
-    mixins through Python's multiple inheritance to provide a unified interface for
-    all application functionality.
+    Combines all system components via mixin inheritance to provide
+    a unified interface for all application functionality.
 
-    **Mixin Architecture** (in MRO order):
+    Mixin Architecture (in MRO order):
         1. DBMS: Database connection and query execution
         2. Controller: SQL builders and domain logic
         3. Tools: Shared utility functions
-
-    **Global State Management**:
-        - dict_instances (dict): Window registry for singleton enforcement
-
-    **Key Responsibilities**:
-        - Coordinate all application components
-        - Manage GUI window lifecycles (singleton patterns)
-        - Error logging and exception handling
+        4. Launcher: Cross-platform file opener
 
     Attributes:
-        dict_instances (dict): Registry of open GUI windows
+        dict_instances (dict): Registry of open GUI windows for singleton management
+        title (str): Application title
+        entry_width (int): Standard entry width for forms
 
     Example:
         >>> engine = Engine("sql/inventarium.db")
@@ -97,11 +88,6 @@ class Engine(DBMS, Controller, Tools, Launcher):
         """Initialize internationalization from settings."""
         lang = self.get_setting("language", "it")
         set_language(lang)
-        self._translator = get_translator()
-
-    def translate(self, key: str) -> str:
-        """Translate a string using the current language."""
-        return _(key)
 
     def __str__(self):
         return "class: {0}\nMRO: {1}".format(
@@ -116,12 +102,14 @@ class Engine(DBMS, Controller, Tools, Launcher):
 
     def on_log(self, function, exc_value, exc_type, module, caller=None):
         """
-        Write to log.txt:
-        - timestamp
-        - Class.method (and caller if present)
-        - Type: exception message
-        - module name
-        - complete traceback
+        Write error to log.txt.
+
+        Args:
+            function: Name of the function where error occurred
+            exc_value: Exception value
+            exc_type: Exception type
+            module: Module where error occurred
+            caller: Optional caller information
         """
         try:
             now = datetime.datetime.now().astimezone()
@@ -145,16 +133,14 @@ class Engine(DBMS, Controller, Tools, Launcher):
                 fh.write(log_text)
 
         except Exception:
-            # Logging should never raise exceptions
             pass
 
     def rotate_log(self, max_size_kb=500):
         """
         Rotate log file if it exceeds max size.
-        Keeps only the last half of the file.
 
         Args:
-            max_size_kb: Maximum log size in KB before rotation
+            max_size_kb: Maximum log size in KB before rotation (default 500)
         """
         try:
             path = self.get_file("log.txt")
@@ -168,7 +154,6 @@ class Engine(DBMS, Controller, Tools, Launcher):
                 with open(path, "r", encoding="utf-8", errors="ignore") as f:
                     lines = f.readlines()
 
-                # Keep last half of lines
                 keep_lines = lines[len(lines) // 2:]
 
                 with open(path, "w", encoding="utf-8") as f:
@@ -196,7 +181,7 @@ class Engine(DBMS, Controller, Tools, Launcher):
         except Exception:
             pass
 
-    def get_python_version(self):
+    def get_python_version(self) -> str:
         """Return Python version string."""
         return "Python version: %s" % ".".join(map(str, sys.version_info[:3]))
 
@@ -213,54 +198,21 @@ class Engine(DBMS, Controller, Tools, Launcher):
         caller.config(cursor="")
 
     def get_license(self) -> Optional[str]:
-        """Get license text."""
+        """Get license text from LICENSE file."""
         try:
             path = self.get_file("LICENSE")
             with open(path, "r") as f:
                 return f.read()
-        except Exception as e:
-            self.on_log(
-                inspect.stack()[0][3],
-                e,
-                type(e),
-                sys.modules[__name__]
-            )
+        except Exception:
             return None
 
     def get_date(self) -> str:
-        """Return current date as YYYY-MM-DD."""
+        """Return current date as YYYY-MM-DD (ISO format)."""
         return datetime.datetime.now().strftime("%Y-%m-%d")
 
     def get_today(self) -> str:
-        """Return current date as DD-MM-YYYY."""
+        """Return current date as DD-MM-YYYY (display format)."""
         return datetime.datetime.now().strftime("%d-%m-%Y")
-
-    def get_time(self):
-        """Return current time."""
-        return datetime.datetime.now().time()
-
-    def get_expiration_date(self, expiration_date: str) -> Optional[int]:
-        """
-        Calculate days until expiration.
-
-        Args:
-            expiration_date: Date string in DD-MM-YYYY format
-
-        Returns:
-            Number of days until expiration (negative if expired)
-        """
-        try:
-            expiry_date = datetime.datetime.strptime(expiration_date, "%d-%m-%Y").date()
-            days_until_expiration = (expiry_date - datetime.date.today()).days
-            return days_until_expiration
-        except Exception as e:
-            self.on_log(
-                inspect.stack()[0][3],
-                e,
-                type(e),
-                sys.modules[__name__]
-            )
-            return None
 
     def get_icon(self) -> str:
         """Return embedded application icon as base64 PNG."""
@@ -286,10 +238,9 @@ class Engine(DBMS, Controller, Tools, Launcher):
         """Return standard entry width for forms."""
         return self.entry_width
 
-    def get_tick(self):
-        time_in_s = time.time()
-        time_in_us = int(time_in_s * 1e6)
-        return time_in_us
+    def get_tick(self) -> int:
+        """Return current timestamp in microseconds."""
+        return int(time.time() * 1e6)
 
 
 def main():
@@ -298,7 +249,6 @@ def main():
     print(engine)
     print()
 
-    # Test queries
     print("=== Stock ===")
     stock = engine.get_stock()
     for item in stock[:5]:
@@ -317,8 +267,7 @@ def main():
         print(f"  {req['reference']}: {req['qty_delivered']}/{req['qty_ordered']} delivered")
 
     engine.close()
-    print()
-    print("OK!")
+    print("\nOK!")
 
 
 if __name__ == "__main__":
