@@ -3,6 +3,7 @@
 A lightweight laboratory inventory management system built with Python and Tkinter.
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)
+![Tkinter](https://img.shields.io/badge/Tkinter-GUI-orange.svg)
 ![SQLite](https://img.shields.io/badge/SQLite-3-07405e.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-lightgrey.svg)
