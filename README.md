@@ -22,7 +22,8 @@ Inventarium is designed for small laboratory teams who need a simple, fast, and 
 
 ## Screenshots
 
-*Coming soon*
+![Dashboard](screenshots/dashboard.png)
+*Statistics Dashboard showing stock overview, reorder alerts, and expiration tracking*
 
 ## Installation
 
