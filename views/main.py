@@ -158,6 +158,8 @@ class Main(tk.Toplevel):
         m_help = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="?", underline=0, menu=m_help)
         m_help.add_command(label=_("Informazioni"), underline=0, command=self.on_about)
+        m_help.add_command(label=_("Licenza"), underline=0, command=self.on_license)
+        m_help.add_separator()
         m_help.add_command(label=_("Versione Python"), underline=0, command=self.on_python_version)
         m_help.add_command(label=_("Versione Tkinter"), underline=0, command=self.on_tkinter_version)
 
@@ -325,6 +327,12 @@ class Main(tk.Toplevel):
         """Show Tkinter version."""
         msg = f"Tkinter patchlevel\n{self.tk.call('info', 'patchlevel')}"
         messagebox.showinfo(self.engine.app_title, msg, parent=self)
+
+    def on_license(self):
+        """Show license window."""
+        from views.license import UI
+        ui = UI(self)
+        ui.on_open()
 
     # -------------------------------------------------------------------------
     # Utility methods

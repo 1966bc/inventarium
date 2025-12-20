@@ -74,6 +74,7 @@ TRANSLATIONS = {
     # Menu - Help
     # ==========================================================================
     "Informazioni": {"it": "Informazioni", "en": "About", "es": "Acerca de"},
+    "Licenza": {"it": "Licenza", "en": "License", "es": "Licencia"},
     "Versione Python": {"it": "Versione Python", "en": "Python Version", "es": "Versión de Python"},
     "Versione Tkinter": {"it": "Versione Tkinter", "en": "Tkinter Version", "es": "Versión de Tkinter"},
 
