@@ -1,0 +1,57 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+log.txt
+*.log
+
+# Barcode images (generated at runtime)
+barcodes/
+
+# Database backups (keep only demo database in sql/)
+sql/inventarium_backup.db
+sql/*.bak
+*.db
+!sql/inventarium.db
+inventarium_backup_*.db
+
+# Config with sensitive data (template is tracked)
+config.ini
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Documents (sensitive/private)
+documents/
+
+# Old/deprecated files
+*_old.py
+
+# Screenshots (optional - remove if you want to keep them)
+imgs/
+
+# Claude local settings
+.claude/
+
+# Root level SQL dumps
+/*.sql

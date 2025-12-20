@@ -1,0 +1,8 @@
+[database]
+# Percorso del database SQLite
+# Può essere relativo alla cartella dell'applicazione o assoluto
+# Esempi:
+#   path = sql/inventarium.db                    (locale, sviluppo)
+#   path = /mnt/share/inventarium/inventarium.db (cartella condivisa)
+#   path = //server/share/inventarium.db         (UNC Windows)
+path = sql/inventarium.db

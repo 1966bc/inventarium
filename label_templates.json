@@ -1,0 +1,23 @@
+{
+  "H20 0.1% Acido Formico": {
+    "num_lines": 1,
+    "line1": "H20 0.1% Acido Formico",
+    "line2": "",
+    "line3": "",
+    "include_lab": true
+  },
+  "Acetonitrile 0.1% HCCOH": {
+    "num_lines": 1,
+    "line1": "Acetonitrile 0.1% HCCOH",
+    "line2": "",
+    "line3": "",
+    "include_lab": true
+  },
+  "H20 0.1% HCOOH": {
+    "num_lines": 1,
+    "line1": "H20 0.1% HCOOH",
+    "line2": "",
+    "line3": "",
+    "include_lab": true
+  }
+}

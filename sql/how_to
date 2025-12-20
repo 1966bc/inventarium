@@ -1,0 +1,23 @@
+launch sqlite3 cli
+sqlite3 -init setconsole virtuallab.db
+impotr sql statment
+sqlite> .read reset_database
+
+dump only schema
+sqlite> .output biovarase_structure.sql
+sqlite> .schema
+
+dump all
+sqlite> .output biovarase.sql
+sqlite> .dump
+
+export to excel
+sqlite> .excel
+sqlite> select * from trip_42_fifth_version;
+
+find a file
+bc@hal9000:/media/bc/Transcend$ find -name "*audit*"
+
+
+
+
