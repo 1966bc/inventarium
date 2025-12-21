@@ -29,41 +29,72 @@ Inventarium is designed for small laboratory teams who need a simple, fast, and 
 
 ## Installation
 
+### Development Platform
+
+Inventarium is developed and tested on **Linux Debian 12 (Bookworm)**. It should work on other Linux distributions, macOS, and Windows, but Debian 12 is the reference platform.
+
 ### Requirements
 
 - Python 3.11 or higher
-- Tkinter (usually included with Python)
-- Pillow (PIL)
+- Tkinter (usually included with Python on Linux)
+- Virtual environment (venv)
 
-### Setup
+On Debian/Ubuntu, ensure you have the required packages:
+```bash
+sudo apt install python3 python3-venv python3-tk
+```
 
-1. Clone the repository:
+### Setup (Linux Debian 12)
+
+1. **Clone the repository:**
 ```bash
 git clone https://github.com/1966bc/inventarium.git
 cd inventarium
 ```
 
-2. Create a virtual environment (recommended):
+2. **Create the virtual environment:**
 ```bash
 python3 -m venv venv
-source venv/bin/activate  # Linux/Mac
-# or
-venv\Scripts\activate     # Windows
 ```
 
-3. Install dependencies:
+3. **Activate the virtual environment:**
+```bash
+source venv/bin/activate
+```
+Your prompt should now show `(venv)` at the beginning.
+
+4. **Install dependencies:**
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Copy the config file:
-```bash
-cp config.ini.example config.ini
-```
-
-5. Run the application:
+5. **Run the application:**
 ```bash
 python3 inventarium.py
+```
+
+### Quick Start (after first setup)
+
+Every time you want to run Inventarium:
+```bash
+cd inventarium
+source venv/bin/activate
+python3 inventarium.py
+```
+
+### Setup (Windows)
+
+1. Clone or download the repository
+2. Open Command Prompt in the project folder
+3. Create and activate virtual environment:
+```cmd
+python -m venv venv
+venv\Scripts\activate
+```
+4. Install dependencies and run:
+```cmd
+pip install -r requirements.txt
+python inventarium.py
 ```
 
 ## Database
