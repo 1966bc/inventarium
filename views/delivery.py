@@ -68,16 +68,16 @@ class UI(tk.Toplevel):
         f1 = ttk.Frame(f0)
 
         # Requests Treeview
-        w = ttk.LabelFrame(f1, text="Richieste Aperte", style="App.TLabelframe")
+        w = ttk.LabelFrame(f1, text=_("Richieste Aperte"), style="App.TLabelframe")
 
         cols = ("reference", "date", "pending")
         self.treeRequests = ttk.Treeview(w, columns=cols, show="headings", height=12)
 
         self.treeRequests.column("reference", width=120, minwidth=100, anchor=tk.W, stretch=True)
-        self.treeRequests.heading("reference", text="Riferimento", anchor=tk.W)
+        self.treeRequests.heading("reference", text=_("Riferimento"), anchor=tk.W)
 
         self.treeRequests.column("date", width=90, minwidth=80, anchor=tk.CENTER, stretch=False)
-        self.treeRequests.heading("date", text="Data", anchor=tk.CENTER)
+        self.treeRequests.heading("date", text=_("Data"), anchor=tk.CENTER)
 
         self.treeRequests.column("pending", width=40, minwidth=30, anchor=tk.CENTER, stretch=False)
         self.treeRequests.heading("pending", text="P.", anchor=tk.CENTER)
@@ -92,7 +92,7 @@ class UI(tk.Toplevel):
         w.pack(fill=tk.BOTH, expand=1, pady=(0, 5))
 
         # Items Treeview
-        self.lbfItems = ttk.LabelFrame(f1, text="Articoli da Evadere", style="App.TLabelframe")
+        self.lbfItems = ttk.LabelFrame(f1, text=_("Articoli da Evadere"), style="App.TLabelframe")
 
         cols = ("product", "ordered", "delivered")
         self.treeItems = ttk.Treeview(self.lbfItems, columns=cols, show="headings", height=12)
@@ -122,9 +122,9 @@ class UI(tk.Toplevel):
         f2 = ttk.Frame(f0)
 
         # Item details (readonly)
-        w = ttk.LabelFrame(f2, text="Dettaglio Articolo", style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Dettaglio Articolo"), style="App.TLabelframe")
         r = 0
-        ttk.Label(w, text="Prodotto:").grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.product_name, state="readonly", width=25).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
@@ -139,26 +139,26 @@ class UI(tk.Toplevel):
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text="Ordinato:").grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Ordinato:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.ordered_qty, state="readonly", width=10).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text="Già Evaso:").grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Già Evaso:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.delivered_qty, state="readonly", width=10).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Delivery form
-        w = ttk.LabelFrame(f2, text="Nuova Consegna", style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Nuova Consegna"), style="App.TLabelframe")
         r = 0
-        ttk.Label(w, text="DDT:").grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("DDT:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.ddt, width=15).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text="Data Consegna:").grid(row=r, column=0, sticky=tk.NW, padx=5, pady=2)
+        ttk.Label(w, text=_("Data Consegna:")).grid(row=r, column=0, sticky=tk.NW, padx=5, pady=2)
         self.cal_delivered = Calendarium(w, "")
         self.cal_delivered.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         r += 1
@@ -175,7 +175,7 @@ class UI(tk.Toplevel):
         w = ttk.LabelFrame(f2, text=_("Lotto"), style="App.TLabelframe")
         r = 0
         ttk.Radiobutton(
-            w, text="Seleziona esistente:",
+            w, text=_("Seleziona esistente:"),
             variable=self.batch_mode, value=0,
             command=self.on_batch_mode_changed,
             style="App.TRadiobutton"
@@ -184,7 +184,7 @@ class UI(tk.Toplevel):
         self.cb_batches.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         r += 1
         ttk.Radiobutton(
-            w, text="Crea nuovo:",
+            w, text=_("Crea nuovo:"),
             variable=self.batch_mode, value=1,
             command=self.on_batch_mode_changed,
             style="App.TRadiobutton"
@@ -205,7 +205,7 @@ class UI(tk.Toplevel):
         # Column 3 - Buttons
         f3 = ttk.Frame(f0)
         buttons = [
-            ("Registra Consegna", self.on_save, "<Alt-s>", 10),
+            (_("Salva"), self.on_save, "<Alt-s>", 0),
             (_("Aggiorna"), self.refresh, "<Alt-a>", 0),
             (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
         ]
@@ -426,7 +426,7 @@ class UI(tk.Toplevel):
                 self.dict_batches[idx] = row
                 lot = row["lot"] or ""
                 exp = row["expiration"] or ""
-                values.append(f"{lot} (Scad: {exp})")
+                values.append(f"{lot} ({_('Scad')}: {exp})")
             self.cb_batches["values"] = values
             if values:
                 self.cb_batches.current(0)
@@ -448,7 +448,7 @@ class UI(tk.Toplevel):
         if not self.selected_item:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare un articolo da evadere!",
+                _("Selezionare un articolo da evadere!"),
                 parent=self
             )
             return False
@@ -457,7 +457,7 @@ class UI(tk.Toplevel):
         if not self.ddt.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                "Inserire il numero DDT!",
+                _("Inserire il numero DDT!"),
                 parent=self
             )
             return False
@@ -466,7 +466,7 @@ class UI(tk.Toplevel):
         if not self.cal_delivered.is_valid:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Data consegna non valida!",
+                _("Data consegna non valida!"),
                 parent=self
             )
             return False
@@ -480,7 +480,7 @@ class UI(tk.Toplevel):
         if qty < 1 or qty > remaining:
             messagebox.showwarning(
                 self.engine.app_title,
-                f"La quantità deve essere tra 1 e {remaining}!",
+                _("La quantità deve essere tra 1 e") + f" {remaining}!",
                 parent=self
             )
             return False
@@ -490,7 +490,7 @@ class UI(tk.Toplevel):
         if pieces_per_label > 1 and qty % pieces_per_label != 0:
             messagebox.showwarning(
                 self.engine.app_title,
-                f"La quantità deve essere un multiplo di {pieces_per_label}!",
+                _("La quantità deve essere un multiplo di") + f" {pieces_per_label}!",
                 parent=self
             )
             return False
@@ -501,7 +501,7 @@ class UI(tk.Toplevel):
             if not self.cb_batches.get():
                 messagebox.showwarning(
                     self.engine.app_title,
-                    "Selezionare un lotto esistente!",
+                    _("Selezionare un lotto esistente!"),
                     parent=self
                 )
                 return False
@@ -510,7 +510,7 @@ class UI(tk.Toplevel):
             if not self.new_lot.get().strip():
                 messagebox.showwarning(
                     self.engine.app_title,
-                    "Inserire il numero di lotto!",
+                    _("Inserire il numero di lotto!"),
                     parent=self
                 )
                 return False
@@ -518,7 +518,7 @@ class UI(tk.Toplevel):
             if not self.cal_expiration.is_valid:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    "Data scadenza non valida!",
+                    _("Data scadenza non valida!"),
                     parent=self
                 )
                 return False
@@ -529,7 +529,7 @@ class UI(tk.Toplevel):
             if expiration_date and expiration_date <= today:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    "La data di scadenza deve essere futura!",
+                    _("La data di scadenza deve essere futura!"),
                     parent=self
                 )
                 return False
@@ -547,8 +547,8 @@ class UI(tk.Toplevel):
             if existing:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    f"Il lotto '{lot_number}' con scadenza {exp_str} esiste già!\n"
-                    "Selezionarlo dalla lista dei lotti esistenti.",
+                    _("Il lotto") + f" '{lot_number}' " + _("con scadenza") + f" {exp_str} " + _("esiste già!") + "\n" +
+                    _("Selezionarlo dalla lista dei lotti esistenti."),
                     parent=self
                 )
                 return False
@@ -568,7 +568,7 @@ class UI(tk.Toplevel):
             labels_to_create = 1
 
         # Confirm
-        msg = f"Registrare la consegna di {qty} unità?\n\nVerranno create {labels_to_create} etichette."
+        msg = _("Registrare la consegna di") + f" {qty} " + _("unità?") + "\n\n" + _("Verranno create") + f" {labels_to_create} " + _("etichette.")
         if not messagebox.askyesno(self.engine.app_title, msg, parent=self):
             return
 
@@ -578,7 +578,7 @@ class UI(tk.Toplevel):
             if not batch_id:
                 messagebox.showerror(
                     self.engine.app_title,
-                    "Errore nella creazione del lotto!",
+                    _("Errore nella creazione del lotto!"),
                     parent=self
                 )
                 return
@@ -588,7 +588,7 @@ class UI(tk.Toplevel):
             if not delivery_id:
                 messagebox.showerror(
                     self.engine.app_title,
-                    "Errore nella registrazione della consegna!",
+                    _("Errore nella registrazione della consegna!"),
                     parent=self
                 )
                 return
@@ -597,11 +597,11 @@ class UI(tk.Toplevel):
             labels_created = self.create_labels(batch_id, labels_to_create)
 
             # Success message
-            label_word = "etichetta" if labels_created == 1 else "etichette"
+            label_word = _("etichetta") if labels_created == 1 else _("etichette")
             messagebox.showinfo(
                 self.engine.app_title,
-                f"Consegna registrata con successo!\n\n"
-                f"Create {labels_created} {label_word}.",
+                _("Consegna registrata con successo!") + "\n\n" +
+                _("Create") + f" {labels_created} {label_word}.",
                 parent=self
             )
 
@@ -630,7 +630,7 @@ class UI(tk.Toplevel):
             )
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore durante il salvataggio:\n{e}",
+                _("Errore durante il salvataggio:") + f"\n{e}",
                 parent=self
             )
 
@@ -652,7 +652,7 @@ class UI(tk.Toplevel):
             self.engine.write(sql, (request_id,))
             messagebox.showinfo(
                 self.engine.app_title,
-                "Tutti gli articoli sono stati evasi.\nLa richiesta è stata chiusa.",
+                _("Tutti gli articoli sono stati evasi.") + "\n" + _("La richiesta è stata chiusa."),
                 parent=self
             )
 

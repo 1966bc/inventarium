@@ -91,8 +91,12 @@ class Tools:
         style.configure("App.TCombobox",
                         font="TkFixedFont")
 
+        style.configure("App.TButton",
+                        font="TkFixedFont",
+                        padding=(10, 5))
+
     def create_button(self, parent, text: str, command, width: int = 10,
-                       underline: int = 0, **kwargs) -> tk.Button:
+                       underline: int = 0, **kwargs) -> ttk.Button:
         """
         Create a standard application button.
 
@@ -105,19 +109,15 @@ class Tools:
             **kwargs: Additional button options
 
         Returns:
-            tk.Button with standard application style
+            ttk.Button with standard application style
         """
-        btn = tk.Button(
+        btn = ttk.Button(
             parent,
             text=text,
             command=command,
             width=width,
             underline=underline,
-            font="TkFixedFont",
-            relief=tk.RAISED,
-            padx=5,
-            pady=5,
-            borderwidth=1,
+            style="App.TButton",
             **kwargs
         )
         return btn

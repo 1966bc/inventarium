@@ -51,13 +51,13 @@ class UI(tk.Toplevel):
         self.cbCategories.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text="Prodotto:").grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbProducts = ttk.Combobox(w, state="readonly", width=entry_width, style="App.TCombobox")
         self.cbProducts.bind("<<ComboboxSelected>>", self.on_product_selected)
         self.cbProducts.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text="Confezione:").grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Confezione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbPackages = ttk.Combobox(w, state="readonly", width=entry_width, style="App.TCombobox")
         self.cbPackages.bind("<<ComboboxSelected>>", self.on_package_selected)
         self.cbPackages.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
@@ -85,13 +85,14 @@ class UI(tk.Toplevel):
 
         # History listbox
         r += 1
-        self.lbfHistory = ttk.LabelFrame(w, text="Storico Ordini", style="App.TLabelframe")
+        self.lbfHistory = ttk.LabelFrame(w, text=_("Storico Ordini"), style="App.TLabelframe")
         self.lbfHistory.grid(row=r, column=0, columnspan=2, sticky=tk.NSEW, pady=(10, 0))
 
         # Header for history
+        header_text = f"{_('Data'):<12} {_('Riferimento'):<15} {_('Ord'):>4} {_('Eva'):>4}"
         header = ttk.Label(
             self.lbfHistory,
-            text=f"{'Data':<12} {'Riferimento':<15} {'Ord':>4} {'Eva':>4}",
+            text=header_text,
             font=("Courier", 9, "bold")
         )
         header.pack(fill=tk.X, padx=2)
@@ -129,11 +130,11 @@ class UI(tk.Toplevel):
         if self.index is not None and selected_item:
             # Edit mode
             self.selected_item = selected_item
-            self.title("Modifica Articolo")
+            self.title(_("Modifica Articolo"))
             self.set_values()
         else:
             # New item mode
-            self.title("Nuovo Articolo")
+            self.title(_("Nuovo Articolo"))
             self.quantity.set(1)
 
             # Pre-select category if provided
@@ -175,7 +176,7 @@ class UI(tk.Toplevel):
             self.cbPackages["values"] = []
             self.cbPackages.set("")
             self.lstHistory.delete(0, tk.END)
-            self.lbfHistory.config(text="Storico Ordini")
+            self.lbfHistory.config(text=_("Storico Ordini"))
 
     def set_products(self, category_id):
         """Load products into combobox filtered by category."""
@@ -294,7 +295,7 @@ class UI(tk.Toplevel):
 
         # Update label with count
         count = self.lstHistory.size()
-        self.lbfHistory.config(text=f"Storico Ordini ({count})")
+        self.lbfHistory.config(text=f"{_('Storico Ordini')} ({count})")
 
     def set_values(self):
         """Set form values from selected item."""
@@ -357,7 +358,7 @@ class UI(tk.Toplevel):
         if self.cbCategories.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare una categoria!",
+                _("Selezionare una categoria!"),
                 parent=self
             )
             self.cbCategories.focus()
@@ -375,7 +376,7 @@ class UI(tk.Toplevel):
         if self.cbPackages.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare una confezione!",
+                _("Selezionare una confezione!"),
                 parent=self
             )
             self.cbPackages.focus()
@@ -384,7 +385,7 @@ class UI(tk.Toplevel):
         if self.quantity.get() < 1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "La quantità deve essere almeno 1!",
+                _("La quantità deve essere almeno 1!"),
                 parent=self
             )
             self.txtQuantity.focus()
@@ -419,7 +420,7 @@ class UI(tk.Toplevel):
                     self.engine.write(sql, (self.quantity.get(), existing["item_id"]))
                     messagebox.showinfo(
                         self.engine.app_title,
-                        "Articolo già presente.\nLa quantità è stata sommata.",
+                        _("Articolo già presente.") + "\n" + _("La quantità è stata sommata."),
                         parent=self
                     )
                 else:

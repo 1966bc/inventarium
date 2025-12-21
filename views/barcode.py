@@ -44,7 +44,7 @@ class UI(tk.Toplevel):
         # Instructions
         ttk.Label(
             w,
-            text="Scansiona il barcode o inserisci il codice etichetta:"
+            text=_("Scansiona il barcode o inserisci il codice etichetta:")
         ).pack(anchor=tk.W, pady=(0, 10))
 
         # Barcode entry
@@ -67,7 +67,7 @@ class UI(tk.Toplevel):
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title("Scarico Etichetta")
+        self.title(_("Scarico Etichetta"))
         self.engine.dict_instances["barcode"] = self
         self.txtBarcode.focus()
 
@@ -82,7 +82,7 @@ class UI(tk.Toplevel):
         try:
             label_id = int(code)
         except ValueError:
-            self.show_result("Codice non valido!", "red")
+            self.show_result(_("Codice non valido!"), "red")
             self.clear_entry()
             return
 
@@ -102,17 +102,17 @@ class UI(tk.Toplevel):
         row = self.engine.read(False, sql, (label_id,))
 
         if not row:
-            self.show_result(f"Etichetta {label_id} non trovata!", "red")
+            self.show_result(_("Etichetta") + f" {label_id} " + _("non trovata!"), "red")
             self.clear_entry()
             return
 
         if row["status"] == 0:
-            self.show_result(f"Etichetta {label_id} già scaricata!", "orange")
+            self.show_result(_("Etichetta") + f" {label_id} " + _("già scaricata!"), "orange")
             self.clear_entry()
             return
 
         if row["status"] == -1:
-            self.show_result(f"Etichetta {label_id} annullata!", "orange")
+            self.show_result(_("Etichetta") + f" {label_id} " + _("annullata!"), "orange")
             self.clear_entry()
             return
 
@@ -123,7 +123,7 @@ class UI(tk.Toplevel):
             product = row.get("product_name", "")
             lot = row.get("lot", "")
             self.show_result(
-                f"Scaricata: {product}\nLotto: {lot}",
+                _("Scaricata:") + f" {product}\n" + _("Lotto:") + f" {lot}",
                 "green"
             )
             # Refresh warehouse labels list if open
@@ -135,7 +135,7 @@ class UI(tk.Toplevel):
                 except:
                     pass
         else:
-            self.show_result("Errore nello scarico!", "red")
+            self.show_result(_("Errore nello scarico!"), "red")
 
         self.clear_entry()
 
