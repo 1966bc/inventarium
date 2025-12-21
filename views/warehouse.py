@@ -76,7 +76,7 @@ class UI(tk.Toplevel):
         self.treeProducts.heading("product", text=_("Prodotto"), anchor=tk.W)
 
         self.treeProducts.column("stock", width=40, minwidth=40, anchor=tk.CENTER, stretch=False)
-        self.treeProducts.heading("stock", text="G.", anchor=tk.CENTER)
+        self.treeProducts.heading("stock", text=_("G."), anchor=tk.CENTER)
 
         sb = ttk.Scrollbar(self.lbfProducts, orient=tk.VERTICAL, command=self.treeProducts.yview)
         self.treeProducts.configure(yscrollcommand=sb.set)
@@ -109,7 +109,7 @@ class UI(tk.Toplevel):
         self.treeBatches.heading("expiration", text=_("Scadenza"), anchor=tk.CENTER)
 
         self.treeBatches.column("days", width=50, minwidth=40, anchor=tk.CENTER, stretch=False)
-        self.treeBatches.heading("days", text="GG", anchor=tk.CENTER)
+        self.treeBatches.heading("days", text=_("GG"), anchor=tk.CENTER)
 
         sb = ttk.Scrollbar(self.lbfBatches, orient=tk.VERTICAL, command=self.treeBatches.yview)
         self.treeBatches.configure(yscrollcommand=sb.set)

@@ -82,7 +82,7 @@ class UI(tk.Toplevel):
         self.tree_expired.heading("expiration", text=_("Scadenza"))
         self.tree_expired.heading("in_stock", text=_("Residuo"))
         self.tree_expired.heading("used", text=_("Usato"))
-        self.tree_expired.heading("loss_pct", text="Perdita %")
+        self.tree_expired.heading("loss_pct", text=_("Perdita %"))
 
         self.tree_expired.column("product", width=180)
         self.tree_expired.column("supplier", width=150)
@@ -107,7 +107,7 @@ class UI(tk.Toplevel):
         self.tree_fefo.heading("product", text=_("Prodotto"))
         self.tree_fefo.heading("total_labels", text=_("Etichette Scaricate"))
         self.tree_fefo.heading("fefo_correct", text=_("FEFO Corrette"))
-        self.tree_fefo.heading("fefo_pct", text="Efficienza %")
+        self.tree_fefo.heading("fefo_pct", text=_("Efficienza %"))
 
         self.tree_fefo.column("product", width=250)
         self.tree_fefo.column("total_labels", width=150, anchor=tk.E)

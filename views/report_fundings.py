@@ -150,9 +150,9 @@ class UI(tk.Toplevel):
 
         # Summary
         self.lbfSummary = ttk.LabelFrame(f2, text=_("Riepilogo"), style="App.TLabelframe")
-        self.lblInGara = ttk.Label(self.lbfSummary, text="In Gara: 0", style="App.TLabel")
+        self.lblInGara = ttk.Label(self.lbfSummary, text=_("In Gara:") + " 0", style="App.TLabel")
         self.lblInGara.pack(anchor=tk.W, padx=5, pady=2)
-        self.lblEconomia = ttk.Label(self.lbfSummary, text="Economia: 0", style="App.TLabel")
+        self.lblEconomia = ttk.Label(self.lbfSummary, text=_("Economia:") + " 0", style="App.TLabel")
         self.lblEconomia.pack(anchor=tk.W, padx=5, pady=2)
         self.lbfSummary.pack(fill=tk.X, padx=5, pady=5)
 

@@ -152,6 +152,100 @@ TRANSLATIONS = {
     "Tot. Evaso": {"it": "Tot. Evaso", "en": "Tot. Deliv", "es": "Tot. Entr"},
 
     # ==========================================================================
+    # Batch Dialog
+    # ==========================================================================
+    "Modifica Lotto": {"it": "Modifica Lotto", "en": "Edit Batch", "es": "Editar Lote"},
+    "La data Scadenza non è valida!": {"it": "La data Scadenza non è valida!", "en": "The Expiration date is not valid!", "es": "¡La fecha de Vencimiento no es válida!"},
+    "Il lotto '{}' con scadenza {} esiste già!": {"it": "Il lotto '{}' con scadenza {} esiste già!", "en": "Batch '{}' with expiration {} already exists!", "es": "¡El lote '{}' con vencimiento {} ya existe!"},
+    "Il lotto '{}' esiste già con scadenza {}.\nVuoi inserirlo comunque con scadenza {}?": {"it": "Il lotto '{}' esiste già con scadenza {}.\nVuoi inserirlo comunque con scadenza {}?", "en": "Batch '{}' already exists with expiration {}.\nInsert anyway with expiration {}?", "es": "El lote '{}' ya existe con vencimiento {}.\n¿Insertar de todos modos con vencimiento {}?"},
+    "Il lotto è già scaduto!\nImpossibile inserire.": {"it": "Il lotto è già scaduto!\nImpossibile inserire.", "en": "The batch is already expired!\nCannot insert.", "es": "¡El lote ya está vencido!\nNo se puede insertar."},
+    "Attenzione: il lotto scade tra {} giorni.\nProcedere comunque?": {"it": "Attenzione: il lotto scade tra {} giorni.\nProcedere comunque?", "en": "Warning: batch expires in {} days.\nProceed anyway?", "es": "Advertencia: el lote vence en {} días.\n¿Continuar de todos modos?"},
+
+    # ==========================================================================
+    # Custom Label
+    # ==========================================================================
+    "Riga 1:": {"it": "Riga 1:", "en": "Line 1:", "es": "Línea 1:"},
+    "Riga 2:": {"it": "Riga 2:", "en": "Line 2:", "es": "Línea 2:"},
+    "Riga 3:": {"it": "Riga 3:", "en": "Line 3:", "es": "Línea 3:"},
+    "Dim. Font:": {"it": "Dim. Font:", "en": "Font Size:", "es": "Tam. Fuente:"},
+    "Etichetta Personalizzata": {"it": "Etichetta Personalizzata", "en": "Custom Label", "es": "Etiqueta Personalizada"},
+    "Errore nel salvare i modelli:": {"it": "Errore nel salvare i modelli:", "en": "Error saving templates:", "es": "Error al guardar plantillas:"},
+    "Inserire almeno la prima riga!": {"it": "Inserire almeno la prima riga!", "en": "Enter at least the first line!", "es": "¡Ingrese al menos la primera línea!"},
+    "Il modello '{}' esiste.\nSovrascrivere?": {"it": "Il modello '{}' esiste.\nSovrascrivere?", "en": "Template '{}' exists.\nOverwrite?", "es": "La plantilla '{}' existe.\n¿Sobrescribir?"},
+    "Modello '{}' salvato!": {"it": "Modello '{}' salvato!", "en": "Template '{}' saved!", "es": "¡Plantilla '{}' guardada!"},
+    "Eliminare il modello '{}'?": {"it": "Eliminare il modello '{}'?", "en": "Delete template '{}'?", "es": "¿Eliminar plantilla '{}'?"},
+    "Inserire almeno una riga di testo!": {"it": "Inserire almeno una riga di testo!", "en": "Enter at least one line of text!", "es": "¡Ingrese al menos una línea de texto!"},
+    "Errore nella generazione:": {"it": "Errore nella generazione:", "en": "Error in generation:", "es": "Error en la generación:"},
+    "Etichetta inviata alla stampa!": {"it": "Etichetta inviata alla stampa!", "en": "Label sent to print!", "es": "¡Etiqueta enviada a imprimir!"},
+    "Errore nella stampa:": {"it": "Errore nella stampa:", "en": "Error in printing:", "es": "Error en la impresión:"},
+
+    # ==========================================================================
+    # Expiring Batches
+    # ==========================================================================
+    "GG Scad.": {"it": "GG Scad.", "en": "Days Exp.", "es": "Días Venc."},
+    "Giac.": {"it": "Giac.", "en": "Stock", "es": "Stock"},
+    "Lotti in Scadenza (30 giorni)": {"it": "Lotti in Scadenza (30 giorni)", "en": "Expiring Batches (30 days)", "es": "Lotes por Vencer (30 días)"},
+    "GG Rim.": {"it": "GG Rim.", "en": "Days Left", "es": "Días Rest."},
+    "Seleziona un lotto scaduto da annullare!": {"it": "Seleziona un lotto scaduto da annullare!", "en": "Select an expired batch to cancel!", "es": "¡Seleccione un lote vencido para cancelar!"},
+    "Annullare il lotto '{}' di '{}'?\n\nVerranno annullate {} etichette in giacenza.\n\nQuesta operazione non è reversibile.": {"it": "Annullare il lotto '{}' di '{}'?\n\nVerranno annullate {} etichette in giacenza.\n\nQuesta operazione non è reversibile.", "en": "Cancel batch '{}' of '{}'?\n\n{} labels in stock will be cancelled.\n\nThis operation is not reversible.", "es": "¿Cancelar lote '{}' de '{}'?\n\nSe cancelarán {} etiquetas en stock.\n\nEsta operación no es reversible."},
+    "Lotto '{}' annullato con successo.": {"it": "Lotto '{}' annullato con successo.", "en": "Batch '{}' cancelled successfully.", "es": "Lote '{}' cancelado exitosamente."},
+
+    # ==========================================================================
+    # Labels Dialog
+    # ==========================================================================
+    "Prodotto:": {"it": "Prodotto:", "en": "Product:", "es": "Producto:"},
+    "Numero etichette:": {"it": "Numero etichette:", "en": "Number of labels:", "es": "Número de etiquetas:"},
+    "Inserire un numero di etichette valido!": {"it": "Inserire un numero di etichette valido!", "en": "Enter a valid number of labels!", "es": "¡Ingrese un número de etiquetas válido!"},
+    "Caricare {} etichetta?": {"it": "Caricare {} etichetta?", "en": "Load {} label?", "es": "¿Cargar {} etiqueta?"},
+    "Caricare {} etichette?": {"it": "Caricare {} etichette?", "en": "Load {} labels?", "es": "¿Cargar {} etiquetas?"},
+
+    # ==========================================================================
+    # Locations
+    # ==========================================================================
+    "Tipo:": {"it": "Tipo:", "en": "Type:", "es": "Tipo:"},
+    "-- Non assegnato --": {"it": "-- Non assegnato --", "en": "-- Not assigned --", "es": "-- No asignado --"},
+    "Stanza": {"it": "Stanza", "en": "Room", "es": "Sala"},
+    "Conserv.": {"it": "Conserv.", "en": "Storage", "es": "Conserv."},
+    "Seleziona ubicazione:": {"it": "Seleziona ubicazione:", "en": "Select location:", "es": "Seleccionar ubicación:"},
+
+    # ==========================================================================
+    # Packages
+    # ==========================================================================
+    "Cod.Forn.": {"it": "Cod.Forn.", "en": "Suppl.Code", "es": "Cód.Prov."},
+    "Et.": {"it": "Et.", "en": "Lab.", "es": "Et."},
+    "B": {"it": "B", "en": "D", "es": "O"},
+
+    # ==========================================================================
+    # Report Fundings
+    # ==========================================================================
+    "In Gara:": {"it": "In Gara:", "en": "Tender:", "es": "Licitación:"},
+    "Economia:": {"it": "Economia:", "en": "Budget:", "es": "Presupuesto:"},
+
+    # ==========================================================================
+    # Requests
+    # ==========================================================================
+    "Art.": {"it": "Art.", "en": "It.", "es": "Art."},
+    "Conf.": {"it": "Conf.", "en": "Pack.", "es": "Conf."},
+    "Qtà": {"it": "Qtà", "en": "Qty", "es": "Cant."},
+
+    # ==========================================================================
+    # Warehouse
+    # ==========================================================================
+    "G.": {"it": "G.", "en": "S.", "es": "S."},
+    "GG": {"it": "GG", "en": "Days", "es": "Días"},
+
+    # ==========================================================================
+    # Statistics
+    # ==========================================================================
+    "Perdita %": {"it": "Perdita %", "en": "Loss %", "es": "Pérdida %"},
+    "Efficienza %": {"it": "Efficienza %", "en": "Efficiency %", "es": "Eficiencia %"},
+    "Completamento %": {"it": "Completamento %", "en": "Completion %", "es": "Completado %"},
+    "TAT medio (gg)": {"it": "TAT medio (gg)", "en": "Avg TAT (days)", "es": "TAT medio (días)"},
+    "Media (gg)": {"it": "Media (gg)", "en": "Avg (days)", "es": "Media (días)"},
+    "Min (gg)": {"it": "Min (gg)", "en": "Min (days)", "es": "Mín (días)"},
+    "Max (gg)": {"it": "Max (gg)", "en": "Max (days)", "es": "Máx (días)"},
+
+    # ==========================================================================
     # Common labels
     # ==========================================================================
     "Descrizione:": {"it": "Descrizione:", "en": "Description:", "es": "Descripción:"},

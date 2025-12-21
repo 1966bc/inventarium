@@ -71,7 +71,7 @@ class UI(tk.Toplevel):
 
         # Location selection (for location reports)
         self.lfLocation = ttk.LabelFrame(left, text=_("Ubicazione"), style="App.TLabelframe")
-        ttk.Label(self.lfLocation, text="Seleziona ubicazione:").pack(anchor=tk.W, padx=5)
+        ttk.Label(self.lfLocation, text=_("Seleziona ubicazione:")).pack(anchor=tk.W, padx=5)
         self.cbLocations = ttk.Combobox(self.lfLocation, state="readonly", width=25, style="App.TCombobox")
         self.cbLocations.pack(fill=tk.X, padx=5, pady=5)
         # Initially hidden

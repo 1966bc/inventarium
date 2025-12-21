@@ -90,11 +90,11 @@ class UI(tk.Toplevel):
         if self.index is not None and selected_batch:
             # Edit mode
             self.selected_batch = selected_batch
-            self.title(f"Modifica Lotto - {product_name}")
+            self.title(f"{_('Modifica Lotto')} - {product_name}")
             self.set_values()
         else:
             # New batch mode
-            self.title(f"Nuovo Lotto - {product_name}")
+            self.title(f"{_('Nuovo Lotto')} - {product_name}")
             self.calExpiration.set_today()
             self.status.set(1)
 
@@ -115,7 +115,7 @@ class UI(tk.Toplevel):
         if not self.calExpiration.is_valid:
             messagebox.showwarning(
                 self.engine.app_title,
-                "La data Scadenza non è valida!",
+                _("La data Scadenza non è valida!"),
                 parent=self
             )
             return
@@ -137,7 +137,7 @@ class UI(tk.Toplevel):
             if existing:
                 messagebox.showerror(
                     self.engine.app_title,
-                    f"Il lotto '{lot_name}' con scadenza {exp_date.strftime('%d-%m-%Y')} esiste già!",
+                    _("Il lotto '{}' con scadenza {} esiste già!").format(lot_name, exp_date.strftime('%d-%m-%Y')),
                     parent=self
                 )
                 return
@@ -159,8 +159,8 @@ class UI(tk.Toplevel):
 
                 if not messagebox.askyesno(
                     self.engine.app_title,
-                    f"Il lotto '{lot_name}' esiste già con scadenza {existing_fmt}.\n"
-                    f"Vuoi inserirlo comunque con scadenza {exp_date.strftime('%d-%m-%Y')}?",
+                    _("Il lotto '{}' esiste già con scadenza {}.\nVuoi inserirlo comunque con scadenza {}?").format(
+                        lot_name, existing_fmt, exp_date.strftime('%d-%m-%Y')),
                     parent=self
                 ):
                     return
@@ -169,7 +169,7 @@ class UI(tk.Toplevel):
                 # Expired - don't allow
                 messagebox.showerror(
                     self.engine.app_title,
-                    "Il lotto è già scaduto!\nImpossibile inserire.",
+                    _("Il lotto è già scaduto!\nImpossibile inserire."),
                     parent=self
                 )
                 return
@@ -178,7 +178,7 @@ class UI(tk.Toplevel):
                 # Expiring soon - ask confirmation
                 if not messagebox.askyesno(
                     self.engine.app_title,
-                    f"Attenzione: il lotto scade tra {days_left} giorni.\nProcedere comunque?",
+                    _("Attenzione: il lotto scade tra {} giorni.\nProcedere comunque?").format(days_left),
                     parent=self
                 ):
                     return

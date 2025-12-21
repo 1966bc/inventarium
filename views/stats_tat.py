@@ -77,9 +77,9 @@ class UI(tk.Toplevel):
 
         self.tree_order.heading("supplier", text=_("Fornitore"))
         self.tree_order.heading("orders", text=_("Ordini"))
-        self.tree_order.heading("avg_days", text="Media (gg)")
-        self.tree_order.heading("min_days", text="Min (gg)")
-        self.tree_order.heading("max_days", text="Max (gg)")
+        self.tree_order.heading("avg_days", text=_("Media (gg)"))
+        self.tree_order.heading("min_days", text=_("Min (gg)"))
+        self.tree_order.heading("max_days", text=_("Max (gg)"))
 
         self.tree_order.column("supplier", width=250)
         self.tree_order.column("orders", width=100, anchor=tk.E)
@@ -98,9 +98,9 @@ class UI(tk.Toplevel):
 
         self.tree_stock.heading("product", text=_("Prodotto"))
         self.tree_stock.heading("labels", text=_("Etichette"))
-        self.tree_stock.heading("avg_days", text="Media (gg)")
-        self.tree_stock.heading("min_days", text="Min (gg)")
-        self.tree_stock.heading("max_days", text="Max (gg)")
+        self.tree_stock.heading("avg_days", text=_("Media (gg)"))
+        self.tree_stock.heading("min_days", text=_("Min (gg)"))
+        self.tree_stock.heading("max_days", text=_("Max (gg)"))
 
         self.tree_stock.column("product", width=250)
         self.tree_stock.column("labels", width=100, anchor=tk.E)

@@ -62,7 +62,7 @@ class UI(tk.Toplevel):
         self.txtDescription.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text="Tipo:").grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Tipo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbCategories = ttk.Combobox(w, state="readonly", width=entry_width - 3, style="App.TCombobox")
         self.cbCategories.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -119,7 +119,7 @@ class UI(tk.Toplevel):
 
         # Add "Not assigned" option
         self.dict_categories[0] = None
-        voices.append("-- Non assegnato --")
+        voices.append(_("-- Non assegnato --"))
 
         sql = """SELECT category_id, description
                  FROM categories

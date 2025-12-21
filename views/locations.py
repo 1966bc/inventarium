@@ -60,7 +60,7 @@ class UI(tk.Toplevel):
         self.treeview.heading("code", text=_("Codice"), command=lambda: self.sort_column("code"))
 
         self.treeview.column("room", width=100, anchor=tk.W)
-        self.treeview.heading("room", text="Stanza", command=lambda: self.sort_column("room"))
+        self.treeview.heading("room", text=_("Stanza"), command=lambda: self.sort_column("room"))
 
         self.treeview.column("description", width=200, anchor=tk.W)
         self.treeview.heading("description", text=_("Descrizione"), command=lambda: self.sort_column("description"))
@@ -69,7 +69,7 @@ class UI(tk.Toplevel):
         self.treeview.heading("category", text=_("Tipo"), command=lambda: self.sort_column("category"))
 
         self.treeview.column("conservation", width=120, anchor=tk.W)
-        self.treeview.heading("conservation", text="Conserv.", command=lambda: self.sort_column("conservation"))
+        self.treeview.heading("conservation", text=_("Conserv."), command=lambda: self.sort_column("conservation"))
 
         # Scrollbar
         scrollbar = ttk.Scrollbar(w, orient=tk.VERTICAL, command=self.treeview.yview)

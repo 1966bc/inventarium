@@ -52,12 +52,12 @@ class UI(tk.Toplevel):
         self.tree = ttk.Treeview(w, columns=columns, show="headings", height=12)
 
         # Define headings
-        self.tree.heading("reference", text="Cod.Forn.")
+        self.tree.heading("reference", text=_("Cod.Forn."))
         self.tree.heading("supplier", text=_("Fornitore"))
-        self.tree.heading("labels", text="Et.")
+        self.tree.heading("labels", text=_("Et."))
         self.tree.heading("packaging", text=_("Confezionamento"))
-        self.tree.heading("conservation", text="Conserv.")
-        self.tree.heading("dark", text="B")
+        self.tree.heading("conservation", text=_("Conserv."))
+        self.tree.heading("dark", text=_("B"))
         self.tree.heading("category", text=_("Categoria"))
         self.tree.heading("fonte", text=_("Fonte"))
 

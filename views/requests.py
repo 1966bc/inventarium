@@ -61,7 +61,7 @@ class UI(tk.Toplevel):
         self.treeRequests.heading("date", text=_("Data"), anchor=tk.CENTER)
 
         self.treeRequests.column("count", width=50, minwidth=40, anchor=tk.CENTER, stretch=False)
-        self.treeRequests.heading("count", text="Art.", anchor=tk.CENTER)
+        self.treeRequests.heading("count", text=_("Art."), anchor=tk.CENTER)
 
         sb = ttk.Scrollbar(w, orient=tk.VERTICAL, command=self.treeRequests.yview)
         self.treeRequests.configure(yscrollcommand=sb.set)
@@ -87,10 +87,10 @@ class UI(tk.Toplevel):
         self.treeItems.heading("supplier", text=_("Fornitore"), anchor=tk.W)
 
         self.treeItems.column("packaging", width=100, minwidth=80, anchor=tk.W, stretch=False)
-        self.treeItems.heading("packaging", text="Conf.", anchor=tk.W)
+        self.treeItems.heading("packaging", text=_("Conf."), anchor=tk.W)
 
         self.treeItems.column("qty", width=50, minwidth=40, anchor=tk.CENTER, stretch=False)
-        self.treeItems.heading("qty", text="Qtà", anchor=tk.CENTER)
+        self.treeItems.heading("qty", text=_("Qtà"), anchor=tk.CENTER)
 
         sb = ttk.Scrollbar(self.lblItems, orient=tk.VERTICAL, command=self.treeItems.yview)
         self.treeItems.configure(yscrollcommand=sb.set)

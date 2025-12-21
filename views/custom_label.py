@@ -73,28 +73,28 @@ class UI(tk.Toplevel):
         # Line 1
         r1 = ttk.Frame(lf_text)
         r1.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r1, text="Riga 1:", width=8).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("Riga 1:"), width=8).pack(side=tk.LEFT)
         self.entry1 = ttk.Entry(r1, textvariable=self.line1_var, width=40)
         self.entry1.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         # Line 2
         r2 = ttk.Frame(lf_text)
         r2.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r2, text="Riga 2:", width=8).pack(side=tk.LEFT)
+        ttk.Label(r2, text=_("Riga 2:"), width=8).pack(side=tk.LEFT)
         self.entry2 = ttk.Entry(r2, textvariable=self.line2_var, width=40)
         self.entry2.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         # Line 3
         r3 = ttk.Frame(lf_text)
         r3.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r3, text="Riga 3:", width=8).pack(side=tk.LEFT)
+        ttk.Label(r3, text=_("Riga 3:"), width=8).pack(side=tk.LEFT)
         self.entry3 = ttk.Entry(r3, textvariable=self.line3_var, width=40)
         self.entry3.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         # Font size control
         r4 = ttk.Frame(lf_text)
         r4.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r4, text="Dim. Font:", width=8).pack(side=tk.LEFT)
+        ttk.Label(r4, text=_("Dim. Font:"), width=8).pack(side=tk.LEFT)
         self.spn_font = ttk.Spinbox(
             r4, from_=16, to=48, width=5,
             textvariable=self.font_size
@@ -148,7 +148,7 @@ class UI(tk.Toplevel):
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title("Etichetta Personalizzata")
+        self.title(_("Etichetta Personalizzata"))
         self.engine.dict_instances["custom_label"] = self
         self.refresh_templates_list()
         self.entry1.focus_set()
@@ -183,7 +183,7 @@ class UI(tk.Toplevel):
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore nel salvare i modelli:\n{e}",
+                _("Errore nel salvare i modelli:") + f"\n{e}",
                 parent=self
             )
 
@@ -199,7 +199,7 @@ class UI(tk.Toplevel):
         if not line1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Inserire almeno la prima riga!",
+                _("Inserire almeno la prima riga!"),
                 parent=self
             )
             return
@@ -211,7 +211,7 @@ class UI(tk.Toplevel):
         if name in self.templates:
             if not messagebox.askyesno(
                 self.engine.app_title,
-                f"Il modello '{name}' esiste.\nSovrascrivere?",
+                _("Il modello '{}' esiste.\nSovrascrivere?").format(name),
                 parent=self
             ):
                 return
@@ -230,7 +230,7 @@ class UI(tk.Toplevel):
 
         messagebox.showinfo(
             self.engine.app_title,
-            f"Modello '{name}' salvato!",
+            _("Modello '{}' salvato!").format(name),
             parent=self
         )
 
@@ -263,7 +263,7 @@ class UI(tk.Toplevel):
 
         if messagebox.askyesno(
             self.engine.app_title,
-            f"Eliminare il modello '{name}'?",
+            _("Eliminare il modello '{}'?").format(name),
             parent=self
         ):
             del self.templates[name]
@@ -298,7 +298,7 @@ class UI(tk.Toplevel):
         if not lines:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Inserire almeno una riga di testo!",
+                _("Inserire almeno una riga di testo!"),
                 parent=self
             )
             return None
@@ -326,7 +326,7 @@ class UI(tk.Toplevel):
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore nella generazione:\n{e}",
+                _("Errore nella generazione:") + f"\n{e}",
                 parent=self
             )
             return None
@@ -348,13 +348,13 @@ class UI(tk.Toplevel):
 
                 messagebox.showinfo(
                     self.engine.app_title,
-                    "Etichetta inviata alla stampa!",
+                    _("Etichetta inviata alla stampa!"),
                     parent=self
                 )
             except Exception as e:
                 messagebox.showerror(
                     self.engine.app_title,
-                    f"Errore nella stampa:\n{e}",
+                    _("Errore nella stampa:") + f"\n{e}",
                     parent=self
                 )
 

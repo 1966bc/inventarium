@@ -73,8 +73,8 @@ class UI(tk.Toplevel):
         self.tree.heading("orders", text=_("Ordini"))
         self.tree.heading("items_ordered", text=_("Ordinato"))
         self.tree.heading("items_delivered", text=_("Consegnato"))
-        self.tree.heading("completion", text="Completamento %")
-        self.tree.heading("avg_tat", text="TAT medio (gg)")
+        self.tree.heading("completion", text=_("Completamento %"))
+        self.tree.heading("avg_tat", text=_("TAT medio (gg)"))
         self.tree.heading("products", text=_("Prodotti"))
 
         self.tree.column("supplier", width=200)

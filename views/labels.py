@@ -41,7 +41,7 @@ class UI(tk.Toplevel):
         w.pack(fill=tk.BOTH, expand=1)
 
         r = 0
-        ttk.Label(w, text="Prodotto:").grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtProduct = ttk.Entry(w, textvariable=self.product, state="readonly", width=30)
         self.txtProduct.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -59,7 +59,7 @@ class UI(tk.Toplevel):
         ttk.Separator(w, orient=tk.HORIZONTAL).grid(row=r, column=0, columnspan=2, sticky="ew", pady=10)
 
         r += 1
-        ttk.Label(w, text="Numero etichette:").grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Numero etichette:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.spnLabels = ttk.Spinbox(w, from_=1, to=100, textvariable=self.labels_count, width=5)
         self.spnLabels.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -96,7 +96,7 @@ class UI(tk.Toplevel):
         self.lot.set(selected_batch.get("description", ""))
         self.expiration.set(selected_batch.get("expiration", ""))
 
-        self.title("Carica Etichette")
+        self.title(_("Carica Etichette"))
         self.labels_count.set(1)
         self.spnLabels.focus()
 
@@ -107,12 +107,12 @@ class UI(tk.Toplevel):
         if count < 1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Inserire un numero di etichette valido!",
+                _("Inserire un numero di etichette valido!"),
                 parent=self
             )
             return
 
-        msg = f"Caricare {count} etichett{'a' if count == 1 else 'e'}?"
+        msg = _("Caricare {} etichetta?").format(count) if count == 1 else _("Caricare {} etichette?").format(count)
         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
             # Load labels
             for _ in range(count):

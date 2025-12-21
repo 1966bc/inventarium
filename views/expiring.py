@@ -51,8 +51,8 @@ class UI(tk.Toplevel):
         self.treeExpired.heading("product", text=_("Prodotto"))
         self.treeExpired.heading("lot", text=_("Lotto"))
         self.treeExpired.heading("expiration", text=_("Scadenza"))
-        self.treeExpired.heading("days", text="GG Scad.")
-        self.treeExpired.heading("stock", text="Giac.")
+        self.treeExpired.heading("days", text=_("GG Scad."))
+        self.treeExpired.heading("stock", text=_("Giac."))
 
         self.treeExpired.column("product", width=250)
         self.treeExpired.column("lot", width=120)
@@ -68,7 +68,7 @@ class UI(tk.Toplevel):
         sb1.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 5), pady=5)
 
         # Expiring batches section
-        f2 = ttk.LabelFrame(main_frame, text="Lotti in Scadenza (30 giorni)", style="App.TLabelframe")
+        f2 = ttk.LabelFrame(main_frame, text=_("Lotti in Scadenza (30 giorni)"), style="App.TLabelframe")
         f2.pack(fill=tk.BOTH, expand=1)
 
         # Expiring treeview
@@ -76,8 +76,8 @@ class UI(tk.Toplevel):
         self.treeExpiring.heading("product", text=_("Prodotto"))
         self.treeExpiring.heading("lot", text=_("Lotto"))
         self.treeExpiring.heading("expiration", text=_("Scadenza"))
-        self.treeExpiring.heading("days", text="GG Rim.")
-        self.treeExpiring.heading("stock", text="Giac.")
+        self.treeExpiring.heading("days", text=_("GG Rim."))
+        self.treeExpiring.heading("stock", text=_("Giac."))
 
         self.treeExpiring.column("product", width=250)
         self.treeExpiring.column("lot", width=120)
@@ -172,7 +172,7 @@ class UI(tk.Toplevel):
         if not selection:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Seleziona un lotto scaduto da annullare!",
+                _("Seleziona un lotto scaduto da annullare!"),
                 parent=self
             )
             return
@@ -185,9 +185,7 @@ class UI(tk.Toplevel):
         labels_count = values[5]
 
         # Confirm
-        msg = (f"Annullare il lotto '{lot}' di '{product_name}'?\n\n"
-               f"Verranno annullate {labels_count} etichette in giacenza.\n\n"
-               "Questa operazione non è reversibile.")
+        msg = _("Annullare il lotto '{}' di '{}'?\n\nVerranno annullate {} etichette in giacenza.\n\nQuesta operazione non è reversibile.").format(lot, product_name, labels_count)
 
         if not messagebox.askyesno(self.engine.app_title, msg, parent=self):
             return
@@ -202,7 +200,7 @@ class UI(tk.Toplevel):
 
         messagebox.showinfo(
             self.engine.app_title,
-            f"Lotto '{lot}' annullato con successo.",
+            _("Lotto '{}' annullato con successo.").format(lot),
             parent=self
         )
 
