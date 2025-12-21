@@ -434,9 +434,9 @@ class Main(tk.Toplevel):
         filename = filedialog.asksaveasfilename(
             parent=self,
             defaultextension=".db",
-            filetypes=[("SQLite Database", "*.db"), ("All files", "*.*")],
+            filetypes=[("SQLite Database", "*.db"), (_("Tutti i file"), "*.*")],
             initialfile=default_name,
-            title="Salva Backup Database"
+            title=_("Salva Backup Database")
         )
 
         if filename:
@@ -449,13 +449,13 @@ class Main(tk.Toplevel):
 
                 messagebox.showinfo(
                     self.engine.app_title,
-                    f"Backup completato!\n\n{filename}",
+                    _("Backup completato!") + f"\n\n{filename}",
                     parent=self
                 )
             except Exception as e:
                 messagebox.showerror(
                     self.engine.app_title,
-                    f"Errore durante il backup:\n{e}",
+                    _("Errore durante il backup:") + f"\n{e}",
                     parent=self
                 )
 
