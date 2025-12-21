@@ -55,3 +55,9 @@ imgs/
 
 # Root level SQL dumps
 /*.sql
+
+# Local files (not to be shared)
+GIT_CHEATSHEET.md
+PROMOTION.md
+report_fonti.csv
+CLAUDE.md
