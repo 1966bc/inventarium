@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import price
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Prices list window with add/edit functionality."""
 
     def __init__(self, parent):
-        super().__init__(name="prices")
+        super().__init__(parent, name="prices")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(900, 450)
 
         self.table = "prices"
@@ -35,6 +36,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
     def init_ui(self):
         """Build the user interface."""
@@ -233,6 +235,7 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new price."""
+        self.engine.close_instance("price")
         self.obj = price.UI(self)
         self.obj.on_open()
 
@@ -240,6 +243,7 @@ class UI(tk.Toplevel):
         """Edit selected price."""
         pk = self.get_selected_id()
         if pk:
+            self.engine.close_instance("price")
             self.selected_item = self.engine.get_selected(
                 self.table, self.primary_key, pk
             )
@@ -270,8 +274,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "prices" in self.engine.dict_instances:
             del self.engine.dict_instances["prices"]
-        self.destroy()
+        super().on_cancel()

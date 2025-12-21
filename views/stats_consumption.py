@@ -8,29 +8,31 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 import datetime
 
+from i18n import _
 from calendarium import Calendarium
+from views.parent_view import ParentView
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Consumption analysis window."""
 
     def __init__(self, parent):
-        super().__init__(name="stats_consumption")
+        super().__init__(parent, name="stats_consumption")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(800, 550)
 
         self.dict_categories = {}
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -246,4 +248,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "stats_consumption" in self.engine.dict_instances:
             del self.engine.dict_instances["stats_consumption"]
-        self.destroy()
+        super().on_cancel()

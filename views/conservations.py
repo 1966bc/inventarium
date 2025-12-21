@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import conservation
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Conservations list window with add/edit functionality."""
 
     def __init__(self, parent):
-        super().__init__(name="conservations")
+        super().__init__(parent, name="conservations")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(400, 300)
 
         self.table = "conservations"
@@ -35,6 +36,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -158,12 +160,14 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new conservation."""
+        self.engine.close_instance("conservation")
         self.obj = conservation.UI(self)
         self.obj.on_open()
 
     def on_edit(self, evt=None):
         """Edit selected conservation."""
         if self.lstItems.curselection():
+            self.engine.close_instance("conservation")
             idx = self.lstItems.curselection()[0]
             pk = self.dict_items.get(idx)
             if pk:
@@ -195,8 +199,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "conservations" in self.engine.dict_instances:
             del self.engine.dict_instances["conservations"]
-        self.destroy()
+        super().on_cancel()

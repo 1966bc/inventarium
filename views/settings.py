@@ -12,18 +12,16 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from i18n import _, LANGUAGES
+from views.child_view import ChildView
 
 
-class UI(tk.Toplevel):
+class UI(ChildView):
     """Settings configuration dialog."""
 
     def __init__(self, parent):
-        super().__init__(name="settings")
+        super().__init__(parent, name="settings")
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
-        self.transient(parent)
         self.resizable(0, 0)
 
         # Form variables
@@ -38,6 +36,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -201,4 +200,4 @@ class UI(tk.Toplevel):
 
     def on_cancel(self, evt=None):
         """Close the dialog."""
-        self.destroy()
+        super().on_cancel()

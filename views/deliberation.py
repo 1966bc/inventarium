@@ -8,24 +8,22 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
 import datetime
 
 from i18n import _
-from tkinter import ttk
-from tkinter import messagebox
 from calendarium import Calendarium
+from views.child_view import ChildView
 
 
-class UI(tk.Toplevel):
+class UI(ChildView):
     """Dialog for creating or editing a deliberation."""
 
     def __init__(self, parent, index=None):
-        super().__init__(name="deliberation")
+        super().__init__(parent, name="deliberation")
 
-        self.parent = parent
         self.index = index
-        self.engine = self.nametowidget(".").engine
-        self.transient(parent)
         self.resizable(0, 0)
 
         self.reference = tk.StringVar()
@@ -37,6 +35,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
     def init_ui(self):
         """Build the dialog UI."""
@@ -264,4 +263,4 @@ class UI(tk.Toplevel):
 
     def on_cancel(self, evt=None):
         """Close the dialog."""
-        self.destroy()
+        super().on_cancel()

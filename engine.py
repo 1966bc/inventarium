@@ -89,6 +89,56 @@ class Engine(DBMS, Controller, Tools, Launcher):
         lang = self.get_setting("language", "it")
         set_language(lang)
 
+    def get_instance(self, name):
+        """
+        Get a registered window instance by name.
+
+        If the instance exists and is still alive, brings it to front
+        and returns it. Otherwise returns None.
+
+        Use this for ParentView windows where you want to reuse
+        the existing window instead of creating a new one.
+
+        Args:
+            name: Window name as registered in dict_instances
+
+        Returns:
+            The window instance if alive, None otherwise
+        """
+        instance = self.dict_instances.get(name)
+        if instance is not None:
+            try:
+                if instance.winfo_exists():
+                    instance.lift()
+                    instance.focus_set()
+                    return instance
+            except Exception:
+                pass
+            # Dead reference, clean up
+            self.dict_instances.pop(name, None)
+        return None
+
+    def close_instance(self, name):
+        """
+        Close a registered window instance by name.
+
+        If the instance exists and is still alive, closes it.
+        Use this for ChildView dialogs before creating a new one
+        to switch context (e.g., editing a different record).
+
+        Args:
+            name: Window name as registered in dict_instances
+        """
+        instance = self.dict_instances.get(name)
+        if instance is not None:
+            try:
+                if instance.winfo_exists():
+                    instance.on_cancel()
+            except Exception:
+                pass
+            # Ensure cleanup
+            self.dict_instances.pop(name, None)
+
     def __str__(self):
         return "class: {0}\nMRO: {1}".format(
             self.__class__.__name__,

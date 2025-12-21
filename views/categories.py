@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import category
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Categories list window with add/edit functionality."""
 
     def __init__(self, parent):
-        super().__init__(name="categories")
+        super().__init__(parent, name="categories")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(500, 400)
 
         self.table = "categories"
@@ -42,6 +43,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -178,12 +180,14 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new category."""
+        self.engine.close_instance("category")
         self.obj = category.UI(self)
         self.obj.on_open(self.reference_id.get())
 
     def on_edit(self, evt=None):
         """Edit selected category."""
         if self.lstItems.curselection():
+            self.engine.close_instance("category")
             idx = self.lstItems.curselection()[0]
             pk = self.dict_items.get(idx)
             if pk:
@@ -216,8 +220,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "categories" in self.engine.dict_instances:
             del self.engine.dict_instances["categories"]
-        self.destroy()
+        super().on_cancel()

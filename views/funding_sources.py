@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import funding_source
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Funding sources list window with add/edit functionality."""
 
     def __init__(self, parent):
-        super().__init__(name="funding_sources")
+        super().__init__(parent, name="funding_sources")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(500, 350)
 
         self.table = "funding_sources"
@@ -34,6 +35,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
     def init_ui(self):
         """Build the user interface."""
@@ -173,6 +175,7 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new funding source."""
+        self.engine.close_instance("funding_source")
         self.obj = funding_source.UI(self)
         self.obj.on_open()
 
@@ -180,6 +183,7 @@ class UI(tk.Toplevel):
         """Edit selected funding source."""
         pk = self.get_selected_id()
         if pk:
+            self.engine.close_instance("funding_source")
             self.selected_item = self.engine.get_selected(
                 self.table, self.primary_key, pk
             )
@@ -210,8 +214,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "funding_sources" in self.engine.dict_instances:
             del self.engine.dict_instances["funding_sources"]
-        self.destroy()
+        super().on_cancel()

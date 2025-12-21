@@ -8,27 +8,29 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 import datetime
 
+from i18n import _
 from calendarium import Calendarium
+from views.parent_view import ParentView
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Supplier performance analysis window."""
 
     def __init__(self, parent):
-        super().__init__(name="stats_suppliers")
+        super().__init__(parent, name="stats_suppliers")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(900, 550)
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -306,4 +308,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "stats_suppliers" in self.engine.dict_instances:
             del self.engine.dict_instances["stats_suppliers"]
-        self.destroy()
+        super().on_cancel()

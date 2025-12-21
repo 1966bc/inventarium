@@ -8,22 +8,20 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.child_view import ChildView
 
-class UI(tk.Toplevel):
+
+class UI(ChildView):
     """Dialog for loading labels (packages) into stock."""
 
     def __init__(self, parent):
-        super().__init__(name="labels")
+        super().__init__(parent, name="labels")
 
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.attributes("-topmost", True)
-        self.transient(parent)
         self.resizable(0, 0)
 
         self.labels_count = tk.IntVar(value=1)
@@ -33,6 +31,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -131,4 +130,4 @@ class UI(tk.Toplevel):
 
     def on_cancel(self, evt=None):
         """Close the dialog."""
-        self.destroy()
+        super().on_cancel()

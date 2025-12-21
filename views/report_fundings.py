@@ -9,25 +9,27 @@ Author: 1966bc (Giuseppe Costanzi)
 License: GNU GPL v3
 Version: I (SQLite Edition)
 """
-import tkinter as tk
 import csv
 import os
-
-from i18n import _
+import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
 
+from i18n import _
+from views.parent_view import ParentView
 
-class UI(tk.Toplevel):
+
+class UI(ParentView):
     """Report window showing package funding sources."""
 
     def __init__(self, parent):
-        super().__init__(name="report_fundings")
+        super().__init__(parent, name="report_fundings")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(1100, 500)
 
         self.status = tk.IntVar(value=1)
@@ -36,6 +38,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
     def init_ui(self):
         """Build the user interface."""
@@ -354,4 +357,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "report_fundings" in self.engine.dict_instances:
             del self.engine.dict_instances["report_fundings"]
-        self.destroy()
+        super().on_cancel()

@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import location
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Locations list window with add/edit functionality."""
 
     def __init__(self, parent):
-        super().__init__(name="locations")
+        super().__init__(parent, name="locations")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(700, 400)
 
         self.table = "locations"
@@ -34,6 +35,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -203,6 +205,7 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new location."""
+        self.engine.close_instance("location")
         self.obj = location.UI(self)
         self.obj.on_open()
 
@@ -210,6 +213,7 @@ class UI(tk.Toplevel):
         """Edit selected location."""
         pk = self.get_selected_id()
         if pk:
+            self.engine.close_instance("location")
             self.selected_item = self.engine.get_selected(
                 self.table, self.primary_key, pk
             )
@@ -240,8 +244,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "locations" in self.engine.dict_instances:
             del self.engine.dict_instances["locations"]
-        self.destroy()
+        super().on_cancel()

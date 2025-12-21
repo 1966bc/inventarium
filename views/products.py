@@ -8,24 +8,32 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import product
 from views import packages
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Products list window with add/edit functionality."""
 
     def __init__(self, parent):
-        super().__init__(name="products")
+        """
+        Initialize products list view.
+
+        Args:
+            parent: Parent widget
+        """
+        super().__init__(parent, name="products")
+
+        # Reusing existing window, skip initialization
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(600, 400)
 
         self.table = "products"
@@ -36,6 +44,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -203,6 +212,7 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new product."""
+        self.engine.close_instance("product")
         self.obj = product.UI(self)
         self.obj.on_open()
 
@@ -210,6 +220,7 @@ class UI(tk.Toplevel):
         """Edit selected product."""
         pk = self.get_selected_id()
         if pk:
+            self.engine.close_instance("product")
             self.selected_item = self.engine.get_selected(
                 self.table, self.primary_key, pk
             )
@@ -224,6 +235,7 @@ class UI(tk.Toplevel):
 
     def on_packages(self, evt=None):
         """Open packages for selected product."""
+        self.engine.close_instance("packages")
         pk = self.get_selected_id()
         if pk:
             self.selected_item = self.engine.get_selected(
@@ -252,12 +264,12 @@ class UI(tk.Toplevel):
                 break
 
     def on_cancel(self, evt=None):
-        """Close the window."""
+        """Close the window and clean up."""
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "products" in self.engine.dict_instances:
             del self.engine.dict_instances["products"]
-        self.destroy()
+        super().on_cancel()

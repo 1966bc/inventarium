@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import deliberation
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Deliberations list window with add/edit functionality."""
 
     def __init__(self, parent):
-        super().__init__(name="deliberations")
+        super().__init__(parent, name="deliberations")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(800, 400)
 
         self.table = "deliberations"
@@ -34,6 +35,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
     def init_ui(self):
         """Build the user interface."""
@@ -198,6 +200,7 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new deliberation."""
+        self.engine.close_instance("deliberation")
         self.obj = deliberation.UI(self)
         self.obj.on_open()
 
@@ -205,6 +208,7 @@ class UI(tk.Toplevel):
         """Edit selected deliberation."""
         pk = self.get_selected_id()
         if pk:
+            self.engine.close_instance("deliberation")
             self.selected_item = self.engine.get_selected(
                 self.table, self.primary_key, pk
             )
@@ -235,8 +239,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "deliberations" in self.engine.dict_instances:
             del self.engine.dict_instances["deliberations"]
-        self.destroy()
+        super().on_cancel()

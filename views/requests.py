@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import request_item
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Requests list window with detail view."""
 
     def __init__(self, parent):
-        super().__init__(name="requests")
+        super().__init__(parent, name="requests")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(700, 500)
 
         self.table = "requests"
@@ -38,6 +39,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -347,6 +349,7 @@ class UI(tk.Toplevel):
         if self.cbCategories.current() != -1:
             category_id = self.dict_categories.get(self.cbCategories.current())
 
+        self.engine.close_instance("request_item")
         self.obj = request_item.UI(self)
         self.obj.on_open(self.selected_request, category_id=category_id)
 
@@ -370,6 +373,7 @@ class UI(tk.Toplevel):
 
         selection = self.treeItems.selection()
         if selection:
+            self.engine.close_instance("request_item")
             item_id = int(selection[0])
             self.selected_item = self.engine.get_selected("items", "item_id", item_id)
             self.obj = request_item.UI(self, index=item_id)
@@ -549,8 +553,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "requests" in self.engine.dict_instances:
             del self.engine.dict_instances["requests"]
-        self.destroy()
+        super().on_cancel()

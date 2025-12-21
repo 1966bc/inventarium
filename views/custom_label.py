@@ -10,24 +10,26 @@ Author: 1966bc (Giuseppe Costanzi)
 License: GNU GPL v3
 Version: I (SQLite Edition)
 """
-import tkinter as tk
-
-from i18n import _
-from tkinter import ttk
-from tkinter import messagebox
 import json
 import os
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
+
+from i18n import _
+from views.parent_view import ParentView
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Custom label generator window."""
 
     def __init__(self, parent):
-        super().__init__(name="custom_label")
+        super().__init__(parent, name="custom_label")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(500, 450)
         self.resizable(False, False)
 
@@ -45,6 +47,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -362,4 +365,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "custom_label" in self.engine.dict_instances:
             del self.engine.dict_instances["custom_label"]
-        self.destroy()
+        super().on_cancel()

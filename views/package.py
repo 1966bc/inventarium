@@ -8,24 +8,21 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
 from views import package_funding
+from views.child_view import ChildView
 
 
-class UI(tk.Toplevel):
+class UI(ChildView):
     """Dialog for creating or editing a package."""
 
     def __init__(self, parent, index=None):
-        super().__init__(name="package")
+        super().__init__(parent, name="package")
 
-        self.parent = parent
         self.index = index
-        self.engine = self.nametowidget(".").engine
-        self.transient(parent)
         self.resizable(0, 0)
 
         # Form variables
@@ -45,6 +42,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -422,4 +420,4 @@ class UI(tk.Toplevel):
 
     def on_cancel(self, evt=None):
         """Close the dialog."""
-        self.destroy()
+        super().on_cancel()

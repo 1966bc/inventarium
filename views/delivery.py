@@ -14,23 +14,24 @@ import sys
 import inspect
 import datetime
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from calendarium import Calendarium
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Deliveries management window for fulfilling purchase requests."""
 
     def __init__(self, parent):
-        super().__init__(name="deliveries")
+        super().__init__(parent, name="deliveries")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(900, 600)
 
         # State variables
@@ -57,6 +58,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -738,4 +740,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "deliveries" in self.engine.dict_instances:
             del self.engine.dict_instances["deliveries"]
-        self.destroy()
+        super().on_cancel()

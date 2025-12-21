@@ -11,22 +11,23 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 
-class UI(tk.Toplevel):
+
+class UI(ParentView):
     """Barcode scanner for unloading labels."""
 
     def __init__(self, parent):
-        super().__init__(name="barcode")
+        super().__init__(parent, name="barcode")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
-        self.transient(parent)
         self.resizable(0, 0)
         self.attributes("-topmost", True)
 
@@ -34,6 +35,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -152,4 +154,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "barcode" in self.engine.dict_instances:
             del self.engine.dict_instances["barcode"]
-        self.destroy()
+        super().on_cancel()

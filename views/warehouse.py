@@ -11,17 +11,17 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import batch
 from views import labels
 from views import package_history
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """
     Warehouse management window.
 
@@ -30,11 +30,12 @@ class UI(tk.Toplevel):
     """
 
     def __init__(self, parent):
-        super().__init__(name="warehouse")
+        super().__init__(parent, name="warehouse")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(900, 550)
 
         self.search_var = tk.StringVar()
@@ -47,6 +48,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
     def init_ui(self):
         """Build the user interface."""
@@ -722,4 +724,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "warehouse" in self.engine.dict_instances:
             del self.engine.dict_instances["warehouse"]
-        self.destroy()
+        super().on_cancel()

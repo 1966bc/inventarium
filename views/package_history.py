@@ -8,27 +8,26 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 
+from i18n import _
+from views.child_view import ChildView
 
-class UI(tk.Toplevel):
+
+class UI(ChildView):
     """Package order history window."""
 
     def __init__(self, parent):
-        super().__init__(name="package_history")
+        super().__init__(parent, name="package_history")
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
-        self.transient(parent)
         self.minsize(500, 300)
 
         self.count = tk.StringVar()
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -139,4 +138,4 @@ class UI(tk.Toplevel):
 
     def on_cancel(self, evt=None):
         """Close the window."""
-        self.destroy()
+        super().on_cancel()

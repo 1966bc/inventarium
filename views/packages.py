@@ -8,23 +8,24 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 from views import package
 
 
-class UI(tk.Toplevel):
+class UI(ParentView):
     """Packages list window for a selected product."""
 
     def __init__(self, parent):
-        super().__init__(name="packages")
+        super().__init__(parent, name="packages")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(800, 350)
 
         self.table = "packages"
@@ -33,6 +34,7 @@ class UI(tk.Toplevel):
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
     def init_ui(self):
         """Build the user interface."""
@@ -188,6 +190,7 @@ class UI(tk.Toplevel):
 
     def on_add(self, evt=None):
         """Add new package."""
+        self.engine.close_instance("package")
         self.obj = package.UI(self)
         self.obj.on_open(self.selected_product)
 
@@ -195,6 +198,7 @@ class UI(tk.Toplevel):
         """Edit selected package."""
         selection = self.tree.selection()
         if selection:
+            self.engine.close_instance("package")
             package_id = int(selection[0])
             self.selected_package = self.engine.get_selected(
                 self.table, self.primary_key, package_id
@@ -225,8 +229,8 @@ class UI(tk.Toplevel):
         if self.obj is not None:
             try:
                 self.obj.destroy()
-            except:
+            except Exception:
                 pass
         if "packages" in self.engine.dict_instances:
             del self.engine.dict_instances["packages"]
-        self.destroy()
+        super().on_cancel()

@@ -11,25 +11,27 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from i18n import _
+from views.parent_view import ParentView
 
-class UI(tk.Toplevel):
+
+class UI(ParentView):
     """Expiring batches monitoring window."""
 
     def __init__(self, parent):
-        super().__init__(name="expiring")
+        super().__init__(parent, name="expiring")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
-        self.transient(parent)
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -216,4 +218,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "expiring" in self.engine.dict_instances:
             del self.engine.dict_instances["expiring"]
-        self.destroy()
+        super().on_cancel()

@@ -8,25 +8,28 @@ License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import tkinter as tk
-
-from i18n import _
 from tkinter import ttk
 import datetime
 
+from i18n import _
+from views.parent_view import ParentView
 
-class UI(tk.Toplevel):
+
+class UI(ParentView):
     """Dashboard with key inventory metrics."""
 
     def __init__(self, parent):
-        super().__init__(name="stats_dashboard")
+        super().__init__(parent, name="stats_dashboard")
+
+        if self._reusing:
+            return
 
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.minsize(700, 500)
 
         self.init_ui()
         self.engine.center_window(self)
+        self.show()
 
 
     def init_ui(self):
@@ -302,4 +305,4 @@ class UI(tk.Toplevel):
         """Close the window."""
         if "stats_dashboard" in self.engine.dict_instances:
             del self.engine.dict_instances["stats_dashboard"]
-        self.destroy()
+        super().on_cancel()

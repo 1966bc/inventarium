@@ -8,41 +8,25 @@ License: GNU GPL v3
 import tkinter as tk
 from tkinter import ttk
 
+from views.parent_view import ParentView
 
-class UI(tk.Toplevel):
 
-    _instance = None
-
-    def __new__(cls, parent, index=None):
-        if cls._instance is not None:
-            try:
-                if cls._instance.winfo_exists():
-                    cls._instance.deiconify()
-                    cls._instance.lift()
-                    cls._instance.after_idle(cls._instance.focus_set)
-                    return cls._instance
-            except Exception:
-                cls._instance = None
-        obj = super().__new__(cls)
-        cls._instance = obj
-        return obj
+class UI(ParentView):
+    """License display window (singleton)."""
 
     def __init__(self, parent):
-        if getattr(self, "_is_init", False):
-            self.parent = parent
+        super().__init__(parent, name="license")
+
+        if self._reusing:
             return
 
-        super().__init__(name="license")
-
-        self.parent = parent
-        self.engine = self.nametowidget(".").engine
         self.attributes("-topmost", True)
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
         self._build_ui()
         self.engine.center_window(self)
-        self._is_init = True
+        self.show()
 
     def _build_ui(self):
         main = ttk.Frame(self, padding=8)
@@ -76,5 +60,5 @@ class UI(tk.Toplevel):
         self.title("License - GNU GPL v3")
 
     def on_cancel(self, _evt=None):
-        type(self)._instance = None
-        self.destroy()
+        """Close the window."""
+        super().on_cancel()
