@@ -607,22 +607,16 @@ class UI(tk.Toplevel):
             generator = BarcodeLabel(self.engine)
             path = generator.generate_label(label_id)
 
-            if path:
-                messagebox.showinfo(
-                    self.engine.app_title,
-                    _("Etichetta generata e inviata alla stampa."),
-                    parent=self
-                )
-            else:
+            if not path:
                 messagebox.showerror(
                     self.engine.app_title,
-                    f"Etichetta {label_id} non trovata!",
+                    _("Etichetta non trovata!"),
                     parent=self
                 )
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore nella generazione dell'etichetta:\n{e}",
+                _("Errore nella generazione dell'etichetta:") + f"\n{e}",
                 parent=self
             )
 
