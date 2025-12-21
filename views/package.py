@@ -13,6 +13,8 @@ from i18n import _
 from tkinter import ttk
 from tkinter import messagebox
 
+from views import package_funding
+
 
 class UI(tk.Toplevel):
     """Dialog for creating or editing a package."""
@@ -40,7 +42,6 @@ class UI(tk.Toplevel):
         self.dict_conservations = {}
         self.dict_categories = {}
         self.dict_locations = {}
-        self.dict_fundings = {}
 
         self.init_ui()
         self.engine.center_window(self)
@@ -82,11 +83,6 @@ class UI(tk.Toplevel):
         ttk.Label(w, text=_("Ubicazione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbLocations = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
         self.cbLocations.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
-
-        r += 1
-        ttk.Label(w, text=_("Fonte:")).grid(row=r, column=0, sticky=tk.W, pady=2)
-        self.cbFundings = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
-        self.cbFundings.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         # Ordinazione
         r += 1
@@ -134,6 +130,10 @@ class UI(tk.Toplevel):
         self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
 
+        self.btnFunding = self.engine.create_button(bf, _("Fonti/Delibere"), self.on_funding)
+        self.btnFunding.pack(side=tk.LEFT, padx=5)
+        self.bind("<Alt-f>", self.on_funding)
+
         self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
@@ -153,7 +153,6 @@ class UI(tk.Toplevel):
         self.set_conservations()
         self.set_categories()
         self.set_locations()
-        self.set_fundings()
 
         product_name = selected_product.get("description", "")
 
@@ -162,6 +161,7 @@ class UI(tk.Toplevel):
             self.selected_package = selected_package
             self.title(f"Modifica Confezione - {product_name}")
             self.set_values()
+            self.btnFunding.config(state=tk.NORMAL)
         else:
             # New package mode
             self.title(f"Nuova Confezione - {product_name}")
@@ -169,6 +169,7 @@ class UI(tk.Toplevel):
             self.pieces_per_label.set(1)
             self.reorder.set(0)
             self.status.set(1)
+            self.btnFunding.config(state=tk.DISABLED)  # No package_id yet
 
         self.cbSuppliers.focus()
 
@@ -259,31 +260,6 @@ class UI(tk.Toplevel):
 
         self.cbLocations["values"] = voices
 
-    def set_fundings(self):
-        """Load funding sources into combobox."""
-        self.dict_fundings = {}
-        voices = []
-
-        # Add "Not assigned" option
-        self.dict_fundings[0] = None
-        voices.append(_("-- Non assegnata --"))
-
-        sql = """SELECT funding_id, code, description
-                 FROM funding_sources
-                 WHERE status = 1
-                 ORDER BY description"""
-
-        rs = self.engine.read(True, sql)
-
-        if rs:
-            for idx, row in enumerate(rs, start=1):
-                self.dict_fundings[idx] = row["funding_id"]
-                code = row["code"] or ""
-                desc = row["description"] or ""
-                voices.append(f"{code} - {desc}")
-
-        self.cbFundings["values"] = voices
-
     def set_values(self):
         """Set form values from selected package."""
         # Set supplier
@@ -326,16 +302,6 @@ class UI(tk.Toplevel):
         except StopIteration:
             self.cbLocations.current(0)
 
-        # Set funding
-        try:
-            key = next(
-                key for key, value in self.dict_fundings.items()
-                if value == self.selected_package.get("funding_id")
-            )
-            self.cbFundings.current(key)
-        except StopIteration:
-            self.cbFundings.current(0)
-
         self.reference.set(self.selected_package.get("reference", ""))
         self.packaging.set(self.selected_package.get("packaging", ""))
         self.order_by_piece.set(self.selected_package.get("order_by_piece", 1))
@@ -350,7 +316,6 @@ class UI(tk.Toplevel):
         conservation_idx = self.cbConservations.current()
         category_idx = self.cbCategories.current()
         location_idx = self.cbLocations.current()
-        funding_idx = self.cbFundings.current()
 
         # Get current labels count (preserve on edit, 0 on new)
         labels = 0
@@ -371,7 +336,7 @@ class UI(tk.Toplevel):
             1 if self.order_by_piece.get() else 0,    # order_by_piece
             self.pieces_per_label.get(),              # pieces_per_label
             self.reorder.get(),                       # reorder
-            self.dict_fundings.get(funding_idx),      # funding_id
+            None,                                     # funding_id (now managed via package_fundings)
         ]
 
     def on_save(self, evt=None):
@@ -441,6 +406,19 @@ class UI(tk.Toplevel):
                 self.engine.abort,
                 parent=self
             )
+
+    def on_funding(self, evt=None):
+        """Open funding sources dialog for this package."""
+        if self.index is None:
+            return  # Can't manage funding for unsaved package
+
+        package_id = self.selected_package.get("package_id")
+        product_name = self.selected_product.get("description", "")
+        packaging = self.selected_package.get("packaging", "")
+
+        # Open package_funding dialog pre-filled with this package
+        obj = package_funding.UI(self, index=None)
+        obj.on_open_for_package(package_id, product_name, packaging)
 
     def on_cancel(self, evt=None):
         """Close the dialog."""

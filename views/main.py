@@ -36,6 +36,10 @@ from views import stats_suppliers
 from views import stats_expiring
 from views import custom_label
 from views import funding_sources
+from views import deliberations
+from views import prices
+from views import package_fundings
+from views import report_fundings
 
 
 class Main(tk.Toplevel):
@@ -141,6 +145,16 @@ class Main(tk.Toplevel):
         m_admin.add_command(label=_("Conservazioni"), underline=0, command=self.on_conservations)
         m_admin.add_command(label=_("Ubicazioni"), underline=0, command=self.on_locations)
         m_admin.add_command(label=_("Fonti Finanziamento"), underline=0, command=self.on_funding_sources)
+
+        # Acquisti menu
+        m_purchases = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label=_("Acquisti"), underline=0, menu=m_purchases)
+        m_purchases.add_command(label=_("Delibere"), underline=0, command=self.on_deliberations)
+        m_purchases.add_command(label=_("Listino Prezzi"), underline=0, command=self.on_prices)
+        m_purchases.add_separator()
+        m_purchases.add_command(label=_("Fonti Package"), underline=0, command=self.on_package_fundings)
+        m_purchases.add_separator()
+        m_purchases.add_command(label=_("Report Fonti"), underline=0, command=self.on_report_fundings)
 
         # Statistiche menu
         m_stats = tk.Menu(menubar, tearoff=0)
@@ -263,6 +277,30 @@ class Main(tk.Toplevel):
     def on_funding_sources(self):
         """Manage funding sources."""
         obj = funding_sources.UI(self)
+        obj.on_open()
+
+    # -------------------------------------------------------------------------
+    # Menu callbacks - Purchases
+    # -------------------------------------------------------------------------
+
+    def on_deliberations(self):
+        """Manage deliberations."""
+        obj = deliberations.UI(self)
+        obj.on_open()
+
+    def on_prices(self):
+        """Manage price list."""
+        obj = prices.UI(self)
+        obj.on_open()
+
+    def on_package_fundings(self):
+        """Manage package funding sources."""
+        obj = package_fundings.UI(self)
+        obj.on_open()
+
+    def on_report_fundings(self):
+        """Show funding sources report."""
+        obj = report_fundings.UI(self)
         obj.on_open()
 
     # -------------------------------------------------------------------------

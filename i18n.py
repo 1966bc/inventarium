@@ -419,6 +419,75 @@ TRANSLATIONS = {
     "No": {"it": "No", "en": "No", "es": "No"},
 
     # ==========================================================================
+    # Menu - Purchases
+    # ==========================================================================
+    "Acquisti": {"it": "Acquisti", "en": "Purchases", "es": "Compras"},
+    "Delibere": {"it": "Delibere", "en": "Deliberations", "es": "Deliberaciones"},
+    "Listino Prezzi": {"it": "Listino Prezzi", "en": "Price List", "es": "Lista de Precios"},
+    "Fonti Package": {"it": "Fonti Package", "en": "Package Sources", "es": "Fuentes de Paquetes"},
+    "Fonti Finanziamento Packages": {"it": "Fonti Finanziamento Packages", "en": "Package Funding Sources", "es": "Fuentes de Financiación de Paquetes"},
+
+    # ==========================================================================
+    # Deliberations view
+    # ==========================================================================
+    "Nuova Delibera": {"it": "Nuova Delibera", "en": "New Deliberation", "es": "Nueva Deliberación"},
+    "Modifica Delibera": {"it": "Modifica Delibera", "en": "Edit Deliberation", "es": "Editar Deliberación"},
+    "Numero:": {"it": "Numero:", "en": "Number:", "es": "Número:"},
+    "Importo:": {"it": "Importo:", "en": "Amount:", "es": "Importe:"},
+    "CIG:": {"it": "CIG:", "en": "CIG:", "es": "CIG:"},
+    "Attiva:": {"it": "Attiva:", "en": "Active:", "es": "Activa:"},
+    "Il campo Numero è obbligatorio!": {"it": "Il campo Numero è obbligatorio!", "en": "Number field is required!", "es": "¡El campo Número es obligatorio!"},
+    "Importo": {"it": "Importo", "en": "Amount", "es": "Importe"},
+    "CIG": {"it": "CIG", "en": "CIG", "es": "CIG"},
+    "Delibera": {"it": "Delibera", "en": "Deliberation", "es": "Deliberación"},
+    "Attive": {"it": "Attive", "en": "Active", "es": "Activas"},
+    "Numero": {"it": "Numero", "en": "Number", "es": "Número"},
+
+    # ==========================================================================
+    # Prices view
+    # ==========================================================================
+    "Nuovo Prezzo": {"it": "Nuovo Prezzo", "en": "New Price", "es": "Nuevo Precio"},
+    "Modifica Prezzo": {"it": "Modifica Prezzo", "en": "Edit Price", "es": "Editar Precio"},
+    "Prezzo:": {"it": "Prezzo:", "en": "Price:", "es": "Precio:"},
+    "Prezzo": {"it": "Prezzo", "en": "Price", "es": "Precio"},
+    "IVA %:": {"it": "IVA %:", "en": "VAT %:", "es": "IVA %:"},
+    "IVA %": {"it": "IVA %", "en": "VAT %", "es": "IVA %"},
+    "Valido dal:": {"it": "Valido dal:", "en": "Valid from:", "es": "Válido desde:"},
+    "Valido dal": {"it": "Valido dal", "en": "Valid from", "es": "Válido desde"},
+    "Il campo Prezzo è obbligatorio!": {"it": "Il campo Prezzo è obbligatorio!", "en": "Price field is required!", "es": "¡El campo Precio es obligatorio!"},
+    "Il campo Valido dal è obbligatorio!": {"it": "Il campo Valido dal è obbligatorio!", "en": "Valid from field is required!", "es": "¡El campo Válido desde es obligatorio!"},
+
+    # ==========================================================================
+    # Package fundings view
+    # ==========================================================================
+    "Nuova Fonte Finanziamento": {"it": "Nuova Fonte Finanziamento", "en": "New Funding Source", "es": "Nueva Fuente de Financiación"},
+    "Modifica Fonte Finanziamento": {"it": "Modifica Fonte Finanziamento", "en": "Edit Funding Source", "es": "Editar Fuente de Financiación"},
+    "Prodotto:": {"it": "Prodotto:", "en": "Product:", "es": "Producto:"},
+    "Package:": {"it": "Package:", "en": "Package:", "es": "Paquete:"},
+    "Fonte Finanziamento:": {"it": "Fonte Finanziamento:", "en": "Funding Source:", "es": "Fuente de Financiación:"},
+    "Selezionare un Package!": {"it": "Selezionare un Package!", "en": "Select a Package!", "es": "¡Seleccione un Paquete!"},
+    "Selezionare una Fonte Finanziamento!": {"it": "Selezionare una Fonte Finanziamento!", "en": "Select a Funding Source!", "es": "¡Seleccione una Fuente de Financiación!"},
+    "Legenda": {"it": "Legenda", "en": "Legend", "es": "Leyenda"},
+    "In Gara": {"it": "In Gara", "en": "In Tender", "es": "En Licitación"},
+    "Economia": {"it": "Economia", "en": "Direct Purchase", "es": "Compra Directa"},
+    "(opzionale - se in gara)": {"it": "(opzionale - se in gara)", "en": "(optional - if in tender)", "es": "(opcional - si en licitación)"},
+    "Fonti/Delibere": {"it": "Fonti/Delibere", "en": "Sources/Delib.", "es": "Fuentes/Delib."},
+    "Cerca Package:": {"it": "Cerca Package:", "en": "Search Package:", "es": "Buscar Paquete:"},
+    "(descrizione o codice)": {"it": "(descrizione o codice)", "en": "(description or code)", "es": "(descripción o código)"},
+    "Risultati:": {"it": "Risultati:", "en": "Results:", "es": "Resultados:"},
+    "Selezionato:": {"it": "Selezionato:", "en": "Selected:", "es": "Seleccionado:"},
+
+    # ==========================================================================
+    # Report Fundings
+    # ==========================================================================
+    "Report Fonti": {"it": "Report Fonti", "en": "Funding Report", "es": "Informe de Fuentes"},
+    "Report Fonti Finanziamento": {"it": "Report Fonti Finanziamento", "en": "Funding Sources Report", "es": "Informe de Fuentes de Financiación"},
+    "Nessun dato da esportare!": {"it": "Nessun dato da esportare!", "en": "No data to export!", "es": "¡No hay datos para exportar!"},
+    "File esportato": {"it": "File esportato", "en": "File exported", "es": "Archivo exportado"},
+    "Errore durante l'esportazione": {"it": "Errore durante l'esportazione", "en": "Error during export", "es": "Error durante la exportación"},
+    "Errore durante esportazione": {"it": "Errore durante esportazione", "en": "Error during export", "es": "Error durante la exportación"},
+
+    # ==========================================================================
     # Settings
     # ==========================================================================
     "Impostazioni Laboratorio": {"it": "Impostazioni Laboratorio", "en": "Laboratory Settings", "es": "Configuración del Laboratorio"},
