@@ -53,7 +53,7 @@ venv\Scripts\activate     # Windows
 
 3. Install dependencies:
 ```bash
-pip install Pillow
+pip install -r requirements.txt
 ```
 
 4. Copy the config file:
