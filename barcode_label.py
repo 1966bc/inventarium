@@ -155,7 +155,7 @@ class BarcodeLabel:
                 expiration = f"{parts[2]}/{parts[1]}/{parts[0]}"
 
         # Get lab name for footer
-        lab_name = self.engine.get_setting("lab_name", "")
+        lab_name = self.engine.get_setting("lab", "")
 
         # Create label image
         image = self._create_label_image(
@@ -248,6 +248,9 @@ class BarcodeLabel:
                 })
                 buffer.seek(0)
                 barcode_img = Image.open(buffer)
+                # Convert to RGB if needed (for paste compatibility)
+                if barcode_img.mode != 'RGB':
+                    barcode_img = barcode_img.convert('RGB')
                 # Resize to fit
                 barcode_img = barcode_img.resize(
                     (self.LABEL_WIDTH - 20, self.BARCODE_HEIGHT),
