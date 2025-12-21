@@ -140,6 +140,18 @@ TRANSLATIONS = {
     "Genera": {"it": "Genera", "en": "Generate", "es": "Generar"},
 
     # ==========================================================================
+    # Package History
+    # ==========================================================================
+    "Storico Ordini": {"it": "Storico Ordini", "en": "Order History", "es": "Historial de Pedidos"},
+    "Data": {"it": "Data", "en": "Date", "es": "Fecha"},
+    "Rif. Richiesta": {"it": "Rif. Richiesta", "en": "Request Ref.", "es": "Ref. Solicitud"},
+    "Ord.": {"it": "Ord.", "en": "Ord.", "es": "Ped."},
+    "Evaso": {"it": "Evaso", "en": "Deliv.", "es": "Entr."},
+    "Righe": {"it": "Righe", "en": "Rows", "es": "Filas"},
+    "Tot. Ord": {"it": "Tot. Ord", "en": "Tot. Ord", "es": "Tot. Ped"},
+    "Tot. Evaso": {"it": "Tot. Evaso", "en": "Tot. Deliv", "es": "Tot. Entr"},
+
+    # ==========================================================================
     # Common labels
     # ==========================================================================
     "Descrizione:": {"it": "Descrizione:", "en": "Description:", "es": "Descripción:"},

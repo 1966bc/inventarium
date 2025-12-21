@@ -37,12 +37,12 @@ class UI(tk.Toplevel):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # History listbox
-        w = ttk.LabelFrame(f0, text="Storico Ordini", style="App.TLabelframe")
+        w = ttk.LabelFrame(f0, text=_("Storico Ordini"), style="App.TLabelframe")
 
         # Header
         header = ttk.Label(
             w,
-            text=f"{'Data':<12} {'Rif. Richiesta':<20} {'Ord.':>5} {'Evaso':>5}",
+            text=f"{_('Data'):<12} {_('Rif. Richiesta'):<20} {_('Ord.'):>5} {_('Evaso'):>5}",
             font=("Courier", 9, "bold")
         )
         header.pack(fill=tk.X, padx=2)
@@ -80,7 +80,7 @@ class UI(tk.Toplevel):
             product_name: Name of the product for title
         """
         self.package_id = package_id
-        self.title(f"Storico - {product_name}")
+        self.title(f"{_('Storico')} - {product_name}")
         self.load_history()
 
     def load_history(self):
@@ -135,7 +135,7 @@ class UI(tk.Toplevel):
                 if delivered >= ordered and ordered > 0:
                     self.lstHistory.itemconfig(idx, fg="gray")
 
-        self.count.set(f"Righe: {self.lstHistory.size()} | Tot. Ord: {total_ordered} | Tot. Evaso: {total_delivered}")
+        self.count.set(f"{_('Righe')}: {self.lstHistory.size()} | {_('Tot. Ord')}: {total_ordered} | {_('Tot. Evaso')}: {total_delivered}")
 
     def on_cancel(self, evt=None):
         """Close the window."""
