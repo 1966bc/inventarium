@@ -100,6 +100,7 @@ class Main(tk.Toplevel):
         m_file.add_command(label=_("Impostazioni"), underline=0, command=self.on_settings)
         m_file.add_command(label=_("Configura Database"), underline=0, command=self.on_config_database)
         m_file.add_command(label=_("Backup Database"), underline=0, command=self.on_backup)
+        m_file.add_command(label=_("Compatta Database"), underline=0, command=self.on_vacuum)
         m_file.add_command(label=_("Log"), underline=0, command=self.on_log)
         m_file.add_separator()
         m_file.add_command(label=_("Etichetta Personalizzata"), underline=0, command=self.on_custom_label)
@@ -452,6 +453,44 @@ class Main(tk.Toplevel):
                     f"Errore durante il backup:\n{e}",
                     parent=self
                 )
+
+    def on_vacuum(self):
+        """Compact the database using VACUUM."""
+        import os
+        import inventarium
+
+        try:
+            db_path = inventarium.load_db_path()
+            size_before = os.path.getsize(db_path)
+
+            # Run VACUUM
+            self.engine.write("VACUUM")
+
+            size_after = os.path.getsize(db_path)
+            saved = size_before - size_after
+
+            # Format sizes for display
+            def fmt_size(s):
+                if s >= 1024 * 1024:
+                    return f"{s / (1024 * 1024):.1f} MB"
+                elif s >= 1024:
+                    return f"{s / 1024:.1f} KB"
+                return f"{s} bytes"
+
+            messagebox.showinfo(
+                self.engine.app_title,
+                f"{_('Database compattato!')}\n\n"
+                f"{_('Prima')}: {fmt_size(size_before)}\n"
+                f"{_('Dopo')}: {fmt_size(size_after)}\n"
+                f"{_('Risparmiato')}: {fmt_size(saved)}",
+                parent=self
+            )
+        except Exception as e:
+            messagebox.showerror(
+                self.engine.app_title,
+                f"{_('Errore durante la compattazione')}:\n{e}",
+                parent=self
+            )
 
     def on_log(self):
         """Open log file."""
