@@ -98,9 +98,14 @@ class Main(tk.Toplevel):
         m_file = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label=_("File"), underline=0, menu=m_file)
         m_file.add_command(label=_("Impostazioni"), underline=0, command=self.on_settings)
-        m_file.add_command(label=_("Configura Database"), underline=0, command=self.on_config_database)
-        m_file.add_command(label=_("Backup Database"), underline=0, command=self.on_backup)
-        m_file.add_command(label=_("Compatta Database"), underline=0, command=self.on_vacuum)
+
+        # Database submenu
+        m_database = tk.Menu(m_file, tearoff=0)
+        m_file.add_cascade(label=_("Database"), underline=0, menu=m_database)
+        m_database.add_command(label=_("Configura"), underline=0, command=self.on_config_database)
+        m_database.add_command(label=_("Backup"), underline=0, command=self.on_backup)
+        m_database.add_command(label=_("Compatta"), underline=0, command=self.on_vacuum)
+
         m_file.add_command(label=_("Log"), underline=0, command=self.on_log)
         m_file.add_separator()
         m_file.add_command(label=_("Etichetta Personalizzata"), underline=0, command=self.on_custom_label)
