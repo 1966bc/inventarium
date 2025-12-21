@@ -610,7 +610,7 @@ class UI(tk.Toplevel):
             if path:
                 messagebox.showinfo(
                     self.engine.app_title,
-                    f_("Etichetta generata e inviata alla stampa."),
+                    _("Etichetta generata e inviata alla stampa."),
                     parent=self
                 )
             else:
