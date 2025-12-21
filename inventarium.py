@@ -21,6 +21,7 @@ from tkinter import filedialog
 from engine import Engine
 from views.main import Main
 from monitor import Monitor
+from i18n import _
 
 __author__ = "1966bc"
 __copyright__ = "Copyleft"
@@ -138,7 +139,7 @@ class ConfigDialog(tk.Toplevel):
         self.parent = parent
         self.result = None
 
-        self.title("Configurazione Database")
+        self.title(_("Configurazione Database"))
         self.transient(parent)
         self.grab_set()
         self.resizable(False, False)
@@ -165,9 +166,9 @@ class ConfigDialog(tk.Toplevel):
         # Message
         msg = ttk.Label(
             frame,
-            text="Configurazione del percorso database.\n\n"
-                 "Selezionare il file database SQLite (.db)\n"
-                 "o inserire manualmente il percorso.",
+            text=_("Configurazione del percorso database.") + "\n\n" +
+                 _("Selezionare il file database SQLite (.db)") + "\n" +
+                 _("o inserire manualmente il percorso."),
             justify=tk.LEFT
         )
         msg.pack(fill=tk.X, pady=(0, 15))
@@ -176,14 +177,14 @@ class ConfigDialog(tk.Toplevel):
         path_frame = ttk.Frame(frame)
         path_frame.pack(fill=tk.X, pady=5)
 
-        ttk.Label(path_frame, text="Percorso:").pack(side=tk.LEFT)
+        ttk.Label(path_frame, text=_("Percorso:")).pack(side=tk.LEFT)
 
         self.entry = ttk.Entry(path_frame, textvariable=self.db_path, width=50)
         self.entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
 
         ttk.Button(
             path_frame,
-            text="Sfoglia...",
+            text=_("Sfoglia..."),
             command=self.on_browse
         ).pack(side=tk.LEFT)
 
@@ -193,7 +194,7 @@ class ConfigDialog(tk.Toplevel):
 
         ttk.Button(
             test_frame,
-            text="Test Connessione",
+            text=_("Test Connessione"),
             command=self.on_test_connection
         ).pack(side=tk.LEFT)
 
@@ -207,14 +208,14 @@ class ConfigDialog(tk.Toplevel):
 
         ttk.Button(
             btn_frame,
-            text="OK",
+            text=_("OK"),
             command=self.on_ok,
             width=10
         ).pack(side=tk.RIGHT, padx=5)
 
         ttk.Button(
             btn_frame,
-            text="Annulla",
+            text=_("Annulla"),
             command=self.on_cancel,
             width=10
         ).pack(side=tk.RIGHT)
@@ -228,7 +229,7 @@ class ConfigDialog(tk.Toplevel):
 
         path = self.db_path.get().strip()
         if not path:
-            self.test_status.set("Inserire un percorso")
+            self.test_status.set(_("Inserire un percorso"))
             self.lbl_status.configure(foreground="red")
             return
 
@@ -239,7 +240,7 @@ class ConfigDialog(tk.Toplevel):
 
         # Check file exists
         if not os.path.exists(check_path):
-            self.test_status.set("File non trovato")
+            self.test_status.set(_("File non trovato"))
             self.lbl_status.configure(foreground="red")
             return
 
@@ -251,7 +252,7 @@ class ConfigDialog(tk.Toplevel):
             # Check if it's a valid Inventarium database by checking for key tables
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='products'")
             if cursor.fetchone() is None:
-                self.test_status.set("Database non valido (tabella products mancante)")
+                self.test_status.set(_("Database non valido"))
                 self.lbl_status.configure(foreground="orange")
                 con.close()
                 return
@@ -262,14 +263,14 @@ class ConfigDialog(tk.Toplevel):
 
             con.close()
 
-            self.test_status.set(f"OK - {count} prodotti trovati")
+            self.test_status.set(f"OK - {count} " + _("prodotti trovati"))
             self.lbl_status.configure(foreground="green")
 
         except sqlite3.Error as e:
-            self.test_status.set(f"Errore: {e}")
+            self.test_status.set(_("Errore") + f": {e}")
             self.lbl_status.configure(foreground="red")
         except Exception as e:
-            self.test_status.set(f"Errore: {e}")
+            self.test_status.set(_("Errore") + f": {e}")
             self.lbl_status.configure(foreground="red")
 
     def on_browse(self):
@@ -278,11 +279,11 @@ class ConfigDialog(tk.Toplevel):
 
         filename = filedialog.askopenfilename(
             parent=self,
-            title="Seleziona Database",
+            title=_("Seleziona Database"),
             initialdir=initial_dir,
             filetypes=[
                 ("SQLite Database", "*.db"),
-                ("Tutti i file", "*.*")
+                (_("Tutti i file"), "*.*")
             ]
         )
 
@@ -295,8 +296,8 @@ class ConfigDialog(tk.Toplevel):
 
         if not path:
             messagebox.showwarning(
-                "Configurazione",
-                "Inserire un percorso valido.",
+                _("Configurazione"),
+                _("Inserire un percorso valido."),
                 parent=self
             )
             return
@@ -308,8 +309,8 @@ class ConfigDialog(tk.Toplevel):
 
         if not os.path.exists(check_path):
             if not messagebox.askyesno(
-                "Configurazione",
-                f"Il file non esiste:\n{check_path}\n\nContinuare comunque?",
+                _("Configurazione"),
+                _("Il file non esiste:") + f"\n{check_path}\n\n" + _("Continuare comunque?"),
                 parent=self
             ):
                 return

@@ -402,7 +402,7 @@ class Main(tk.Toplevel):
         # Show config dialog
         dialog = inventarium.ConfigDialog(self)
         dialog.db_path.set(current_path)
-        dialog.title("Configura Percorso Database")
+        dialog.title(_("Configura Percorso Database"))
         self.wait_window(dialog)
 
         if dialog.result is not None and dialog.result != current_path:
@@ -412,9 +412,9 @@ class Main(tk.Toplevel):
             # Ask to restart
             if messagebox.askyesno(
                 self.engine.app_title,
-                "Percorso database aggiornato.\n\n"
-                "È necessario riavviare l'applicazione per utilizzare il nuovo database.\n\n"
-                "Riavviare ora?",
+                _("Percorso database aggiornato.") + "\n\n" +
+                _("Riavviare l'applicazione per utilizzare il nuovo database.") + "\n\n" +
+                _("Riavviare ora?"),
                 parent=self
             ):
                 self.nametowidget(".").on_exit(silent=True)
