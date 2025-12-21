@@ -241,87 +241,87 @@ INSERT INTO batches (batch_id, package_id, description, expiration, status) VALU
 (17, 18, 'ABT2024A', '2025-08-31', 1);
 
 -- =============================================================================
--- Labels (Stock units)
+-- Labels (Stock units with barcode tick)
 -- =============================================================================
 -- ACN Lot 1 - 3 bottles, 1 used
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(1, '2024-01-15', NULL, 1),
-(1, '2024-01-15', NULL, 1),
-(1, '2024-01-15', '2024-06-20', 0);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(1, '2024-01-15', NULL, 1, 3785862192),
+(1, '2024-01-15', NULL, 1, 1372098375),
+(1, '2024-01-15', '2024-06-20', 0, 6272729586);
 
 -- ACN Lot 2 - 2 bottles in stock
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(2, '2024-03-10', NULL, 1),
-(2, '2024-03-10', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(2, '2024-03-10', NULL, 1, 2655089979),
+(2, '2024-03-10', NULL, 1, 3994891528);
 
 -- MeOH - 2 bottles, 1 used
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(3, '2024-02-01', NULL, 1),
-(3, '2024-02-01', '2024-05-15', 0);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(3, '2024-02-01', NULL, 1, 5244360272),
+(3, '2024-02-01', '2024-05-15', 0, 9306733371);
 
 -- H2O - expiring soon, 1 bottle
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(4, '2024-06-01', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(4, '2024-06-01', NULL, 1, 8590618074);
 
 -- Formic acid - 2 bottles
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(5, '2024-04-01', NULL, 1),
-(5, '2024-04-01', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(5, '2024-04-01', NULL, 1, 5451473070),
+(5, '2024-04-01', NULL, 1, 9351316536);
 
 -- Caffeine std - expired lot + valid lot
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(6, '2024-01-10', NULL, 1),  -- expired
-(7, '2024-09-01', NULL, 1),
-(7, '2024-09-01', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(6, '2024-01-10', NULL, 1, 4127859634),  -- expired
+(7, '2024-09-01', NULL, 1, 7523648190),
+(7, '2024-09-01', NULL, 1, 2846173950);
 
 -- Paracetamol std
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(8, '2024-03-15', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(8, '2024-03-15', NULL, 1, 6391527408);
 
 -- Ibuprofen std
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(9, '2024-05-20', NULL, 1),
-(9, '2024-05-20', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(9, '2024-05-20', NULL, 1, 1947362850),
+(9, '2024-05-20', NULL, 1, 8062419375);
 
 -- C18 column - 1 unit
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(10, '2024-02-01', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(10, '2024-02-01', NULL, 1, 5738294016);
 
 -- HILIC column - 1 unit
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(11, '2024-04-15', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(11, '2024-04-15', NULL, 1, 3095186742);
 
 -- Vials - 3 boxes
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(12, '2024-01-01', NULL, 1),
-(12, '2024-01-01', NULL, 1),
-(12, '2024-01-01', '2024-08-01', 0);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(12, '2024-01-01', NULL, 1, 7284619503),
+(12, '2024-01-01', NULL, 1, 4916285037),
+(12, '2024-01-01', '2024-08-01', 0, 2073958146);
 
 -- Filters - 2 boxes
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(13, '2024-03-01', NULL, 1),
-(13, '2024-03-01', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(13, '2024-03-01', NULL, 1, 8502746391),
+(13, '2024-03-01', NULL, 1, 1638529470);
 
 -- Tips - 4 racks, 1 used
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(14, '2024-02-15', NULL, 1),
-(14, '2024-02-15', NULL, 1),
-(14, '2024-02-15', NULL, 1),
-(14, '2024-02-15', '2024-07-01', 0);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(14, '2024-02-15', NULL, 1, 9471630285),
+(14, '2024-02-15', NULL, 1, 3820516974),
+(14, '2024-02-15', NULL, 1, 6159382740),
+(14, '2024-02-15', '2024-07-01', 0, 2748163095);
 
 -- ChromSystems MMA Kit - 2 units
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(15, '2024-05-10', NULL, 1),
-(15, '2024-05-10', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(15, '2024-05-10', NULL, 1, 5093847261),
+(15, '2024-05-10', NULL, 1, 8371629405);
 
 -- ChromSystems Vit D - 1 unit
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(16, '2024-06-20', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(16, '2024-06-20', NULL, 1, 4628051937);
 
 -- Abbott Control - 2 units
-INSERT INTO labels (batch_id, loaded, unloaded, status) VALUES
-(17, '2024-07-01', NULL, 1),
-(17, '2024-07-01', NULL, 1);
+INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
+(17, '2024-07-01', NULL, 1, 7150493826),
+(17, '2024-07-01', NULL, 1, 2936481570);
 
 -- =============================================================================
 -- Requests (Purchase orders)
