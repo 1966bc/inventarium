@@ -3,3 +3,4 @@
 
 Pillow>=10.0.0
 python-barcode>=0.15.0
+code128>=0.3
