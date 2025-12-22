@@ -155,7 +155,7 @@ class BarcodeLabel:
                 expiration = f"{parts[2]}/{parts[1]}/{parts[0]}"
 
         # Get lab name for footer
-        lab_name = self.engine.get_setting("lab", "")
+        lab_name = self.engine.get_setting("lab_name", "")
 
         # Create label image
         image = self._create_label_image(
@@ -285,7 +285,9 @@ class BarcodeLabel:
                 cons_text += " | Al buio"
             draw.text((40, 188), cons_text, fill=(0, 0, 0), font=footer_font)
 
-        # Draw footer (lab name) at bottom
+        # Draw footer (lab name) at bottom - use parameter or fall back to settings
+        if not footer:
+            footer = self.engine.get_setting("lab_name", "")
         if footer:
             draw.text((40, 210), footer, fill=(0, 0, 0), font=footer_font)
 

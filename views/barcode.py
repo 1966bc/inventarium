@@ -80,18 +80,19 @@ class UI(ParentView):
         if not code:
             return
 
-        # Try to parse as label_id
+        # Try to parse as label tick or label_id
         try:
-            label_id = int(code)
+            code_int = int(code)
         except ValueError:
             self.show_result(_("Codice non valido!"), "red")
             self.clear_entry()
             return
 
-        # Check if label exists and is in stock
+        # Check if label exists by tick (barcode) or label_id
         sql = """
             SELECT
                 lb.label_id,
+                lb.tick,
                 lb.status,
                 p.description AS product_name,
                 b.description AS lot
@@ -99,14 +100,17 @@ class UI(ParentView):
             JOIN batches b ON b.batch_id = lb.batch_id
             JOIN packages pk ON pk.package_id = b.package_id
             JOIN products p ON p.product_id = pk.product_id
-            WHERE lb.label_id = ?
+            WHERE lb.tick = ? OR lb.label_id = ?
         """
-        row = self.engine.read(False, sql, (label_id,))
+        row = self.engine.read(False, sql, (code_int, code_int))
 
         if not row:
-            self.show_result(_("Etichetta") + f" {label_id} " + _("non trovata!"), "red")
+            self.show_result(_("Etichetta") + f" {code} " + _("non trovata!"), "red")
             self.clear_entry()
             return
+
+        # Get the actual label_id for unloading
+        label_id = row["label_id"]
 
         if row["status"] == 0:
             self.show_result(_("Etichetta") + f" {label_id} " + _("già scaricata!"), "orange")

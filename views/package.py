@@ -30,6 +30,7 @@ class UI(ChildView):
         self.packaging = tk.StringVar()
         self.order_by_piece = tk.IntVar(value=1)  # 1=al pezzo, 0=a confezione
         self.pieces_per_label = tk.IntVar(value=1)
+        self.labels_per_unit = tk.IntVar(value=1)
         self.reorder = tk.IntVar(value=0)
         self.in_the_dark = tk.BooleanVar()
         self.status = tk.BooleanVar()
@@ -104,6 +105,13 @@ class UI(ChildView):
         self.spnPiecesPerLabel.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
+        ttk.Label(w, text=_("Etichette per unità:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        self.spnLabelsPerUnit = ttk.Spinbox(
+            w, from_=1, to=100, textvariable=self.labels_per_unit, width=8
+        )
+        self.spnLabelsPerUnit.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+
+        r += 1
         ttk.Label(w, text=_("Soglia riordino:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.spnReorder = ttk.Spinbox(
             w, from_=0, to=1000, textvariable=self.reorder, width=8
@@ -165,6 +173,7 @@ class UI(ChildView):
             self.title(f"Nuova Confezione - {product_name}")
             self.order_by_piece.set(1)
             self.pieces_per_label.set(1)
+            self.labels_per_unit.set(1)
             self.reorder.set(0)
             self.status.set(1)
             self.btnFunding.config(state=tk.DISABLED)  # No package_id yet
@@ -304,6 +313,7 @@ class UI(ChildView):
         self.packaging.set(self.selected_package.get("packaging", ""))
         self.order_by_piece.set(self.selected_package.get("order_by_piece", 1))
         self.pieces_per_label.set(self.selected_package.get("pieces_per_label", 1) or 1)
+        self.labels_per_unit.set(self.selected_package.get("labels_per_unit", 1) or 1)
         self.reorder.set(self.selected_package.get("reorder", 0) or 0)
         self.in_the_dark.set(self.selected_package.get("in_the_dark", 0))
         self.status.set(self.selected_package.get("status", 1))
@@ -334,7 +344,8 @@ class UI(ChildView):
             1 if self.order_by_piece.get() else 0,    # order_by_piece
             self.pieces_per_label.get(),              # pieces_per_label
             self.reorder.get(),                       # reorder
-            None,                                     # funding_id (now managed via package_fundings)
+            None,                                     # funding_id
+            self.labels_per_unit.get(),               # labels_per_unit
         ]
 
     def on_save(self, evt=None):

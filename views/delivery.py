@@ -37,8 +37,10 @@ class UI(ParentView):
         # State variables
         self.batch_mode = tk.IntVar(value=0)  # 0=select existing, 1=create new
         self.quantity = tk.IntVar(value=1)
+        self.labels_count = tk.IntVar(value=1)  # Numero etichette da creare
         self.ddt = tk.StringVar()
         self.new_lot = tk.StringVar()
+        self.print_labels_var = tk.IntVar(value=1)  # 1=stampa automatica attiva
 
         # Display variables (readonly)
         self.product_name = tk.StringVar()
@@ -171,6 +173,15 @@ class UI(ParentView):
             validate="key", validatecommand=vcmd
         )
         self.txt_quantity.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+        # Auto-update labels count when quantity changes
+        self.quantity.trace_add("write", self.on_quantity_changed)
+        r += 1
+        ttk.Label(w, text=_("Etichette:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        self.txt_labels = ttk.Entry(
+            w, textvariable=self.labels_count, width=10,
+            validate="key", validatecommand=vcmd
+        )
+        self.txt_labels.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Batch selection
@@ -200,6 +211,15 @@ class UI(ParentView):
         self.cal_expiration = Calendarium(w, "")
         self.cal_expiration.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         self._set_calendarium_state(self.cal_expiration, False)
+        w.pack(fill=tk.X, padx=5, pady=5)
+
+        # Print options
+        w = ttk.LabelFrame(f2, text=_("Opzioni"), style="App.TLabelframe")
+        ttk.Checkbutton(
+            w, text=_("Stampa etichette"),
+            variable=self.print_labels_var,
+            style="App.TCheckbutton"
+        ).pack(anchor=tk.W, padx=5, pady=5)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         f2.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
@@ -238,6 +258,20 @@ class UI(ParentView):
             self.cb_batches.config(state="disabled")
             self.txt_new_lot.config(state="normal")
             self._set_calendarium_state(self.cal_expiration, True)
+
+    def on_quantity_changed(self, *args):
+        """Auto-calculate labels count when quantity changes."""
+        try:
+            qty = self.quantity.get()
+            if self.selected_item:
+                pieces_per_label = self.selected_item.get("pieces_per_label", 1) or 1
+                labels_per_unit = self.selected_item.get("labels_per_unit", 1) or 1
+                labels = (qty * labels_per_unit) // pieces_per_label
+                if labels < 1:
+                    labels = 1
+                self.labels_count.set(labels)
+        except (tk.TclError, ValueError):
+            pass  # Ignore errors during typing
 
     def on_open(self):
         """Initialize and show the window."""
@@ -329,6 +363,7 @@ class UI(ParentView):
                 s.description AS supplier,
                 pk.packaging,
                 pk.pieces_per_label,
+                pk.labels_per_unit,
                 i.quantity AS ordered,
                 COALESCE(
                     (SELECT SUM(d.quantity) FROM deliveries d WHERE d.item_id = i.item_id AND d.status = 1), 0
@@ -562,10 +597,9 @@ class UI(ParentView):
         if not self.validate_delivery():
             return
 
-        # Calculate number of labels: quantity / pieces_per_label
+        # Get values from form
         qty = self.quantity.get()
-        pieces_per_label = self.selected_item.get("pieces_per_label", 1) or 1
-        labels_to_create = qty // pieces_per_label
+        labels_to_create = self.labels_count.get()
         if labels_to_create < 1:
             labels_to_create = 1
 
@@ -695,19 +729,42 @@ class UI(ParentView):
         ))
 
     def create_labels(self, batch_id, count):
-        """Create N labels for the batch."""
+        """Create N labels for the batch and optionally print them."""
         created = 0
+        label_ids = []
         for _ in range(count):
-            result = self.engine.load_label(batch_id)
-            if result:
+            label_id = self.engine.load_label(batch_id)
+            if label_id:
                 created += 1
+                label_ids.append(label_id)
+        
+        # Print labels if checkbox is checked and labels were created
+        if self.print_labels_var.get() == 1 and label_ids:
+            self.print_labels(label_ids)
+        
         return created
+
+    def print_labels(self, label_ids):
+        """Print barcode labels for the given label IDs."""
+        from barcode_label import BarcodeLabel
+        
+        try:
+            generator = BarcodeLabel(self.engine)
+            for label_id in label_ids:
+                generator.generate_label(label_id)
+        except Exception as e:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Etichette create ma errore nella stampa:") + f"\n{e}",
+                parent=self
+            )
 
     def clear_form(self):
         """Clear delivery form fields."""
         self.ddt.set("")
         self.cal_delivered.set_today()
         self.quantity.set(1)
+        self.labels_count.set(1)
         self.batch_mode.set(0)
         self.new_lot.set("")
         self.cal_expiration.set_today()

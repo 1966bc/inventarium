@@ -78,12 +78,12 @@ class Main(tk.Toplevel):
         toolbar = ttk.Frame(self.main_frame)
 
         buttons = (
-            ("📦", self.on_warehouse),
-            ("🛒", self.on_open_requests),
-            ("🖨", self.on_stocks),
-            ("▮▯▮", self.on_barcode),
-            ("ℹ", self.on_about),
-            ("⏻", self.on_exit),
+            ("▣", self.on_warehouse),       # Giacenze 
+            ("⊕", self.on_open_requests),   # Richieste 
+            ("≡", self.on_stocks),          # Stampa 
+            ("▮▯▮", self.on_barcode),       # Barcode
+            ("ℹ", self.on_about),           # Info
+            ("⏻", self.on_exit),            # Exit
         )
         for text, callback in buttons:
             self.engine.create_button(toolbar, text, callback, width=3).pack(side=tk.TOP, padx=2, pady=2)

@@ -114,7 +114,7 @@ class UI(ChildView):
         msg = _("Caricare {} etichetta?").format(count) if count == 1 else _("Caricare {} etichette?").format(count)
         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
             # Load labels
-            for _ in range(count):
+            for i in range(count):
                 self.engine.load_label(self.batch_id)
 
             # Refresh only labels list
