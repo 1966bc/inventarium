@@ -35,7 +35,7 @@ Inventarium is developed and tested on **Linux Debian 12 (Bookworm)** with Pytho
 
 ### Production Environment
 
-In our laboratory, Inventarium runs on **4 Windows 10 workstations** as a standalone executable compiled with **Nuitka** and **Python 3.7**. The database is shared via network path on a folder called *"Spettri"* (Italian for both "spectra" and "ghosts" - fitting for an analytical chemistry lab where inventory items occasionally... vanish 👻).
+In our laboratory (Mass Spectrometry Lab, Sant'Andrea University Hospital, Rome), Inventarium runs on **4 Windows 10 workstations** as a standalone executable compiled with **Nuitka** and **Python 3.7**. The database is shared via network path on a folder called *"Spettri"* (Italian for both "spectra" and "ghosts" - fitting for a mass spec lab where inventory items occasionally... vanish 👻).
 
 ### Requirements
 
