@@ -31,7 +31,11 @@ Inventarium is designed for small laboratory teams who need a simple, fast, and 
 
 ### Development Platform
 
-Inventarium is developed and tested on **Linux Debian 12 (Bookworm)**. It should work on other Linux distributions, macOS, and Windows, but Debian 12 is the reference platform.
+Inventarium is developed and tested on **Linux Debian 12 (Bookworm)** with Python 3.11+.
+
+### Production Environment
+
+In our laboratory, Inventarium runs on **4 Windows 10 workstations** as a standalone executable compiled with **Nuitka** and **Python 3.7**. The database is shared via network path.
 
 ### Requirements
 
@@ -115,7 +119,9 @@ sqlite3 sql/inventarium.db ".read sql/demo_data.sql"
 
 ## Configuration
 
-Edit `config.ini` to set the database path:
+On first run, if `config.ini` is missing, a configuration dialog will appear to set the database path. The file is then created automatically.
+
+You can also edit `config.ini` manually:
 
 ```ini
 [database]
@@ -149,6 +155,7 @@ path = //server/share/inventarium.db
 ```
 inventarium/
 ├── inventarium.py      # Application entry point
+├── app_config.py       # Configuration constants and functions
 ├── engine.py           # Core engine (combines all mixins)
 ├── dbms.py             # Database layer
 ├── controller.py       # Domain queries
@@ -156,6 +163,7 @@ inventarium/
 ├── i18n.py             # Translations
 ├── views/              # GUI windows
 │   ├── main.py         # Main window
+│   ├── config_dialog.py # First-run configuration
 │   ├── warehouse.py    # Inventory management
 │   ├── products.py     # Product list
 │   └── ...
