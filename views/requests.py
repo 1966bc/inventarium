@@ -52,11 +52,15 @@ class UI(ParentView):
         # Left panel - Lists
         f1 = ttk.Frame(f0)
 
+        # PanedWindow for resizable treeviews (vertical)
+        paned = ttk.PanedWindow(f1, orient=tk.VERTICAL)
+        paned.pack(fill=tk.BOTH, expand=1)
+
         # Requests Treeview
-        w = ttk.LabelFrame(f1, text=_("Richieste"), style="App.TLabelframe")
+        w = ttk.LabelFrame(paned, text=_("Richieste"), style="App.TLabelframe")
 
         cols = ("reference", "date", "count")
-        self.treeRequests = ttk.Treeview(w, columns=cols, show="headings", height=10)
+        self.treeRequests = ttk.Treeview(w, columns=cols, show="headings", height=4)
 
         self.treeRequests.column("reference", width=150, minwidth=100, anchor=tk.W, stretch=True)
         self.treeRequests.heading("reference", text=_("Riferimento"), anchor=tk.W)
@@ -78,13 +82,13 @@ class UI(ParentView):
         self.treeRequests.tag_configure("sent", foreground="blue")
         self.treeRequests.tag_configure("closed", foreground="gray")
 
-        w.pack(fill=tk.BOTH, expand=1, pady=(0, 5))
+        paned.add(w, weight=1)
 
         # Items Treeview (detail)
-        self.lblItems = ttk.LabelFrame(f1, text=_("Dettaglio Richiesta"), style="App.TLabelframe")
+        self.lblItems = ttk.LabelFrame(paned, text=_("Dettaglio Richiesta"), style="App.TLabelframe")
 
         cols = ("product", "supplier", "packaging", "qty")
-        self.treeItems = ttk.Treeview(self.lblItems, columns=cols, show="headings", height=10)
+        self.treeItems = ttk.Treeview(self.lblItems, columns=cols, show="headings", height=4)
 
         self.treeItems.column("product", width=180, minwidth=120, anchor=tk.W, stretch=True)
         self.treeItems.heading("product", text=_("Prodotto"), anchor=tk.W)
@@ -107,50 +111,56 @@ class UI(ParentView):
         self.treeItems.bind("<Double-1>", self.on_edit_item)
         self.treeItems.tag_configure("cancelled", foreground="gray")
 
-        self.lblItems.pack(fill=tk.BOTH, expand=1)
+        paned.add(self.lblItems, weight=1)
 
         f1.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, padx=5, pady=5)
 
         # Right panel - Buttons and filters
         f2 = ttk.Frame(f0)
 
-        # Category filter for adding items
+        # Category filter for adding items (spans 2 columns)
         w = ttk.LabelFrame(f2, text=_("Categoria"), style="App.TLabelframe")
-        self.cbCategories = ttk.Combobox(w, state="readonly", width=15, style="App.TCombobox")
+        self.cbCategories = ttk.Combobox(w, state="readonly", style="App.TCombobox")
         self.cbCategories.pack(fill=tk.X, padx=5, pady=5)
         w.pack(fill=tk.X, padx=5, pady=5)
 
-        # Action buttons
+        # Action buttons (2 columns grid)
         w = ttk.LabelFrame(f2, text=_("Comandi"), style="App.TLabelframe")
         buttons = [
-            (_("Nuova Richiesta"), self.on_add, "<Alt-n>", 0),
-            (_("Modifica Richiesta"), self.on_edit_request, "<Alt-o>", 1),
-            (_("Invia Richiesta"), self.on_send_request, "<Alt-i>", 0),
-            (_("Aggiungi Articolo"), self.on_add_item, "<Alt-a>", 0),
-            (_("Modifica Articolo"), self.on_edit_item, "<Alt-m>", 0),
-            (_("Annulla Articolo"), self.on_cancel_item, "<Alt-u>", 3),
-            (_("Elimina Articolo"), self.on_delete_item, "<Alt-e>", 0),
+            (_("Nuova Rich."), self.on_add, "<Alt-n>", 0),
+            (_("Modifica Rich."), self.on_edit_request, "<Alt-o>", 1),
+            (_("Invia Rich."), self.on_send_request, "<Alt-i>", 0),
+            (_("Agg. Articolo"), self.on_add_item, "<Alt-a>", 0),
+            (_("Mod. Articolo"), self.on_edit_item, "<Alt-m>", 0),
+            (_("Ann. Articolo"), self.on_cancel_item, "<Alt-u>", 3),
+            (_("Elim. Articolo"), self.on_delete_item, "<Alt-e>", 0),
             (_("Stampa"), self.on_print, "<Alt-s>", 0),
-            (_("Chiudi Richiesta"), self.on_close_request, "<Alt-r>", 7),
-            (_("Elimina Richiesta"), self.on_delete_request, "<Alt-x>", 8),
+            (_("Chiudi Rich."), self.on_close_request, "<Alt-r>", 7),
+            (_("Elim. Rich."), self.on_delete_request, "<Alt-x>", 8),
             (_("Aggiorna"), self.on_reset, "<Alt-g>", 1),
             (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
         ]
 
-        for text, cmd, key, ul in buttons:
-            self.engine.create_button(w, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
+        for idx, (text, cmd, key, ul) in enumerate(buttons):
+            row, col = divmod(idx, 2)
+            btn = self.engine.create_button(w, text, cmd, underline=ul)
+            btn.grid(row=row, column=col, sticky=tk.EW, padx=3, pady=2)
             self.bind(key, lambda e, c=cmd: c())
+        w.columnconfigure(0, weight=1)
+        w.columnconfigure(1, weight=1)
         w.pack(fill=tk.X, padx=5, pady=5)
 
-        # Status filter (1=Bozza, 2=Inviata, 0=Chiusa)
+        # Status filter (2 columns)
         w = ttk.LabelFrame(f2, text=_("Stato"), style="App.TLabelframe")
-        for text, value in ((_("Bozze"), 1), (_("Inviate"), 2), (_("Chiuse"), 0), (_("Tutte"), -1)):
+        status_opts = [(_("Bozze"), 1), (_("Inviate"), 2), (_("Chiuse"), 0), (_("Tutte"), -1)]
+        for idx, (text, value) in enumerate(status_opts):
+            row, col = divmod(idx, 2)
             ttk.Radiobutton(
                 w, text=text, variable=self.status,
                 value=value,
                 command=self.on_reset,
                 style="App.TRadiobutton"
-            ).pack(anchor=tk.W, padx=5, pady=2)
+            ).grid(row=row, column=col, sticky=tk.W, padx=5, pady=2)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         f2.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
