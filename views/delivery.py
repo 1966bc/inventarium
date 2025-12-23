@@ -68,8 +68,17 @@ class UI(ParentView):
         f0 = ttk.Frame(self, padding=8)
         f0.pack(fill=tk.BOTH, expand=1)
 
+        # Column 3 - Buttons (fixed, pack first)
+        f3 = ttk.Frame(f0)
+        f3.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+
+        # PanedWindow for resizable panels
+        paned = ttk.PanedWindow(f0, orient=tk.HORIZONTAL)
+        paned.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
+
         # Column 1 - Lists (two treeviews stacked)
-        f1 = ttk.Frame(f0)
+        f1 = ttk.Frame(paned)
+        paned.add(f1, weight=1)
 
         # Requests Treeview
         w = ttk.LabelFrame(f1, text=_("Richieste Aperte"), style="App.TLabelframe")
@@ -122,10 +131,9 @@ class UI(ParentView):
 
         self.lbfItems.pack(fill=tk.BOTH, expand=1)
 
-        f1.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, padx=5, pady=5)
-
         # Column 2 - Forms (three LabelFrames stacked)
-        f2 = ttk.Frame(f0)
+        f2 = ttk.Frame(paned)
+        paned.add(f2, weight=0)
 
         # Item details (readonly)
         w = ttk.LabelFrame(f2, text=_("Dettaglio Articolo"), style="App.TLabelframe")
@@ -224,20 +232,17 @@ class UI(ParentView):
         ).pack(anchor=tk.W, padx=5, pady=5)
         w.pack(fill=tk.X, padx=5, pady=5)
 
-        f2.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
-
-        # Column 3 - Buttons
-        f3 = ttk.Frame(f0)
+        # Buttons (f3 already created at top)
+        w = ttk.LabelFrame(f3, text=_("Comandi"), style="App.TLabelframe")
         buttons = [
             (_("Salva"), self.on_save, "<Alt-s>", 0),
             (_("Aggiorna"), self.refresh, "<Alt-a>", 0),
             (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
         ]
         for text, cmd, key, ul in buttons:
-            self.engine.create_button(f3, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
+            self.engine.create_button(w, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
             self.bind(key, lambda e, c=cmd: c())
-
-        f3.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
+        w.pack(fill=tk.X, padx=5, pady=5)
 
         # Keyboard shortcuts
         self.bind("<Escape>", lambda e: self.on_cancel())

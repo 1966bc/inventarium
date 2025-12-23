@@ -78,6 +78,11 @@ class Tools:
                         padding=8,
                         relief=tk.GROOVE)
 
+        style.configure("App.TFrame",
+                        background=bg_color,
+                        padding=8,
+                        relief=tk.GROOVE)
+
         style.configure("App.TRadiobutton",
                         background=bg_color,
                         padding=4,

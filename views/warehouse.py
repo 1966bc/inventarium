@@ -58,9 +58,17 @@ class UI(ParentView):
         f0 = ttk.Frame(self, padding=8)
         f0.pack(fill=tk.BOTH, expand=1)
 
+        # Right panel first (fixed) - Search and buttons
+        f3 = ttk.Frame(f0, style="App.TFrame")
+        f3.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
+
+        # PanedWindow for resizable data panels
+        paned = ttk.PanedWindow(f0, orient=tk.HORIZONTAL)
+        paned.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, pady=5)
+
         # Left panel - Categories and Products
-        f1 = ttk.Frame(f0, relief=tk.GROOVE, padding=8)
-        f1.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, padx=5, pady=5)
+        f1 = ttk.Frame(paned, style="App.TFrame")
+        paned.add(f1, weight=1)
 
         # Categories combobox
         w = ttk.LabelFrame(f1, text=_("Categorie"), style="App.TLabelframe")
@@ -96,8 +104,8 @@ class UI(ParentView):
         self.lbfProducts.pack(side=tk.TOP, fill=tk.BOTH, expand=1, pady=5)
 
         # Center panel - Batches and Labels
-        f2 = ttk.Frame(f0, relief=tk.GROOVE, padding=8)
-        f2.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, padx=5, pady=5)
+        f2 = ttk.Frame(paned, style="App.TFrame")
+        paned.add(f2, weight=1)
 
         # Batches Treeview
         self.lbfBatches = ttk.LabelFrame(f2, text=_("Lotti"), style="App.TLabelframe")
@@ -149,11 +157,7 @@ class UI(ParentView):
 
         self.lbfLabels.pack(side=tk.TOP, fill=tk.BOTH, expand=1, pady=5)
 
-        # Right panel - Search and buttons
-        f3 = ttk.Frame(f0, relief=tk.GROOVE, padding=8)
-        f3.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
-
-        # Search
+        # Search (f3 already created at top)
         w = ttk.LabelFrame(f3, text=_("Ricerca"), style="App.TLabelframe")
         self.txSearch = ttk.Entry(w, width=15, textvariable=self.search_var)
         self.txSearch.bind("<Return>", self.on_search)
@@ -166,6 +170,7 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Buttons
+        w = ttk.LabelFrame(f3, text=_("Comandi"), style="App.TLabelframe")
         buttons = [
             (_("Aggiorna"), self.on_refresh, "<Alt-a>", 0),
             (_("Dettagli"), self.on_details, "<Alt-d>", 0),
@@ -176,8 +181,9 @@ class UI(ParentView):
         ]
 
         for text, cmd, key, ul in buttons:
-            self.engine.create_button(f3, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
+            self.engine.create_button(w, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
             self.bind(key, lambda e, c=cmd: c())
+        w.pack(fill=tk.X, padx=5, pady=5)
 
         # Label action options
         w = ttk.LabelFrame(f3, text=_("Azione etichetta"), style="App.TLabelframe")

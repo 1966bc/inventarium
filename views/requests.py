@@ -121,6 +121,7 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Action buttons
+        w = ttk.LabelFrame(f2, text=_("Comandi"), style="App.TLabelframe")
         buttons = [
             (_("Nuova Richiesta"), self.on_add, "<Alt-n>", 0),
             (_("Modifica Richiesta"), self.on_edit_request, "<Alt-o>", 1),
@@ -137,8 +138,9 @@ class UI(ParentView):
         ]
 
         for text, cmd, key, ul in buttons:
-            self.engine.create_button(f2, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
+            self.engine.create_button(w, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
             self.bind(key, lambda e, c=cmd: c())
+        w.pack(fill=tk.X, padx=5, pady=5)
 
         # Status filter (1=Bozza, 2=Inviata, 0=Chiusa)
         w = ttk.LabelFrame(f2, text=_("Stato"), style="App.TLabelframe")
