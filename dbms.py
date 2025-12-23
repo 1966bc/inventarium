@@ -252,6 +252,52 @@ class DBMS:
                 caller = f.f_back.f_code.co_name if f and f.f_back else "<top>"
                 self.on_log(function, e, type(e), sys.modules[__name__], caller)
 
+    @staticmethod
+    def test_connection(db_path: str) -> Tuple[bool, str, int]:
+        """
+        Test if db_path is a valid Inventarium database.
+
+        Used by ConfigDialog before Engine exists.
+
+        Args:
+            db_path: Path to the SQLite database file
+
+        Returns:
+            Tuple of (success, message, product_count)
+            - success: True if connection successful and DB is valid
+            - message: Status message (error or success info)
+            - product_count: Number of products found (0 if failed)
+        """
+        import os
+
+        if not os.path.exists(db_path):
+            return False, "file_not_found", 0
+
+        try:
+            con = sqlite3.connect(db_path)
+            cursor = con.cursor()
+
+            # Check if it's a valid Inventarium database
+            cursor.execute(
+                "SELECT name FROM sqlite_master "
+                "WHERE type='table' AND name='products'"
+            )
+            if cursor.fetchone() is None:
+                con.close()
+                return False, "invalid_database", 0
+
+            # Count products as a simple test
+            cursor.execute("SELECT COUNT(*) FROM products")
+            count = cursor.fetchone()[0]
+            con.close()
+
+            return True, "ok", count
+
+        except sqlite3.Error as e:
+            return False, str(e), 0
+        except Exception as e:
+            return False, str(e), 0
+
     def _validate_sql_identifier(self, identifier: str, identifier_type: str = "identifier") -> None:
         """
         Validate SQL identifier (table/column name) to prevent SQL injection.

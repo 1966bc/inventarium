@@ -34,6 +34,7 @@ from tools import Tools
 from dbms import DBMS
 from controller import Controller
 from launcher import Launcher
+from app_config import APP_ICON
 from i18n import set_language, _
 
 APP_TITLE = "Inventarium"
@@ -267,23 +268,7 @@ class Engine(DBMS, Controller, Tools, Launcher):
 
     def get_icon(self) -> str:
         """Return embedded application icon as base64 PNG."""
-        return (
-            "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAC1klEQVR4nO2dQVLjMBQFwxS3"
-            "YS7AbODozAYuAOdhVlBMYtmSreRLv7tXUGDj8FpP3xQVn04iIiJC5K73CV8eHz57n1P+5/nt"
-            "o1tuXU5k6HEcleHQwQY/DntF2HWQwY9Lqwi/Wn+A4Y9Naz5NAhj+HLTkVC2A4c9FbV5VAhj+"
-            "nNTktimA4c/NVn6rAhh+DtZybL4LkFwUBXD156KUpw0AZ1EAV39OlnK1AeAoAJwLAaz/3Jzn"
-            "awPAUQA499EXEMnT6/v3x3///A68kjiwDfAz/KXPKeAaYC3or6+R2gDVALWrnNQGiAbYEyil"
-            "DVI3wNPrezH882BLQa+dIwMpBdgKrRT22mrPKkKqLWAroJo6//qe0rmybQ1pGmBrxbcGtnVM"
-            "ljaYvgH2VH0La42QoQ2mFeDawZfOmU2E6baAvQNeL7INitM0QI8BrxeZBsUpGqD3gNeLDIPi"
-            "0A0QWfUtzDwfDCnALMGfM6MIQ20B0QNeL2YaFC/eTCDifwJH+oXcmgipf76JRHgDkMM/neJf"
-            "f9gMEP3CRyJyPri5AAZfJkKE8C1AYlEAOAoAJ/wPQbPc21+TyLnIBoCjAHAUAI4CwFEAOAoA"
-            "RwHgKAAcBYCjAHAUAI4CwFEAOAoARwHgKAAcBYCjAHAUAI4CwFEAOAoARwHgKAAcBYCjAHAU"
-            "AI4CwFEAOAoARwHgKAAcBYCjAHAUAI4CwFEAOAoARwHgKAAcBYCjAHAUAI4CwFEAOAoARwHg"
-            "KAAcBYAT/sQQnyIWiw0ARwHgKACcm88APiVsLGwAOAoARwHgKAAcBYCjAHAUAM6FAM9vH3cR"
-            "FyK34TxfGwCOAsBZFMBtICdLudoAcIoC2AK5KOVpA8BZFcAWyMFajpsNoARzs5Vf1RagBHNS"
-            "k1v1DKAEc1GbV9MQqARz0JJT812AEoxNaz6Hwnx5fPg8crz0Y+/C7LKaFSGOo43cvc6V4fq4"
-            "DYuISAf+AcyfAPRv+BokAAAAAElFTkSuQmCC"
-        )
+        return APP_ICON
 
     def get_entry_width(self) -> int:
         """Return standard entry width for forms."""
