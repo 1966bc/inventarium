@@ -13,7 +13,9 @@ from tkinter import messagebox
 
 from i18n import _
 from views.parent_view import ParentView
+from views import request
 from views import request_item
+from views import item_cancel
 
 
 class UI(ParentView):
@@ -72,6 +74,8 @@ class UI(ParentView):
 
         self.treeRequests.bind("<<TreeviewSelect>>", self.on_request_selected)
         self.treeRequests.bind("<Double-1>", self.on_add_item)
+        self.treeRequests.tag_configure("draft", foreground="black")
+        self.treeRequests.tag_configure("sent", foreground="blue")
         self.treeRequests.tag_configure("closed", foreground="gray")
 
         w.pack(fill=tk.BOTH, expand=1, pady=(0, 5))
@@ -101,6 +105,7 @@ class UI(ParentView):
 
         self.treeItems.bind("<<TreeviewSelect>>", self.on_item_selected)
         self.treeItems.bind("<Double-1>", self.on_edit_item)
+        self.treeItems.tag_configure("cancelled", foreground="gray")
 
         self.lblItems.pack(fill=tk.BOTH, expand=1)
 
@@ -118,8 +123,11 @@ class UI(ParentView):
         # Action buttons
         buttons = [
             (_("Nuova Richiesta"), self.on_add, "<Alt-n>", 0),
+            (_("Modifica Richiesta"), self.on_edit_request, "<Alt-o>", 1),
+            (_("Invia Richiesta"), self.on_send_request, "<Alt-i>", 0),
             (_("Aggiungi Articolo"), self.on_add_item, "<Alt-a>", 0),
             (_("Modifica Articolo"), self.on_edit_item, "<Alt-m>", 0),
+            (_("Annulla Articolo"), self.on_cancel_item, "<Alt-u>", 3),
             (_("Elimina Articolo"), self.on_delete_item, "<Alt-e>", 0),
             (_("Stampa"), self.on_print, "<Alt-s>", 0),
             (_("Chiudi Richiesta"), self.on_close_request, "<Alt-r>", 7),
@@ -132,9 +140,9 @@ class UI(ParentView):
             self.engine.create_button(f2, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
             self.bind(key, lambda e, c=cmd: c())
 
-        # Status filter
+        # Status filter (1=Bozza, 2=Inviata, 0=Chiusa)
         w = ttk.LabelFrame(f2, text=_("Stato"), style="App.TLabelframe")
-        for text, value in ((_("Aperte"), 1), (_("Chiuse"), 0), (_("Tutte"), -1)):
+        for text, value in ((_("Bozze"), 1), (_("Inviate"), 2), (_("Chiuse"), 0), (_("Tutte"), -1)):
             ttk.Radiobutton(
                 w, text=text, variable=self.status,
                 value=value,
@@ -200,7 +208,7 @@ class UI(ParentView):
         args = []
         status_val = self.status.get()
 
-        if status_val in (0, 1):
+        if status_val in (0, 1, 2):
             sql += " WHERE r.status = ?"
             args.append(status_val)
 
@@ -223,8 +231,13 @@ class UI(ParentView):
                 ref = row["reference"] or ""
                 count = row["items_count"]
 
-                # Tag for closed requests
-                tag = ("closed",) if row["status"] == 0 else ()
+                # Tag based on status: 0=closed, 1=draft, 2=sent
+                if row["status"] == 0:
+                    tag = ("closed",)
+                elif row["status"] == 2:
+                    tag = ("sent",)
+                else:
+                    tag = ("draft",)
 
                 self.treeRequests.insert(
                     "", tk.END,
@@ -258,17 +271,20 @@ class UI(ParentView):
         sql = """
             SELECT
                 i.item_id,
+                i.request_id,
                 p.description AS product,
                 s.description AS supplier,
                 pk.packaging,
-                i.quantity
+                i.quantity,
+                i.status,
+                i.note
             FROM items i
             INNER JOIN packages pk ON pk.package_id = i.package_id
             INNER JOIN products p ON p.product_id = pk.product_id
             INNER JOIN suppliers s ON s.supplier_id = pk.supplier_id
             WHERE i.request_id = ?
-            AND i.status = 1
-            ORDER BY p.description
+            AND i.status IN (1, 2)
+            ORDER BY i.status, p.description
         """
 
         rs = self.engine.read(True, sql, (request_id,))
@@ -278,15 +294,24 @@ class UI(ParentView):
                 item_id = row["item_id"]
                 self.dict_items[item_id] = row
 
+                # Tag for cancelled items
+                tag = ("cancelled",) if row["status"] == 2 else ()
+
+                # Show note in product column for cancelled items
+                product = row["product"] or ""
+                if row["status"] == 2 and row.get("note"):
+                    product = f"[{_('Annullato')}] {product}"
+
                 self.treeItems.insert(
                     "", tk.END,
                     iid=item_id,
                     values=(
-                        row["product"] or "",
+                        product,
                         row["supplier"] or "",
                         row["packaging"] or "",
                         row["quantity"]
-                    )
+                    ),
+                    tags=tag
                 )
 
     def on_item_selected(self, evt=None):
@@ -295,6 +320,15 @@ class UI(ParentView):
         if selection:
             item_id = int(selection[0])
             self.selected_item = self.engine.get_selected("items", "item_id", item_id)
+            item_data = self.dict_items.get(item_id)
+
+            # Update label with note if item is cancelled
+            ref = self.selected_request.get("reference", "") if self.selected_request else ""
+            if item_data and item_data.get("status") == 2:
+                note = item_data.get("note", "")
+                self.lblItems.config(text=f"Dettaglio: {ref} - {_('Nota')}: {note}")
+            else:
+                self.lblItems.config(text=f"Dettaglio: {ref}")
 
     def on_add(self, evt=None):
         """Add new request."""
@@ -326,20 +360,81 @@ class UI(ParentView):
                 self.treeRequests.see(last_id)
                 self.on_request_selected()
 
+    def on_edit_request(self, evt=None):
+        """Edit selected request (date and reference)."""
+        if self.selected_request is None:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Selezionare prima una richiesta!"),
+                parent=self
+            )
+            return
+
+        if self.selected_request["status"] != 1:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Solo le bozze possono essere modificate!"),
+                parent=self
+            )
+            return
+
+        self.engine.close_instance("request")
+        self.obj = request.UI(self)
+        self.obj.on_open(self.selected_request)
+
+    def on_send_request(self, evt=None):
+        """Send selected request (change status from draft to sent)."""
+        if self.selected_request is None:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Selezionare prima una richiesta!"),
+                parent=self
+            )
+            return
+
+        if self.selected_request["status"] != 1:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Solo le bozze possono essere inviate!"),
+                parent=self
+            )
+            return
+
+        # Check if request has items
+        request_id = self.selected_request["request_id"]
+        sql = "SELECT COUNT(*) as cnt FROM items WHERE request_id = ? AND status = 1"
+        result = self.engine.read(False, sql, (request_id,))
+        if not result or result["cnt"] == 0:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Impossibile inviare una richiesta senza articoli!"),
+                parent=self
+            )
+            return
+
+        if messagebox.askyesno(
+            self.engine.app_title,
+            _("Inviare la richiesta selezionata?"),
+            parent=self
+        ):
+            sql = "UPDATE requests SET status = 2 WHERE request_id = ?"
+            self.engine.write(sql, (request_id,))
+            self.refresh_request_list()
+
     def on_add_item(self, evt=None):
         """Add item to selected request."""
         if self.selected_request is None:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare prima una richiesta!",
+                _("Selezionare prima una richiesta!"),
                 parent=self
             )
             return
 
-        if self.selected_request["status"] == 0:
+        if self.selected_request["status"] != 1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Impossibile aggiungere articoli.\nLa richiesta è chiusa!",
+                _("Articoli modificabili solo nelle bozze!"),
                 parent=self
             )
             return
@@ -358,23 +453,35 @@ class UI(ParentView):
         if self.selected_request is None:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare prima una richiesta!",
+                _("Selezionare prima una richiesta!"),
                 parent=self
             )
             return
 
-        if self.selected_request["status"] == 0:
+        if self.selected_request["status"] != 1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Impossibile modificare articoli.\nLa richiesta è chiusa!",
+                _("Articoli modificabili solo nelle bozze!"),
                 parent=self
             )
             return
 
         selection = self.treeItems.selection()
         if selection:
-            self.engine.close_instance("request_item")
             item_id = int(selection[0])
+            item_data = self.dict_items.get(item_id)
+
+            # Check if item is cancelled
+            if item_data and item_data.get("status") == 2:
+                note = item_data.get("note", "")
+                messagebox.showinfo(
+                    self.engine.app_title,
+                    _("Articolo annullato.") + f"\n\n{_('Motivo')}: {note}",
+                    parent=self
+                )
+                return
+
+            self.engine.close_instance("request_item")
             self.selected_item = self.engine.get_selected("items", "item_id", item_id)
             self.obj = request_item.UI(self, index=item_id)
             self.obj.on_open(self.selected_request, self.selected_item)
@@ -390,15 +497,15 @@ class UI(ParentView):
         if self.selected_request is None:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare prima una richiesta!",
+                _("Selezionare prima una richiesta!"),
                 parent=self
             )
             return
 
-        if self.selected_request["status"] == 0:
+        if self.selected_request["status"] != 1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Impossibile eliminare articoli.\nLa richiesta è chiusa!",
+                _("Articoli eliminabili solo nelle bozze!"),
                 parent=self
             )
             return
@@ -406,6 +513,16 @@ class UI(ParentView):
         selection = self.treeItems.selection()
         if selection:
             item_id = int(selection[0])
+            item_data = self.dict_items.get(item_id)
+
+            # Check if item is cancelled
+            if item_data and item_data.get("status") == 2:
+                messagebox.showwarning(
+                    self.engine.app_title,
+                    _("Impossibile eliminare un articolo annullato."),
+                    parent=self
+                )
+                return
 
             if messagebox.askyesno(
                 self.engine.app_title,
@@ -424,6 +541,54 @@ class UI(ParentView):
                 parent=self
             )
 
+    def on_cancel_item(self, evt=None):
+        """Cancel selected item with a note."""
+        if self.selected_request is None:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Selezionare prima una richiesta!"),
+                parent=self
+            )
+            return
+
+        if self.selected_request["status"] != 2:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Articoli annullabili solo nelle richieste inviate!"),
+                parent=self
+            )
+            return
+
+        selection = self.treeItems.selection()
+        if not selection:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Selezionare un articolo!"),
+                parent=self
+            )
+            return
+
+        item_id = int(selection[0])
+        item_data = self.dict_items.get(item_id)
+
+        if not item_data:
+            return
+
+        # Check if already cancelled
+        if item_data.get("status") == 2:
+            messagebox.showinfo(
+                self.engine.app_title,
+                _("L'articolo è già stato annullato."),
+                parent=self
+            )
+            return
+
+        product_name = item_data.get("product", "")
+
+        self.engine.close_instance("item_cancel")
+        self.obj = item_cancel.UI(self)
+        self.obj.on_open(item_data, product_name)
+
     def refresh_request_list(self):
         """Refresh only the requests list keeping selection."""
         if self.selected_request:
@@ -440,7 +605,7 @@ class UI(ParentView):
         if self.selected_request is None:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare prima una richiesta!",
+                _("Selezionare prima una richiesta!"),
                 parent=self
             )
             return
@@ -448,14 +613,22 @@ class UI(ParentView):
         if self.selected_request["status"] == 0:
             messagebox.showinfo(
                 self.engine.app_title,
-                "La richiesta è già chiusa!",
+                _("La richiesta è già chiusa!"),
+                parent=self
+            )
+            return
+
+        if self.selected_request["status"] == 1:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Le bozze non possono essere chiuse.") + "\n" + _("Inviarle prima o eliminarle."),
                 parent=self
             )
             return
 
         if messagebox.askyesno(
             self.engine.app_title,
-            "Chiudere la richiesta selezionata?",
+            _("Chiudere la richiesta selezionata?"),
             parent=self
         ):
             pk = self.selected_request["request_id"]

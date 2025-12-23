@@ -91,6 +91,8 @@ class UI(ParentView):
         self.treeRequests.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         sb.pack(side=tk.RIGHT, fill=tk.Y)
 
+        self.treeRequests.tag_configure("sent", foreground="blue")
+
         self.treeRequests.bind("<<TreeviewSelect>>", self.on_request_selected)
 
         w.pack(fill=tk.BOTH, expand=1, pady=(0, 5))
@@ -282,7 +284,7 @@ class UI(ParentView):
         self.load_requests()
 
     def load_requests(self):
-        """Load open requests that have pending items."""
+        """Load sent requests that have pending items."""
         # Clear treeviews
         for item in self.treeRequests.get_children():
             self.treeRequests.delete(item)
@@ -298,7 +300,7 @@ class UI(ParentView):
                 ) THEN 1 END) AS pending_items
             FROM requests r
             INNER JOIN items i ON i.request_id = r.request_id AND i.status = 1
-            WHERE r.status = 1
+            WHERE r.status = 2
             GROUP BY r.request_id
             HAVING pending_items > 0
             ORDER BY r.issued DESC
@@ -326,7 +328,8 @@ class UI(ParentView):
                 self.treeRequests.insert(
                     "", tk.END,
                     iid=request_id,
-                    values=(ref, issued, row["pending_items"])
+                    values=(ref, issued, row["pending_items"]),
+                    tags=("sent",)
                 )
 
         # Clear dependent lists
@@ -760,9 +763,10 @@ class UI(ParentView):
             )
 
     def clear_form(self):
-        """Clear delivery form fields."""
-        self.ddt.set("")
-        self.cal_delivered.set_today()
+        """Clear form fields (keeps DDT and delivery date for multiple deliveries)."""
+        # Don't reset DDT and delivery date for multiple deliveries
+        # self.ddt.set("")
+        # self.cal_delivered.set_today()
         self.quantity.set(1)
         self.labels_count.set(1)
         self.batch_mode.set(0)

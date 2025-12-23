@@ -41,23 +41,23 @@ class UI(ChildView):
         w = ttk.Frame(self, padding=10)
         w.pack(fill=tk.BOTH, expand=1)
 
-        entry_width = self.engine.get_entry_width()
+        combo_width = 50  # Wider for long product names
 
         r = 0
         ttk.Label(w, text=_("Categoria:")).grid(row=r, column=0, sticky=tk.W, pady=2)
-        self.cbCategories = ttk.Combobox(w, state="readonly", width=entry_width, style="App.TCombobox")
+        self.cbCategories = ttk.Combobox(w, state="readonly", width=combo_width, style="App.TCombobox")
         self.cbCategories.bind("<<ComboboxSelected>>", self.on_category_selected)
         self.cbCategories.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
         ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
-        self.cbProducts = ttk.Combobox(w, state="readonly", width=entry_width, style="App.TCombobox")
+        self.cbProducts = ttk.Combobox(w, state="readonly", width=combo_width, style="App.TCombobox")
         self.cbProducts.bind("<<ComboboxSelected>>", self.on_product_selected)
         self.cbProducts.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
         ttk.Label(w, text=_("Confezione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
-        self.cbPackages = ttk.Combobox(w, state="readonly", width=entry_width, style="App.TCombobox")
+        self.cbPackages = ttk.Combobox(w, state="readonly", width=combo_width, style="App.TCombobox")
         self.cbPackages.bind("<<ComboboxSelected>>", self.on_package_selected)
         self.cbPackages.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -82,32 +82,41 @@ class UI(ChildView):
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
-        # History listbox
+        # History treeview
         r += 1
         self.lbfHistory = ttk.LabelFrame(w, text=_("Storico Ordini"), style="App.TLabelframe")
         self.lbfHistory.grid(row=r, column=0, columnspan=2, sticky=tk.NSEW, pady=(10, 0))
 
-        # Header for history
-        header_text = f"{_('Data'):<12} {_('Riferimento'):<15} {_('Ord'):>4} {_('Eva'):>4}"
-        header = ttk.Label(
+        # Treeview with columns
+        columns = ("date", "reference", "ordered", "delivered")
+        self.trvHistory = ttk.Treeview(
             self.lbfHistory,
-            text=header_text,
-            font=("Courier", 9, "bold")
-        )
-        header.pack(fill=tk.X, padx=2)
-
-        scrollbar = ttk.Scrollbar(self.lbfHistory, orient=tk.VERTICAL)
-        self.lstHistory = tk.Listbox(
-            self.lbfHistory,
+            columns=columns,
+            show="headings",
             height=6,
-            font=("Courier", 9),
-            fg="black",
-            selectmode=tk.SINGLE,
-            yscrollcommand=scrollbar.set
+            selectmode="browse"
         )
-        scrollbar.config(command=self.lstHistory.yview)
-        self.lstHistory.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+
+        # Configure columns
+        self.trvHistory.heading("date", text=_("Data"))
+        self.trvHistory.heading("reference", text=_("Riferimento"))
+        self.trvHistory.heading("ordered", text=_("Ord"))
+        self.trvHistory.heading("delivered", text=_("Eva"))
+
+        self.trvHistory.column("date", width=90, anchor=tk.W)
+        self.trvHistory.column("reference", width=120, anchor=tk.W)
+        self.trvHistory.column("ordered", width=50, anchor=tk.CENTER)
+        self.trvHistory.column("delivered", width=50, anchor=tk.CENTER)
+
+        # Scrollbar
+        scrollbar = ttk.Scrollbar(self.lbfHistory, orient=tk.VERTICAL, command=self.trvHistory.yview)
+        self.trvHistory.configure(yscrollcommand=scrollbar.set)
+
+        self.trvHistory.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Tag for completed orders (gray)
+        self.trvHistory.tag_configure("completed", foreground="gray")
 
         # Make the history row expandable
         w.rowconfigure(r, weight=1)
@@ -174,7 +183,8 @@ class UI(ChildView):
             # Clear packages and history when category changes
             self.cbPackages["values"] = []
             self.cbPackages.set("")
-            self.lstHistory.delete(0, tk.END)
+            for item in self.trvHistory.get_children():
+                self.trvHistory.delete(item)
             self.lbfHistory.config(text=_("Storico Ordini"))
 
     def set_products(self, category_id):
@@ -246,7 +256,9 @@ class UI(ChildView):
 
     def load_history(self, package_id):
         """Load order history for selected package."""
-        self.lstHistory.delete(0, tk.END)
+        # Clear existing items
+        for item in self.trvHistory.get_children():
+            self.trvHistory.delete(item)
 
         # Query with ordered quantity and delivered (labels generated)
         sql = """
@@ -268,8 +280,8 @@ class UI(ChildView):
         rs = self.engine.read(True, sql, (package_id,))
 
         if rs:
-            for idx, row in enumerate(rs):
-                # Format date
+            for row in rs:
+                # Format date (YYYY-MM-DD to DD-MM-YYYY)
                 issued = row["issued"] or ""
                 if issued and "-" in issued:
                     parts = issued.split("-")
@@ -278,22 +290,20 @@ class UI(ChildView):
 
                 ordered = row["ordered"] or 0
                 delivered = row["delivered"] or 0
+                reference = row["reference"] or ""
 
-                # Format line
-                date_str = issued[:12].ljust(12)
-                ref = (row["reference"] or "")[:15].ljust(15)
-                ord_str = str(ordered).rjust(4)
-                eva_str = str(delivered).rjust(4)
+                # Determine tag for completed orders
+                tags = ("completed",) if delivered >= ordered and ordered > 0 else ()
 
-                line = f"{date_str} {ref} {ord_str} {eva_str}"
-                self.lstHistory.insert(tk.END, line)
-
-                # Color fully delivered in gray
-                if delivered >= ordered and ordered > 0:
-                    self.lstHistory.itemconfig(idx, fg="gray")
+                # Insert into treeview
+                self.trvHistory.insert(
+                    "", tk.END,
+                    values=(issued, reference, ordered, delivered),
+                    tags=tags
+                )
 
         # Update label with count
-        count = self.lstHistory.size()
+        count = len(self.trvHistory.get_children())
         self.lbfHistory.config(text=f"{_('Storico Ordini')} ({count})")
 
     def set_values(self):

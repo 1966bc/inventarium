@@ -40,7 +40,8 @@ class UI(ParentView):
 
         self.search_var = tk.StringVar()
         self.search_option = tk.IntVar()
-        self.label_action = tk.IntVar()  # 0=Stampa, 1=Evadi, 2=Elimina
+        # 0=Stampa, 1=Evadi, 2=Elimina
+        self.label_action = tk.IntVar(value=0)
         self.dict_categories = {}
         self.dict_labels = {}  # Maps listbox index to label_id
         self.selected_package_id = None
@@ -229,6 +230,10 @@ class UI(ParentView):
 
     def set_categories(self):
         """Load categories into combobox."""
+        # Salva la categoria attualmente selezionata PRIMA di svuotare
+        current_idx = self.cbCategories.current()
+        current_category_id = self.dict_categories.get(current_idx) if current_idx != -1 else None
+
         self.dict_categories = {}
         voices = []
 
@@ -249,6 +254,13 @@ class UI(ParentView):
         voices.append(_("-- Tutte --"))
 
         self.cbCategories["values"] = voices
+
+        # Ri-seleziona la stessa categoria (se esiste ancora)
+        if current_category_id is not None:
+            for idx, cat_id in self.dict_categories.items():
+                if cat_id == current_category_id:
+                    self.cbCategories.current(idx)
+                    break
 
     def load_products(self, category_id=None, search_term=None):
         """Load products into treeview."""
@@ -603,6 +615,14 @@ class UI(ParentView):
 
     def on_print_label(self, label_id):
         """Print barcode label for the given label_id."""
+        if not self.engine.is_printer_enabled():
+            messagebox.showinfo(
+                self.engine.app_title,
+                _("Stampa disabilitata su questa postazione."),
+                parent=self
+            )
+            return
+
         from barcode_label import BarcodeLabel
 
         try:
@@ -687,20 +707,22 @@ class UI(ParentView):
                         break
 
     def refresh_current_selection(self):
-        """Refresh current selection after label operation."""
-        if self.selected_package_id:
-            # Save current selection
-            package_id = self.selected_package_id
-            batch_id = self.selected_batch_id
+        """Refresh current selection after label operations."""
+        # Save current selection
+        package_id = self.selected_package_id
+        batch_id = self.selected_batch_id
 
-            # Reload products to update stock count
-            category_idx = self.cbCategories.current()
-            category_id = self.dict_categories.get(category_idx, 0) if category_idx != -1 else None
-            search_term = self.search_var.get().strip() or None
+        # Reload products to update stock count
+        category_idx = self.cbCategories.current()
+        category_id = self.dict_categories.get(category_idx, 0) if category_idx != -1 else None
+        search_term = self.search_var.get().strip() or None
 
+        # Always reload products if a category is selected
+        if category_id is not None or search_term:
             self.load_products(category_id=category_id, search_term=search_term)
 
-            # Re-select the product
+        # Re-select the product if it was selected
+        if package_id:
             for item in self.treeProducts.get_children():
                 if int(item) == package_id:
                     self.treeProducts.selection_set(item)
@@ -718,7 +740,6 @@ class UI(ParentView):
                                 self.load_labels(batch_id)
                                 break
                     break
-
 
     def on_cancel(self, evt=None):
         """Close the window."""

@@ -33,6 +33,7 @@ class UI(ChildView):
         self.idle_timeout = tk.StringVar()
         self.default_vat = tk.StringVar()
         self.language = tk.StringVar()
+        self.printer_enabled = tk.BooleanVar()
 
         self.init_ui()
         self.engine.center_window(self)
@@ -101,6 +102,21 @@ class UI(ChildView):
         self.cmbLanguage["values"] = list(LANGUAGES.values())
         self.cmbLanguage.pack(side=tk.LEFT)
 
+        # Separator for local settings
+        r += 1
+        ttk.Separator(w, orient=tk.HORIZONTAL).grid(row=r, column=0, columnspan=2, sticky="ew", pady=10)
+
+        r += 1
+        ttk.Label(w, text=_("Impostazioni locali"), font=("", 9, "bold")).grid(
+            row=r, column=0, columnspan=2, sticky=tk.W, pady=2)
+
+        # Printer enabled (local setting - config.ini)
+        r += 1
+        ttk.Label(w, text=_("Stampa etichette:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        self.chkPrinter = ttk.Checkbutton(w, text=_("Abilitata su questa postazione"),
+                                           variable=self.printer_enabled, style="App.TCheckbutton")
+        self.chkPrinter.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+
         # Buttons
         r += 1
         bf = ttk.Frame(w)
@@ -132,6 +148,8 @@ class UI(ChildView):
         lang_code = self.engine.get_setting("language", "it")
         self.language.set(LANGUAGES.get(lang_code, "Italiano"))
         self._original_language = lang_code
+        # Load printer setting from config.ini (local)
+        self.printer_enabled.set(self.engine.is_printer_enabled())
 
     def on_save(self, evt=None):
         """Save settings."""
@@ -156,6 +174,9 @@ class UI(ChildView):
                     lang_code = code
                     break
             self.engine.set_setting("language", lang_code)
+
+            # Save printer setting to config.ini (local)
+            self.engine.set_printer_enabled(self.printer_enabled.get())
 
             # Update idle monitor with new timeout
             self._update_monitor()

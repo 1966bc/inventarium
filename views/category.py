@@ -133,6 +133,12 @@ class UI(ChildView):
 
             self.parent.refresh_and_select(pk)
 
+            # Refresh combobox categorie in warehouse (solo per categorie prodotti)
+            if self.reference_id == 1:
+                warehouse = self.engine.dict_instances.get("warehouse")
+                if warehouse and warehouse.winfo_exists():
+                    warehouse.set_categories()
+
             self.on_cancel()
 
         else:

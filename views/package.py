@@ -165,11 +165,13 @@ class UI(ChildView):
         if self.index is not None and selected_package:
             # Edit mode
             self.selected_package = selected_package
+            self.original_category_id = selected_package.get("category_id", 0)
             self.title(f"Modifica Confezione - {product_name}")
             self.set_values()
             self.btnFunding.config(state=tk.NORMAL)
         else:
             # New package mode
+            self.original_category_id = None
             self.title(f"Nuova Confezione - {product_name}")
             self.order_by_piece.set(1)
             self.pieces_per_label.set(1)
@@ -406,6 +408,14 @@ class UI(ChildView):
                 pk = self.engine.write(sql, tuple(args))
 
             self.parent.refresh_and_select(pk)
+
+            # Refresh warehouse solo se la categoria è cambiata
+            category_idx = self.cbCategories.current()
+            new_category_id = self.dict_categories.get(category_idx, 0)
+            if new_category_id != self.original_category_id:
+                warehouse = self.engine.dict_instances.get("warehouse")
+                if warehouse and warehouse.winfo_exists():
+                    warehouse.refresh()
 
             self.on_cancel()
 

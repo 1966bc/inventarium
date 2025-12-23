@@ -27,6 +27,7 @@ import sys
 import traceback
 import datetime
 import time
+import configparser
 from typing import Optional
 
 from tools import Tools
@@ -291,6 +292,46 @@ class Engine(DBMS, Controller, Tools, Launcher):
     def get_tick(self) -> int:
         """Return current timestamp in microseconds."""
         return int(time.time() * 1e6)
+
+    def _get_config_path(self) -> str:
+        """Return full path to config.ini."""
+        return self.get_file("config.ini")
+
+    def is_printer_enabled(self) -> bool:
+        """Check if label printing is enabled on this workstation."""
+        config_path = self._get_config_path()
+
+        if not os.path.exists(config_path):
+            return True  # Default to enabled
+
+        config = configparser.ConfigParser()
+        config.read(config_path)
+
+        try:
+            return config.getboolean("printer", "enabled", fallback=True)
+        except (configparser.NoSectionError, configparser.NoOptionError, ValueError):
+            return True
+
+    def set_printer_enabled(self, enabled: bool) -> bool:
+        """Set label printing enabled/disabled on this workstation."""
+        config_path = self._get_config_path()
+
+        config = configparser.ConfigParser()
+        if os.path.exists(config_path):
+            config.read(config_path)
+
+        if not config.has_section("printer"):
+            config.add_section("printer")
+
+        config.set("printer", "enabled", "1" if enabled else "0")
+
+        try:
+            with open(config_path, "w") as f:
+                config.write(f)
+            return True
+        except Exception as e:
+            self.on_log("set_printer_enabled", e, type(e), __import__(__name__))
+            return False
 
 
 def main():

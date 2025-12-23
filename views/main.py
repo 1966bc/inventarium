@@ -234,6 +234,13 @@ class Main(tk.Toplevel):
 
     def on_custom_label(self):
         """Open custom label generator."""
+        if not self.engine.is_printer_enabled():
+            messagebox.showinfo(
+                self.engine.app_title,
+                _("Stampa disabilitata su questa postazione."),
+                parent=self
+            )
+            return
         obj = custom_label.UI(self)
         obj.on_open()
 

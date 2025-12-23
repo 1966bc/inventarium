@@ -6,3 +6,8 @@
 #   path = /mnt/share/inventarium/inventarium.db (shared folder)
 #   path = //server/share/inventarium.db         (UNC Windows)
 path = sql/inventarium.db
+
+[printer]
+# Enable label printing on this workstation
+# Set to 0 on workstations without a label printer
+enabled = 1
