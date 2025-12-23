@@ -177,6 +177,21 @@ The application uses a **mixin-based architecture** where the Engine class combi
 
 All views access the engine via `self.engine = self.nametowidget(".").engine`.
 
+## Build Standalone Executable (Windows)
+
+To create a standalone `.exe` that runs without Python installed:
+
+```cmd
+build_on_windows.cmd
+```
+
+**Requirements:**
+- Python 3.7+
+- Nuitka (`pip install nuitka`)
+- MinGW64 (downloaded automatically by Nuitka if missing)
+
+The executable is created in `dist\inventarium.dist\`. Copy the entire folder to distribute.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
