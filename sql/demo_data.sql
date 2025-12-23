@@ -325,29 +325,32 @@ INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
 
 -- =============================================================================
 -- Requests (Purchase orders)
+-- Status: 0=Closed, 1=Draft, 2=Sent
 -- =============================================================================
 INSERT INTO requests (request_id, reference, issued, status) VALUES
 (1, 'REQ-2024-001', '2024-01-10', 0),  -- Closed
 (2, 'REQ-2024-002', '2024-03-15', 0),  -- Closed
-(3, 'REQ-2024-003', '2024-06-01', 1),  -- Open
-(4, 'REQ-2024-004', '2024-09-20', 1);  -- Open
+(3, 'REQ-2024-003', '2024-06-01', 2),  -- Sent (partial delivery)
+(4, 'REQ-2024-004', '2024-09-20', 2);  -- Sent (pending)
 
 -- =============================================================================
 -- Items (Request line items)
+-- Status: 1=Active, 2=Cancelled
 -- =============================================================================
-INSERT INTO items (item_id, request_id, package_id, quantity, status) VALUES
--- REQ-001
-(1, 1, 1, 3, 1),   -- ACN x3
-(2, 1, 2, 2, 1),   -- MeOH x2
--- REQ-002
-(3, 2, 8, 2, 1),   -- Caffeine std x2
-(4, 2, 13, 3, 1),  -- Vials x3
--- REQ-003 (open)
-(5, 3, 3, 2, 1),   -- H2O x2
-(6, 3, 15, 4, 1),  -- Tips x4
--- REQ-004 (open)
-(7, 4, 11, 1, 1),  -- C18 column x1
-(8, 4, 4, 2, 1);   -- Formic acid x2
+INSERT INTO items (item_id, request_id, package_id, quantity, status, note) VALUES
+-- REQ-001 (closed)
+(1, 1, 1, 3, 1, NULL),   -- ACN x3
+(2, 1, 2, 2, 1, NULL),   -- MeOH x2
+-- REQ-002 (closed)
+(3, 2, 8, 2, 1, NULL),   -- Caffeine std x2
+(4, 2, 13, 3, 1, NULL),  -- Vials x3
+-- REQ-003 (sent - partial delivery)
+(5, 3, 3, 2, 1, NULL),   -- H2O x2
+(6, 3, 15, 4, 1, NULL),  -- Tips x4
+(9, 3, 6, 1, 2, 'Product discontinued by supplier'),  -- NH4AC cancelled
+-- REQ-004 (sent - pending)
+(7, 4, 11, 1, 1, NULL),  -- C18 column x1
+(8, 4, 4, 2, 1, NULL);   -- Formic acid x2
 
 -- =============================================================================
 -- Deliveries
