@@ -117,8 +117,9 @@ class UI(ChildView):
             for i in range(count):
                 self.engine.load_label(self.batch_id)
 
-            # Refresh only labels list
+            # Refresh labels list and stock count
             self.parent.load_labels(self.batch_id)
+            self.parent.update_product_stock()
             self.on_cancel()
 
         else:

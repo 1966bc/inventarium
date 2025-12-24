@@ -661,9 +661,11 @@ class UI(ParentView):
             self.clear_form()
             self.refresh_and_reposition(current_request_id, current_item_id)
 
-            # Refresh warehouse batches list if open
+            # Refresh warehouse if open
             if "warehouse" in self.engine.dict_instances:
-                self.engine.dict_instances["warehouse"].refresh_batches()
+                warehouse = self.engine.dict_instances["warehouse"]
+                warehouse.refresh_batches()
+                warehouse.update_product_stock()
 
         except Exception as e:
             self.engine.on_log(
