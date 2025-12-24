@@ -103,18 +103,24 @@ python inventarium.py
 
 ## Database
 
-Inventarium uses SQLite - a single file database that requires no server setup. The demo database (`sql/inventarium.db`) includes sample data to get you started.
+Inventarium uses SQLite - a single file database that requires no server setup.
+
+### First Run
+
+On first run, if no database is found, a dialog will appear with options:
+- **Find existing database**: Browse for an existing `.db` file
+- **Create new database**: Creates a fresh database with demo data from `sql/init.sql`
 
 ### Demo Data
 
-The included database contains fictional data for testing:
-- 15 products (solvents, standards, columns, consumables)
-- 6 suppliers (Sigma-Aldrich, Thermo Fisher, etc.)
-- Sample batches, labels, and requests
+The `sql/init.sql` file contains the complete schema plus sample data:
+- 18 products (solvents, standards, columns, consumables)
+- 8 suppliers (Sigma-Aldrich, Thermo Fisher, ChromSystems, etc.)
+- Sample batches, labels, requests, and deliveries
 
-To reset to demo data:
+To reset an existing database to demo data:
 ```bash
-sqlite3 sql/inventarium.db ".read sql/demo_data.sql"
+sqlite3 inventarium.db ".read sql/init.sql"
 ```
 
 ### Database CLI Access
@@ -124,7 +130,7 @@ The database can be accessed directly via SQLite command line for queries, maint
 **Linux:**
 ```bash
 cd sql
-sqlite3 -init setconsole inventarium.db
+sqlite3 -init setconsole ../inventarium.db
 ```
 
 **Windows:**
@@ -132,7 +138,7 @@ sqlite3 -init setconsole inventarium.db
 Download `sqlite3.exe` from [sqlite.org/download.html](https://sqlite.org/download.html) (Precompiled Binaries for Windows) and place it in the `sql/` folder, then:
 ```cmd
 cd sql
-.\sqlite3 -init setconsole inventarium.db
+.\sqlite3 -init setconsole ..\inventarium.db
 ```
 
 For network databases, use the path from `config.ini`:
@@ -149,7 +155,7 @@ For a complete reference of SQLite CLI commands and useful queries, see [SQLITE_
 
 ## Configuration
 
-On first run, if `config.ini` is missing, a configuration dialog will appear to set the database path. The file is then created automatically.
+On first run, if the database is not found, a dialog offers options to find an existing database or create a new one. The path is then saved to `config.ini`.
 
 You can also edit `config.ini` manually:
 
@@ -198,8 +204,8 @@ inventarium/
 │   ├── products.py     # Product list
 │   └── ...
 ├── reports/            # Report generators
-├── sql/                # Database and queries
-│   ├── inventarium.db  # SQLite database
+├── sql/                # Database scripts
+│   ├── init.sql        # Schema + demo data
 │   ├── setconsole      # SQLite CLI settings
 │   └── *.sql           # Utility scripts
 └── images/             # Application icons

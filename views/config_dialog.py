@@ -4,19 +4,20 @@
 ConfigDialog - Database configuration dialog for Inventarium.
 
 Shown at first startup or when database path is invalid.
+Offers options to find existing database or create a new one.
 
 Author: 1966bc (Giuseppe Costanzi)
 License: GNU GPL v3
 Version: I (SQLite Edition)
 """
 import os
+import sqlite3
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
 
 from app_config import DEFAULT_DB_PATH
-from dbms import DBMS
 from i18n import _
 
 
@@ -56,95 +57,49 @@ class ConfigDialog(tk.Toplevel):
         # Message
         msg = ttk.Label(
             frame,
-            text=_("Configurazione del percorso database.") + "\n\n" +
-                 _("Selezionare il file database SQLite (.db)") + "\n" +
-                 _("o inserire manualmente il percorso."),
-            justify=tk.LEFT
+            text=_("Database non trovato.") + "\n\n" +
+                 _("Cosa vuoi fare?"),
+            justify=tk.LEFT,
+            font=('', 10)
         )
-        msg.pack(fill=tk.X, pady=(0, 15))
+        msg.pack(fill=tk.X, pady=(0, 20))
 
-        # Path entry with browse button
-        path_frame = ttk.Frame(frame)
-        path_frame.pack(fill=tk.X, pady=5)
-
-        ttk.Label(path_frame, text=_("Percorso:")).pack(side=tk.LEFT)
-
-        self.entry = ttk.Entry(path_frame, textvariable=self.db_path, width=50)
-        self.entry.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
-
-        ttk.Button(
-            path_frame,
-            text=_("Sfoglia..."),
-            command=self.on_browse
-        ).pack(side=tk.LEFT)
-
-        # Test connection button and status
-        test_frame = ttk.Frame(frame)
-        test_frame.pack(fill=tk.X, pady=(10, 0))
-
-        ttk.Button(
-            test_frame,
-            text=_("Test Connessione"),
-            command=self.on_test_connection
-        ).pack(side=tk.LEFT)
-
-        self.test_status = tk.StringVar()
-        self.lbl_status = ttk.Label(test_frame, textvariable=self.test_status)
-        self.lbl_status.pack(side=tk.LEFT, padx=10)
-
-        # Buttons
+        # Buttons frame
         btn_frame = ttk.Frame(frame)
-        btn_frame.pack(fill=tk.X, pady=(20, 0))
+        btn_frame.pack(fill=tk.X, pady=5)
 
-        ttk.Button(
+        # Find existing database button
+        btn_find = ttk.Button(
             btn_frame,
-            text=_("OK"),
-            command=self.on_ok,
-            width=10
-        ).pack(side=tk.RIGHT, padx=5)
+            text=_("Cerca database esistente..."),
+            command=self.on_find_database,
+            width=30
+        )
+        btn_find.pack(pady=5)
 
-        ttk.Button(
+        # Create new database button
+        btn_create = ttk.Button(
+            btn_frame,
+            text=_("Crea nuovo database"),
+            command=self.on_create_database,
+            width=30
+        )
+        btn_create.pack(pady=5)
+
+        # Cancel button
+        btn_cancel = ttk.Button(
             btn_frame,
             text=_("Annulla"),
             command=self.on_cancel,
-            width=10
-        ).pack(side=tk.RIGHT)
+            width=30
+        )
+        btn_cancel.pack(pady=5)
 
-        self.bind("<Return>", self.on_ok)
         self.bind("<Escape>", self.on_cancel)
 
-    def on_test_connection(self):
-        """Test database connection."""
-        path = self.db_path.get().strip()
-        if not path:
-            self.test_status.set(_("Inserire un percorso"))
-            self.lbl_status.configure(foreground="red")
-            return
-
-        # Make path absolute if relative
-        check_path = path
-        if not os.path.isabs(check_path):
-            check_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), check_path)
-
-        # Test connection using DBMS
-        success, message, count = DBMS.test_connection(check_path)
-
-        if success:
-            self.test_status.set(f"OK - {count} " + _("prodotti trovati"))
-            self.lbl_status.configure(foreground="green")
-        elif message == "file_not_found":
-            self.test_status.set(_("File non trovato"))
-            self.lbl_status.configure(foreground="red")
-        elif message == "invalid_database":
-            self.test_status.set(_("Database non valido"))
-            self.lbl_status.configure(foreground="orange")
-        else:
-            self.test_status.set(_("Errore") + f": {message}")
-            self.lbl_status.configure(foreground="red")
-
-    def on_browse(self):
-        """Browse for database file."""
-        initial_dir = os.path.dirname(self.db_path.get()) or os.path.dirname(os.path.dirname(__file__))
+    def on_find_database(self):
+        """Browse for existing database file."""
+        initial_dir = os.path.dirname(os.path.dirname(__file__))
 
         filename = filedialog.askopenfilename(
             parent=self,
@@ -157,35 +112,129 @@ class ConfigDialog(tk.Toplevel):
         )
 
         if filename:
-            self.db_path.set(filename)
+            # Verify it's a valid database
+            if self._verify_database(filename):
+                self.result = filename
+                self.destroy()
+            else:
+                messagebox.showerror(
+                    _("Errore"),
+                    _("Il file selezionato non è un database Inventarium valido."),
+                    parent=self
+                )
 
-    def on_ok(self, evt=None):
-        """Validate and accept."""
-        path = self.db_path.get().strip()
+    def on_create_database(self):
+        """Create a new database with demo data."""
+        initial_dir = os.path.dirname(os.path.dirname(__file__))
 
-        if not path:
-            messagebox.showwarning(
-                _("Configurazione"),
-                _("Inserire un percorso valido."),
+        filename = filedialog.asksaveasfilename(
+            parent=self,
+            title=_("Crea Nuovo Database"),
+            initialdir=initial_dir,
+            initialfile="inventarium.db",
+            defaultextension=".db",
+            filetypes=[
+                ("SQLite Database", "*.db"),
+                (_("Tutti i file"), "*.*")
+            ]
+        )
+
+        if filename:
+            # Create the database
+            if self._create_database(filename):
+                messagebox.showinfo(
+                    _("Database Creato"),
+                    _("Database creato con successo!") + f"\n\n{filename}",
+                    parent=self
+                )
+                self.result = filename
+                self.destroy()
+            else:
+                messagebox.showerror(
+                    _("Errore"),
+                    _("Impossibile creare il database."),
+                    parent=self
+                )
+
+    def _verify_database(self, path):
+        """
+        Verify that a file is a valid Inventarium database.
+        
+        Args:
+            path: Path to database file
+            
+        Returns:
+            True if valid, False otherwise
+        """
+        try:
+            conn = sqlite3.connect(path)
+            cursor = conn.cursor()
+            
+            # Check for required tables
+            cursor.execute("""
+                SELECT name FROM sqlite_master 
+                WHERE type='table' AND name IN ('products', 'packages', 'batches', 'labels')
+            """)
+            tables = cursor.fetchall()
+            conn.close()
+            
+            # Must have at least these core tables
+            return len(tables) >= 4
+            
+        except Exception:
+            return False
+
+    def _create_database(self, path):
+        """
+        Create a new database with schema and demo data.
+        
+        Args:
+            path: Path for new database file
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Find demo_data.sql
+            app_dir = os.path.dirname(os.path.dirname(__file__))
+            sql_paths = [
+                os.path.join(app_dir, "sql", "init.sql"),
+                os.path.join(app_dir, "init.sql"),
+            ]
+            
+            sql_file = None
+            for p in sql_paths:
+                if os.path.exists(p):
+                    sql_file = p
+                    break
+            
+            if not sql_file:
+                messagebox.showerror(
+                    _("Errore"),
+                    _("File demo_data.sql non trovato!"),
+                    parent=self
+                )
+                return False
+            
+            # Read SQL script
+            with open(sql_file, 'r', encoding='utf-8') as f:
+                sql_script = f.read()
+            
+            # Create database and execute script
+            conn = sqlite3.connect(path)
+            conn.executescript(sql_script)
+            conn.commit()
+            conn.close()
+            
+            return True
+            
+        except Exception as e:
+            messagebox.showerror(
+                _("Errore"),
+                f"{_('Errore durante la creazione del database:')}\n{e}",
                 parent=self
             )
-            return
-
-        # Check if file exists
-        check_path = path
-        if not os.path.isabs(check_path):
-            check_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), check_path)
-
-        if not os.path.exists(check_path):
-            if not messagebox.askyesno(
-                _("Configurazione"),
-                _("Il file non esiste:") + f"\n{check_path}\n\n" + _("Continuare comunque?"),
-                parent=self
-            ):
-                return
-
-        self.result = path
-        self.destroy()
+            return False
 
     def on_cancel(self, evt=None):
         """Cancel dialog."""
