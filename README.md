@@ -246,3 +246,5 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ---
 
 *Built with Python, Tkinter, and SQLite. Keep it simple.*
+
+
