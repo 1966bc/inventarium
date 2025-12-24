@@ -321,6 +321,46 @@ class Controller:
         sql = "UPDATE labels SET unloaded = NULL, status = 1 WHERE label_id = ?"
         return self.write(sql, (label_id,))
 
+    def get_label_info(self, code: int) -> Optional[Dict[str, Any]]:
+        """
+        Get complete label information by tick or label_id.
+
+        Args:
+            code: Label tick (barcode) or label_id
+
+        Returns:
+            Dict with label details or None if not found
+        """
+        sql = """
+            SELECT
+                lb.label_id,
+                lb.tick,
+                lb.status,
+                lb.loaded,
+                lb.unloaded,
+                b.description AS lot,
+                b.expiration,
+                CAST(julianday(b.expiration) - julianday('now') AS INTEGER) AS days_left,
+                p.reference AS product_code,
+                p.description AS product_name,
+                pk.packaging,
+                pk.reference AS supplier_code,
+                s.description AS supplier,
+                c.description AS category,
+                l.description AS location,
+                con.description AS conservation
+            FROM labels lb
+            JOIN batches b ON b.batch_id = lb.batch_id
+            JOIN packages pk ON pk.package_id = b.package_id
+            JOIN products p ON p.product_id = pk.product_id
+            LEFT JOIN suppliers s ON s.supplier_id = pk.supplier_id
+            LEFT JOIN categories c ON c.category_id = pk.category_id
+            LEFT JOIN locations l ON l.location_id = pk.location_id
+            LEFT JOIN conservations con ON con.conservation_id = pk.conservation_id
+            WHERE lb.tick = ? OR lb.label_id = ?
+        """
+        return self.read(False, sql, (code, code))
+
     # -------------------------------------------------------------------------
     # Settings management
     # -------------------------------------------------------------------------

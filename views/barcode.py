@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Barcode Scanner - Unload labels by scanning barcode or entering label ID.
+Barcode Scanner - Unload labels or get info by scanning barcode.
 
 This module provides a simple interface for unloading labels from stock
-by scanning a barcode or manually entering the label ID.
+or viewing label details by scanning a barcode or manually entering the label ID.
 
 Author: 1966bc (Giuseppe Costanzi)
 License: GNU GPL v3
@@ -19,7 +19,7 @@ from views.parent_view import ParentView
 
 
 class UI(ParentView):
-    """Barcode scanner for unloading labels."""
+    """Barcode scanner for unloading labels or viewing info."""
 
     def __init__(self, parent):
         super().__init__(parent, name="barcode")
@@ -32,11 +32,11 @@ class UI(ParentView):
         self.attributes("-topmost", True)
 
         self.barcode = tk.StringVar()
+        self.action = tk.IntVar(value=0)  # 0=Scarica, 1=Info
 
         self.init_ui()
         self.engine.center_window(self)
         self.show()
-
 
     def init_ui(self):
         """Build the UI."""
@@ -54,6 +54,18 @@ class UI(ParentView):
         self.txtBarcode.pack(fill=tk.X, pady=5)
         self.txtBarcode.bind("<Return>", self.on_scan)
 
+        # Action radio buttons
+        rf = ttk.LabelFrame(w, text=_("Azione"), padding=5)
+        rf.pack(fill=tk.X, pady=10)
+
+        ttk.Radiobutton(
+            rf, text=_("Scarica"), variable=self.action, value=0
+        ).pack(side=tk.LEFT, padx=10)
+
+        ttk.Radiobutton(
+            rf, text=_("Info"), variable=self.action, value=1
+        ).pack(side=tk.LEFT, padx=10)
+
         # Result label
         self.lblResult = ttk.Label(w, text="", foreground="gray")
         self.lblResult.pack(fill=tk.X, pady=10)
@@ -62,14 +74,14 @@ class UI(ParentView):
         bf = ttk.Frame(w)
         bf.pack(fill=tk.X, pady=(10, 0))
 
-        self.engine.create_button(bf, _("Scarica"), self.on_scan).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Esegui"), self.on_scan).pack(side=tk.LEFT, padx=5)
 
         self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Scarico Etichetta"))
+        self.title(_("Barcode Scanner"))
         self.engine.dict_instances["barcode"] = self
         self.txtBarcode.focus()
 
@@ -88,6 +100,14 @@ class UI(ParentView):
             self.clear_entry()
             return
 
+        # Route to appropriate action
+        if self.action.get() == 0:
+            self.do_unload(code_int)
+        else:
+            self.do_info(code_int)
+
+    def do_unload(self, code_int):
+        """Unload (scarica) a label."""
         # Check if label exists by tick (barcode) or label_id
         sql = """
             SELECT
@@ -105,7 +125,7 @@ class UI(ParentView):
         row = self.engine.read(False, sql, (code_int, code_int))
 
         if not row:
-            self.show_result(_("Etichetta") + f" {code} " + _("non trovata!"), "red")
+            self.show_result(_("Etichetta") + f" {code_int} " + _("non trovata!"), "red")
             self.clear_entry()
             return
 
@@ -144,6 +164,114 @@ class UI(ParentView):
             self.show_result(_("Errore nello scarico!"), "red")
 
         self.clear_entry()
+
+    def do_info(self, code_int):
+        """Show full label information."""
+        row = self.engine.get_label_info(code_int)
+
+        if not row:
+            self.show_result(_("Etichetta") + f" {code_int} " + _("non trovata!"), "red")
+            self.clear_entry()
+            return
+
+        # Show info dialog
+        self.show_label_info(row)
+        self.clear_entry()
+
+    def show_label_info(self, data):
+        """Display label information in a dialog."""
+        # Status text
+        status_map = {
+            1: (_("In stock"), "green"),
+            0: (_("Usata"), "gray"),
+            -1: (_("Annullata"), "red")
+        }
+        status_text, status_color = status_map.get(data["status"], (_("Sconosciuto"), "black"))
+
+        # Days left text
+        days_left = data.get("days_left")
+        if days_left is not None:
+            if days_left < 0:
+                exp_text = _("SCADUTA da") + f" {abs(days_left)} " + _("giorni")
+                exp_color = "red"
+            elif days_left <= 30:
+                exp_text = _("Scade tra") + f" {days_left} " + _("giorni")
+                exp_color = "orange"
+            else:
+                exp_text = _("Scade tra") + f" {days_left} " + _("giorni")
+                exp_color = "green"
+        else:
+            exp_text = _("Nessuna scadenza")
+            exp_color = "gray"
+
+        # Build info window
+        info_win = tk.Toplevel(self)
+        info_win.title(_("Dettaglio Etichetta"))
+        info_win.transient(self)
+        info_win.resizable(0, 0)
+        info_win.attributes("-topmost", True)
+
+        f = ttk.Frame(info_win, padding=15)
+        f.pack(fill=tk.BOTH, expand=1)
+
+        # Header with status
+        hf = ttk.Frame(f)
+        hf.pack(fill=tk.X, pady=(0, 10))
+
+        ttk.Label(
+            hf,
+            text=data.get("product_name", ""),
+            font=("TkDefaultFont", 11, "bold")
+        ).pack(side=tk.LEFT)
+
+        status_lbl = ttk.Label(hf, text=status_text, foreground=status_color)
+        status_lbl.pack(side=tk.RIGHT)
+
+        ttk.Separator(f, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=5)
+
+        # Info grid
+        info_frame = ttk.Frame(f)
+        info_frame.pack(fill=tk.BOTH, expand=1)
+
+        fields = [
+            (_("Barcode:"), data.get("tick") or data.get("label_id")),
+            (_("Codice prodotto:"), data.get("product_code", "")),
+            (_("Confezionamento:"), data.get("packaging", "")),
+            (_("Lotto:"), data.get("lot", "")),
+            (_("Scadenza:"), data.get("expiration", "")),
+            (_("Stato scadenza:"), exp_text),
+            (_("Fornitore:"), data.get("supplier", "")),
+            (_("Cod. fornitore:"), data.get("supplier_code", "")),
+            (_("Categoria:"), data.get("category", "")),
+            (_("Ubicazione:"), data.get("location", "")),
+            (_("Conservazione:"), data.get("conservation", "")),
+            (_("Caricata il:"), data.get("loaded", "")),
+            (_("Scaricata il:"), data.get("unloaded", "") or "-"),
+        ]
+
+        for r, (label, value) in enumerate(fields):
+            ttk.Label(info_frame, text=label).grid(row=r, column=0, sticky=tk.W, pady=2)
+            val_lbl = ttk.Label(info_frame, text=str(value) if value else "-")
+            val_lbl.grid(row=r, column=1, sticky=tk.W, padx=(10, 0), pady=2)
+
+            # Color the expiration status
+            if label == _("Stato scadenza:"):
+                val_lbl.config(foreground=exp_color)
+
+        # Close button
+        ttk.Separator(f, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=10)
+        self.engine.create_button(f, _("Chiudi"), info_win.destroy).pack()
+
+        info_win.bind("<Escape>", lambda e: info_win.destroy())
+        info_win.bind("<Return>", lambda e: info_win.destroy())
+
+        # Center on parent
+        info_win.update_idletasks()
+        x = self.winfo_x() + (self.winfo_width() - info_win.winfo_width()) // 2
+        y = self.winfo_y() + (self.winfo_height() - info_win.winfo_height()) // 2
+        info_win.geometry(f"+{x}+{y}")
+
+        info_win.focus_set()
 
     def show_result(self, text, color):
         """Display result message."""
