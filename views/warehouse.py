@@ -629,18 +629,21 @@ class UI(ParentView):
                             self.engine.unload_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
+                            self.update_product_stock()
                     elif status == 0:
                         msg = f"Ripristinare l'etichetta {label_id}?"
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.restore_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
+                            self.update_product_stock()
                     elif status == -1:
                         msg = f"Ripristinare l'etichetta annullata {label_id}?"
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.restore_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
+                            self.update_product_stock()
 
                 elif action == 2:
                     # Elimina (annulla)
@@ -650,12 +653,14 @@ class UI(ParentView):
                             self.engine.cancel_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
+                            self.update_product_stock()
                     elif status == -1:
                         msg = f"L'etichetta {label_id} è già annullata.\nRipristinare?"
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.restore_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
+                            self.update_product_stock()
                     else:
                         messagebox.showwarning(
                             self.engine.app_title,
@@ -671,6 +676,44 @@ class UI(ParentView):
                 self.lstLabels.selection_set(idx)
                 self.lstLabels.see(idx)
                 break
+
+    def update_product_stock(self):
+        """Update stock count for the currently selected product in treeview."""
+        if not self.selected_package_id:
+            return
+
+        # Query current stock for this package
+        sql = """
+            SELECT 
+                pk.reorder,
+                COUNT(CASE WHEN lb.status = 1 THEN 1 END) AS in_stock
+            FROM packages pk
+            LEFT JOIN batches b ON b.package_id = pk.package_id
+            LEFT JOIN labels lb ON lb.batch_id = b.batch_id
+            WHERE pk.package_id = ?
+            GROUP BY pk.package_id
+        """
+        row = self.engine.read(False, sql, (self.selected_package_id,))
+
+        if row:
+            stock = row["in_stock"] or 0
+            reorder = row["reorder"] or 0
+
+            # Determine tag based on stock vs reorder level
+            if stock == 0 and reorder > 0:
+                tag = ("no_stock",)
+            elif stock <= reorder and reorder > 0:
+                tag = ("low_stock",)
+            else:
+                tag = ()
+
+            # Update treeview cell
+            item_id = str(self.selected_package_id)
+            if self.treeProducts.exists(item_id):
+                current_values = self.treeProducts.item(item_id, "values")
+                # Keep product name, update stock
+                new_values = (current_values[0], stock)
+                self.treeProducts.item(item_id, values=new_values, tags=tag)
 
     def on_print_label(self, label_id):
         """Print barcode label for the given label_id."""
