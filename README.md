@@ -145,6 +145,8 @@ The `sql/` folder also contains utility scripts for database maintenance (e.g., 
 .read check_pending.sql
 ```
 
+For a complete reference of SQLite CLI commands and useful queries, see [SQLITE_CLI.md](SQLITE_CLI.md).
+
 ## Configuration
 
 On first run, if `config.ini` is missing, a configuration dialog will appear to set the database path. The file is then created automatically.
@@ -246,5 +248,3 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ---
 
 *Built with Python, Tkinter, and SQLite. Keep it simple.*
-
-
