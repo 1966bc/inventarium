@@ -642,13 +642,32 @@ class UI(ParentView):
             )
             return
 
+        # Check for pending items (not fully delivered)
+        pk = self.selected_request["request_id"]
+        sql = """
+            SELECT COUNT(*) AS pending
+            FROM items i
+            WHERE i.request_id = ? AND i.status = 1
+            AND i.quantity > COALESCE(
+                (SELECT SUM(d.quantity) FROM deliveries d WHERE d.item_id = i.item_id AND d.status = 1), 0
+            )
+        """
+        result = self.engine.read(False, sql, (pk,))
+
+        if result and result["pending"] > 0:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Impossibile chiudere la richiesta.") + "\n" +
+                _("Ci sono {} articoli non completamente evasi.").format(result["pending"]),
+                parent=self
+            )
+            return
+
         if messagebox.askyesno(
             self.engine.app_title,
             _("Chiudere la richiesta selezionata?"),
             parent=self
         ):
-            pk = self.selected_request["request_id"]
-
             sql = "UPDATE requests SET status = 0 WHERE request_id = ?"
             self.engine.write(sql, (pk,))
 
