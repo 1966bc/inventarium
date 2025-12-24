@@ -3,7 +3,7 @@ REM ============================================================================
 REM  Inventarium - build_me.cmd
 REM  Build script for Nuitka compilation (STANDALONE mode)
 REM  
-REM  Updated: 2025-12-22
+REM  Updated: 2025-12-24
 REM  Target: Windows 10 / 11, Python 3.7+
 REM ============================================================================
 
@@ -113,7 +113,6 @@ py -m nuitka inventarium.py ^
     --include-data-dir=sql=sql ^
     --include-data-dir=views=views ^
     ^
-    --include-data-files=config.ini.example=config.ini.example ^
     --include-data-files=label_templates.json=label_templates.json ^
     --include-data-files=LICENSE=LICENSE
 
@@ -200,12 +199,6 @@ IF EXIST "dist\inventarium.dist\reports" (
 echo.
 echo Checking config files:
 
-IF EXIST "dist\inventarium.dist\config.ini.example" (
-    echo [OK] config.ini.example
-) ELSE (
-    echo [WARNING] config.ini.example NOT found
-)
-
 IF EXIST "dist\inventarium.dist\label_templates.json" (
     echo [OK] label_templates.json
 ) ELSE (
@@ -219,7 +212,6 @@ echo ===========================================================================
 echo.
 echo What's inside dist\inventarium.dist\:
 echo  - inventarium.exe         (main executable WITH ICON)
-echo  - config.ini.example      (rename to config.ini on first run)
 echo  - label_templates.json    (barcode label templates)
 echo  - views\                  (GUI windows)
 echo  - sql\                    (SQLite database)
@@ -241,14 +233,14 @@ echo    cd dist\inventarium.dist
 echo    inventarium.exe
 echo.
 echo 2. FIRST RUN:
-echo    - Copy config.ini.example to config.ini
-echo    - Edit config.ini to set database path
-echo    - Run inventarium.exe
+echo    - A configuration dialog will appear
+echo    - Set the database path (local or network)
+echo    - Settings are saved in config.ini automatically
 echo.
 echo 3. DISTRIBUTION:
 echo    - Copy entire dist\inventarium.dist\ folder
-echo    - Include sql\inventarium.db (or create empty)
-echo    - User copies config.ini.example to config.ini
+echo    - Include sql\inventarium.db (or let user select existing)
+echo    - First run shows configuration dialog
 echo.
 echo ============================================================================
 echo.
