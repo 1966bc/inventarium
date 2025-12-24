@@ -129,7 +129,7 @@ class UI(ParentView):
         buttons = [
             (_("Nuova Rich."), self.on_add, "<Alt-n>", 0),
             (_("Modifica Rich."), self.on_edit_request, "<Alt-o>", 1),
-            (_("Invia Rich."), self.on_send_request, "<Alt-i>", 0),
+            (_("Invia"), self.on_send_request, "<Alt-i>", 0),
             (_("Agg. Articolo"), self.on_add_item, "<Alt-a>", 0),
             (_("Mod. Articolo"), self.on_edit_item, "<Alt-m>", 0),
             (_("Ann. Articolo"), self.on_cancel_item, "<Alt-u>", 3),
@@ -433,6 +433,10 @@ class UI(ParentView):
             self.engine.write(sql, (request_id,))
             self.refresh_request_list()
 
+            # Refresh delivery view if open
+            if "deliveries" in self.engine.dict_instances:
+                self.engine.dict_instances["deliveries"].refresh()
+
     def on_add_item(self, evt=None):
         """Add item to selected request."""
         if self.selected_request is None:
@@ -654,6 +658,10 @@ class UI(ParentView):
 
             self.on_reset()
 
+            # Refresh delivery view if open
+            if "deliveries" in self.engine.dict_instances:
+                self.engine.dict_instances["deliveries"].refresh()
+
     def on_delete_request(self, evt=None):
         """Delete selected request and all its items."""
         if self.selected_request is None:
@@ -682,6 +690,10 @@ class UI(ParentView):
 
             self.selected_request = None
             self.on_reset()
+
+            # Refresh delivery view if open
+            if "deliveries" in self.engine.dict_instances:
+                self.engine.dict_instances["deliveries"].refresh()
 
     def on_print(self, evt=None):
         """Print selected request."""
