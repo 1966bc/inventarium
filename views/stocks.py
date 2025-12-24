@@ -324,6 +324,7 @@ class UI(ParentView):
                     p.description AS product_name,
                     pk.reference AS supplier_code,
                     pk.packaging,
+                    pk.shelf,
                     COUNT(CASE WHEN lb.status = 1 THEN 1 END) AS in_stock
                 FROM packages pk
                 JOIN products p ON p.product_id = pk.product_id
@@ -334,7 +335,7 @@ class UI(ParentView):
                 WHERE pk.status = 1 AND p.status = 1
                 AND pk.location_id = ?
                 GROUP BY pk.package_id
-                ORDER BY p.description
+                ORDER BY pk.shelf, p.description
             """
 
             rs = self.engine.read(True, sql, (location_id,))

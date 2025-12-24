@@ -28,6 +28,9 @@ class UI(ChildView):
         # Form variables
         self.reference = tk.StringVar()
         self.packaging = tk.StringVar()
+        self.label_text = tk.StringVar()  # Testo per etichetta lotto
+        self.label_font_size = tk.IntVar(value=36)  # Font size etichetta
+        self.shelf = tk.StringVar()  # Ripiano
         self.order_by_piece = tk.IntVar(value=1)  # 1=al pezzo, 0=a confezione
         self.pieces_per_label = tk.IntVar(value=1)
         self.labels_per_unit = tk.IntVar(value=1)
@@ -69,6 +72,18 @@ class UI(ChildView):
         self.txtPackaging.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
+        ttk.Label(w, text=_("Etichetta lotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        self.txtLabelText = ttk.Entry(w, textvariable=self.label_text, width=field_width)
+        self.txtLabelText.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+
+        r += 1
+        ttk.Label(w, text=_("Font etichetta:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        self.spnLabelFontSize = ttk.Spinbox(
+            w, from_=28, to=52, textvariable=self.label_font_size, width=8
+        )
+        self.spnLabelFontSize.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+
+        r += 1
         ttk.Label(w, text=_("Conservazione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbConservations = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
         self.cbConservations.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
@@ -82,6 +97,11 @@ class UI(ChildView):
         ttk.Label(w, text=_("Ubicazione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbLocations = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
         self.cbLocations.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+
+        r += 1
+        ttk.Label(w, text=_("Ripiano:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        self.txtShelf = ttk.Entry(w, textvariable=self.shelf, width=10)
+        self.txtShelf.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         # Ordinazione
         r += 1
@@ -313,6 +333,9 @@ class UI(ChildView):
 
         self.reference.set(self.selected_package.get("reference", ""))
         self.packaging.set(self.selected_package.get("packaging", ""))
+        self.label_text.set(self.selected_package.get("label_text", "") or "")
+        self.label_font_size.set(self.selected_package.get("label_font_size", 36) or 36)
+        self.shelf.set(self.selected_package.get("shelf", "") or "")
         self.order_by_piece.set(self.selected_package.get("order_by_piece", 1))
         self.pieces_per_label.set(self.selected_package.get("pieces_per_label", 1) or 1)
         self.labels_per_unit.set(self.selected_package.get("labels_per_unit", 1) or 1)
@@ -348,6 +371,9 @@ class UI(ChildView):
             self.reorder.get(),                       # reorder
             None,                                     # funding_id
             self.labels_per_unit.get(),               # labels_per_unit
+            self.label_text.get().strip() or None,    # label_text
+            self.label_font_size.get(),               # label_font_size
+            self.shelf.get().strip() or None,         # shelf
         ]
 
     def on_save(self, evt=None):

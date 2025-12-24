@@ -183,6 +183,7 @@ class UI(ParentView):
             (_("Storico"), self.on_history, "<Alt-s>", 0),
             (_("Nuovo Lotto"), self.on_new_batch, "<Alt-l>", 6),
             (_("Carica Etichette"), self.on_load_labels, "<Alt-e>", 7),
+            (_("Etichetta Lotto"), self.on_print_lot_label, "<Alt-t>", 4),
             (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
         ]
 
@@ -785,6 +786,46 @@ class UI(ParentView):
             messagebox.showwarning(
                 self.engine.app_title,
                 _("Selezionare un lotto!"),
+                parent=self
+            )
+
+    def on_print_lot_label(self, evt=None):
+        """Print lot label (without barcode) for selected batch."""
+        selection = self.treeBatches.selection()
+        if not selection:
+            messagebox.showwarning(
+                self.engine.app_title,
+                _("Selezionare un lotto!"),
+                parent=self
+            )
+            return
+
+        if not self.engine.is_printer_enabled():
+            messagebox.showinfo(
+                self.engine.app_title,
+                _("Stampa disabilitata su questa postazione."),
+                parent=self
+            )
+            return
+
+        batch_id = int(selection[0])
+
+        from lot_label import LotLabel
+
+        try:
+            generator = LotLabel(self.engine)
+            path = generator.generate_label(batch_id)
+
+            if not path:
+                messagebox.showerror(
+                    self.engine.app_title,
+                    _("Dati lotto non trovati!"),
+                    parent=self
+                )
+        except Exception as e:
+            messagebox.showerror(
+                self.engine.app_title,
+                _("Errore nella generazione dell'etichetta:") + f"\n{e}",
                 parent=self
             )
 
