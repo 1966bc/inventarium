@@ -117,6 +117,34 @@ To reset to demo data:
 sqlite3 sql/inventarium.db ".read sql/demo_data.sql"
 ```
 
+### Database CLI Access
+
+The database can be accessed directly via SQLite command line for queries, maintenance, and troubleshooting. A `setconsole` file in the `sql/` folder provides pre-configured console settings.
+
+**Linux:**
+```bash
+cd sql
+sqlite3 -init setconsole inventarium.db
+```
+
+**Windows:**
+
+Download `sqlite3.exe` from [sqlite.org/download.html](https://sqlite.org/download.html) (Precompiled Binaries for Windows) and place it in the `sql/` folder, then:
+```cmd
+cd sql
+.\sqlite3 -init setconsole inventarium.db
+```
+
+For network databases, use the path from `config.ini`:
+```cmd
+.\sqlite3 -init setconsole "\\server\share\inventarium.db"
+```
+
+The `sql/` folder also contains utility scripts for database maintenance (e.g., `check_pending.sql`, `fix_pending.sql`). Run them with:
+```sql
+.read check_pending.sql
+```
+
 ## Configuration
 
 On first run, if `config.ini` is missing, a configuration dialog will appear to set the database path. The file is then created automatically.
@@ -170,7 +198,8 @@ inventarium/
 ├── reports/            # Report generators
 ├── sql/                # Database and queries
 │   ├── inventarium.db  # SQLite database
-│   └── demo_data.sql   # Sample data
+│   ├── setconsole      # SQLite CLI settings
+│   └── *.sql           # Utility scripts
 └── images/             # Application icons
 ```
 
