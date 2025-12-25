@@ -211,7 +211,7 @@ class ConfigDialog(tk.Toplevel):
             if not sql_file:
                 messagebox.showerror(
                     _("Errore"),
-                    _("File demo_data.sql non trovato!"),
+                    _("File init.sql non trovato!"),
                     parent=self
                 )
                 return False
