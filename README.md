@@ -230,7 +230,7 @@ Inventarium implements several classic design patterns, making it a useful refer
 |---------|-------|---------|
 | **Singleton** | `Engine` (`_EngineMeta`), `ParentView` | Ensures single instance per window/engine |
 | **Mixin** | `Engine` | Composition over inheritance |
-| **Template Method** | `ChildView` | Common structure for CRUD dialogs |
+| **Template Method** | `ParentView`, `ChildView` | Common structure for windows and dialogs |
 | **Registry** | `dict_instances` | Global access to open windows |
 | **Builder** | `build_sql()` | Dynamic SQL query construction |
 | **Observer** | `Engine` (`subscribe`, `notify`) | Decoupled view communication |
