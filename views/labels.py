@@ -40,17 +40,17 @@ class UI(ChildView):
         w.pack(fill=tk.BOTH, expand=1)
 
         r = 0
-        ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Product:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtProduct = ttk.Entry(w, textvariable=self.product, state="readonly", width=30)
         self.txtProduct.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Lotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Batch:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtLot = ttk.Entry(w, textvariable=self.lot, state="readonly", width=20)
         self.txtLot.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Scadenza:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Expiration:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtExpiration = ttk.Entry(w, textvariable=self.expiration, state="readonly", width=12)
         self.txtExpiration.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -58,7 +58,7 @@ class UI(ChildView):
         ttk.Separator(w, orient=tk.HORIZONTAL).grid(row=r, column=0, columnspan=2, sticky="ew", pady=10)
 
         r += 1
-        ttk.Label(w, text=_("Numero etichette:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Number of labels:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.spnLabels = ttk.Spinbox(w, from_=1, to=100, textvariable=self.labels_count, width=5)
         self.spnLabels.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -67,11 +67,11 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, pady=10)
 
-        self.engine.create_button(bf, _("Carica"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Load"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
         self.bind("<Return>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -95,7 +95,7 @@ class UI(ChildView):
         self.lot.set(selected_batch.get("description", ""))
         self.expiration.set(selected_batch.get("expiration", ""))
 
-        self.title(_("Carica Etichette"))
+        self.title(_("Load Labels"))
         self.labels_count.set(1)
         self.spnLabels.focus()
 
@@ -106,12 +106,12 @@ class UI(ChildView):
         if count < 1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Inserire un numero di etichette valido!"),
+                _("Enter a valid number of labels!"),
                 parent=self
             )
             return
 
-        msg = _("Caricare {} etichetta?").format(count) if count == 1 else _("Caricare {} etichette?").format(count)
+        msg = _("Load {} label?").format(count) if count == 1 else _("Load {} labels?").format(count)
         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
             # Load labels
             for i in range(count):

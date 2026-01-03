@@ -45,22 +45,22 @@ class UI(ChildView):
         entry_width = 30
 
         r = 0
-        ttk.Label(w, text=_("Numero:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Number:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtReference = ttk.Entry(w, textvariable=self.reference, width=entry_width)
         self.txtReference.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Data:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Date:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.calIssued = Calendarium(w, "")
         self.calIssued.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Fornitore:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Supplier:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbSupplier = ttk.Combobox(w, width=entry_width-2, state="readonly")
         self.cbSupplier.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Importo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Amount:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         vcmd = self.engine.get_validate_float(self)
         self.txtAmount = ttk.Entry(w, textvariable=self.amount, width=entry_width,
                                     validate="key", validatecommand=vcmd)
@@ -72,12 +72,12 @@ class UI(ChildView):
         self.txtCig.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Descrizione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Description:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtDescription = ttk.Entry(w, textvariable=self.description, width=entry_width)
         self.txtDescription.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Attiva:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -86,11 +86,11 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=3, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
         self.bind("<Return>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -121,11 +121,11 @@ class UI(ChildView):
         if self.index is not None and selected_item:
             # Edit mode
             self.selected_item = selected_item
-            self.title(_("Modifica Delibera"))
+            self.title(_("Edit Resolution"))
             self.set_values()
         else:
             # New deliberation mode
-            self.title(_("Nuova Delibera"))
+            self.title(_("New Resolution"))
             self.status.set(1)
             self.calIssued.set_today()
 
@@ -194,7 +194,7 @@ class UI(ChildView):
         if not self.reference.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Numero è obbligatorio!"),
+                _("The Number field is required!"),
                 parent=self
             )
             self.txtReference.focus()
@@ -203,7 +203,7 @@ class UI(ChildView):
         if not self.cbSupplier.get():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un Fornitore!"),
+                _("Please select a Supplier!"),
                 parent=self
             )
             self.cbSupplier.focus()
@@ -251,11 +251,11 @@ class UI(ChildView):
             # If editing, allow same reference for same deliberation
             if self.index is not None:
                 if rs["deliberation_id"] != self.selected_item["deliberation_id"]:
-                    msg = f"La delibera '{self.reference.get()}' esiste già!"
+                    msg = _("The resolution '{}' already exists!").format(self.reference.get())
                     messagebox.showwarning(self.engine.app_title, msg, parent=self)
                     return False
             else:
-                msg = f"La delibera '{self.reference.get()}' esiste già!"
+                msg = _("The resolution '{}' already exists!").format(self.reference.get())
                 messagebox.showwarning(self.engine.app_title, msg, parent=self)
                 return False
 

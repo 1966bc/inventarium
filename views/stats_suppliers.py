@@ -39,28 +39,28 @@ class UI(ParentView):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # Filters frame
-        filters = ttk.LabelFrame(f0, text=_("Periodo di Analisi"), style="App.TLabelframe")
+        filters = ttk.LabelFrame(f0, text=_("Analysis Period"), style="App.TLabelframe")
         filters.pack(fill=tk.X, pady=(0, 10))
 
         r1 = ttk.Frame(filters)
         r1.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r1, text=_("Da:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("From:")).pack(side=tk.LEFT)
         self.cal_from = Calendarium(r1, "")
         self.cal_from.pack(side=tk.LEFT, padx=(5, 20))
 
-        ttk.Label(r1, text=_("A:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("To:")).pack(side=tk.LEFT)
         self.cal_to = Calendarium(r1, "")
         self.cal_to.pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(r1, _("Calcola"), self.load_data).pack(side=tk.LEFT, padx=20)
+        self.engine.create_button(r1, _("Calculate"), self.load_data).pack(side=tk.LEFT, padx=20)
 
         # Quick period buttons
         r2 = ttk.Frame(filters)
         r2.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r2, text=_("Periodo rapido:")).pack(side=tk.LEFT)
-        for text, days in [(_("90 gg"), 90), (_("6 mesi"), 180), (_("Anno"), 365)]:
+        ttk.Label(r2, text=_("Quick period:")).pack(side=tk.LEFT)
+        for text, days in [(_("90 days"), 90), (_("6 months"), 180), (_("Year"), 365)]:
             self.engine.create_button(r2, text, lambda d=days: self.set_quick_period(d), width=8).pack(side=tk.LEFT, padx=2)
 
         # Results treeview
@@ -71,13 +71,13 @@ class UI(ParentView):
                   "completion", "avg_tat", "products")
         self.tree = ttk.Treeview(tree_frame, columns=columns, show="headings", height=15)
 
-        self.tree.heading("supplier", text=_("Fornitore"))
-        self.tree.heading("orders", text=_("Ordini"))
-        self.tree.heading("items_ordered", text=_("Ordinato"))
-        self.tree.heading("items_delivered", text=_("Consegnato"))
-        self.tree.heading("completion", text=_("Completamento %"))
-        self.tree.heading("avg_tat", text=_("TAT medio (gg)"))
-        self.tree.heading("products", text=_("Prodotti"))
+        self.tree.heading("supplier", text=_("Supplier"))
+        self.tree.heading("orders", text=_("Orders"))
+        self.tree.heading("items_ordered", text=_("Ordered"))
+        self.tree.heading("items_delivered", text=_("Delivered"))
+        self.tree.heading("completion", text=_("Completion %"))
+        self.tree.heading("avg_tat", text=_("Avg TAT (days)"))
+        self.tree.heading("products", text=_("Products"))
 
         self.tree.column("supplier", width=200)
         self.tree.column("orders", width=80, anchor=tk.E)
@@ -106,14 +106,14 @@ class UI(ParentView):
         bf = ttk.Frame(f0)
         bf.pack(fill=tk.X, pady=(5, 0))
 
-        self.engine.create_button(bf, _("Esporta CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Export CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Analisi Fornitori"))
+        self.title(_("Supplier Analysis"))
         self.engine.dict_instances["stats_suppliers"] = self
         self.set_quick_period(365)  # Default: last year
 
@@ -134,9 +134,10 @@ class UI(ParentView):
 
         # Get date range
         if not self.cal_from.is_valid or not self.cal_to.is_valid:
+            from tkinter import messagebox
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Le date non sono valide!"),
+                _("The dates are not valid!"),
                 parent=self
             )
             return
@@ -201,7 +202,7 @@ class UI(ParentView):
         rs = self.engine.read(True, sql, (date_from_str, date_to_str))
 
         if not rs:
-            self.lbl_summary.config(text=_("Nessun dato nel periodo selezionato"))
+            self.lbl_summary.config(text=_("No data in the selected period"))
             return
 
         # For each supplier, get delivery stats
@@ -276,10 +277,10 @@ class UI(ParentView):
         # Update summary
         overall_completion = round((total_delivered / total_ordered * 100), 1) if total_ordered > 0 else 0
         self.lbl_summary.config(
-            text=f"Fornitori: {len(data)} | "
-                 f"Totale ordinato: {total_ordered} | "
-                 f"Totale consegnato: {total_delivered} | "
-                 f"Completamento: {overall_completion}%"
+            text=f"{_('Suppliers')}: {len(data)} | "
+                 f"{_('Total ordered')}: {total_ordered} | "
+                 f"{_('Total delivered')}: {total_delivered} | "
+                 f"{_('Completion')}: {overall_completion}%"
         )
 
     def export_csv(self):
@@ -291,14 +292,14 @@ class UI(ParentView):
             parent=self,
             defaultextension=".csv",
             filetypes=[("CSV files", "*.csv")],
-            title="Esporta Fornitori"
+            title=_("Export Suppliers")
         )
 
         if filename:
             with open(filename, "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f, delimiter=";")
-                writer.writerow(["Fornitore", "Ordini", "Ordinato", "Consegnato",
-                               "Completamento %", "TAT medio (gg)", _("Prodotti")])
+                writer.writerow([_("Supplier"), _("Orders"), _("Ordered"), _("Delivered"),
+                               _("Completion %"), _("Avg TAT (days)"), _("Products")])
 
                 for item in self.tree.get_children():
                     values = self.tree.item(item)["values"]

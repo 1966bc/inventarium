@@ -49,19 +49,19 @@ class UI(ParentView):
         left.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, padx=5)
 
         # Category selection
-        ttk.Label(left, text=_("Categoria:")).pack(anchor=tk.W)
+        ttk.Label(left, text=_("Category:")).pack(anchor=tk.W)
         self.cbCategories = ttk.Combobox(left, state="readonly", width=25, style="App.TCombobox")
         self.cbCategories.pack(fill=tk.X, pady=5)
 
         # Report type
-        lf = ttk.LabelFrame(left, text=_("Tipo Stampa"), style="App.TLabelframe")
+        lf = ttk.LabelFrame(left, text=_("Print Type"), style="App.TLabelframe")
         lf.pack(fill=tk.X, pady=5)
 
         reports = [
-            ("Dettagliato (con lotti)", 0),
-            ("Compatto (solo giacenza)", 1),
-            ("Per ubicazione (con giacenza)", 2),
-            ("Per ubicazione (senza giacenza)", 3),
+            (_("Detailed (with batches)"), 0),
+            (_("Compact (stock only)"), 1),
+            (_("By location (with stock)"), 2),
+            (_("By location (without stock)"), 3),
         ]
         for text, value in reports:
             ttk.Radiobutton(
@@ -73,8 +73,8 @@ class UI(ParentView):
             ).pack(anchor=tk.W, padx=5, pady=2)
 
         # Location selection (for location reports)
-        self.lfLocation = ttk.LabelFrame(left, text=_("Ubicazione"), style="App.TLabelframe")
-        ttk.Label(self.lfLocation, text=_("Seleziona ubicazione:")).pack(anchor=tk.W, padx=5)
+        self.lfLocation = ttk.LabelFrame(left, text=_("Location"), style="App.TLabelframe")
+        ttk.Label(self.lfLocation, text=_("Select location:")).pack(anchor=tk.W, padx=5)
         self.cbLocations = ttk.Combobox(self.lfLocation, state="readonly", width=25, style="App.TCombobox")
         self.cbLocations.pack(fill=tk.X, padx=5, pady=5)
         # Initially hidden
@@ -84,16 +84,16 @@ class UI(ParentView):
         right = ttk.Frame(w)
         right.pack(side=tk.RIGHT, fill=tk.Y, padx=5)
 
-        self.engine.create_button(right, _("Stampa"), self.on_print, width=12).pack(pady=3)
+        self.engine.create_button(right, _("Print"), self.on_print, width=12).pack(pady=3)
         self.bind("<Alt-s>", lambda e: self.on_print())
 
-        self.engine.create_button(right, _("Chiudi"), self.on_cancel, width=12).pack(pady=3)
+        self.engine.create_button(right, _("Close"), self.on_cancel, width=12).pack(pady=3)
         self.bind("<Alt-c>", lambda e: self.on_cancel())
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the dialog."""
-        self.title(_("Stampa Giacenze"))
+        self.title(_("Print Stock"))
         self.set_categories()
         self.set_locations()
 
@@ -137,7 +137,7 @@ class UI(ParentView):
 
         # Add "All" option first
         self.dict_categories[0] = None
-        voices.append("-- Tutte le categorie --")
+        voices.append(_("-- All categories --"))
 
         sql = """SELECT category_id, description
                  FROM categories
@@ -160,7 +160,7 @@ class UI(ParentView):
         if self.cbCategories.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare una categoria!",
+                _("Please select a category!"),
                 parent=self
             )
             return
@@ -182,7 +182,7 @@ class UI(ParentView):
             if self.cbLocations.current() == -1:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    "Selezionare un'ubicazione!",
+                    _("Please select a location!"),
                     parent=self
                 )
                 return
@@ -194,7 +194,7 @@ class UI(ParentView):
             if self.cbLocations.current() == -1:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    "Selezionare un'ubicazione!",
+                    _("Please select a location!"),
                     parent=self
                 )
                 return
@@ -243,14 +243,14 @@ class UI(ParentView):
             else:
                 messagebox.showinfo(
                     self.engine.app_title,
-                    "Nessun prodotto trovato per la categoria selezionata.",
+                    _("No products found for the selected category."),
                     parent=self
                 )
 
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore nella generazione del report:\n{e}",
+                _("Error generating report:") + f"\n{e}",
                 parent=self
             )
         finally:
@@ -295,14 +295,14 @@ class UI(ParentView):
             else:
                 messagebox.showinfo(
                     self.engine.app_title,
-                    "Nessun prodotto trovato per la categoria selezionata.",
+                    _("No products found for the selected category."),
                     parent=self
                 )
 
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore nella generazione del report:\n{e}",
+                _("Error generating report:") + f"\n{e}",
                 parent=self
             )
         finally:
@@ -347,14 +347,14 @@ class UI(ParentView):
             else:
                 messagebox.showinfo(
                     self.engine.app_title,
-                    "Nessun prodotto trovato per l'ubicazione selezionata.",
+                    _("No products found for the selected location."),
                     parent=self
                 )
 
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore nella generazione del report:\n{e}",
+                _("Error generating report:") + f"\n{e}",
                 parent=self
             )
         finally:

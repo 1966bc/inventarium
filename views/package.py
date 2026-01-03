@@ -28,10 +28,10 @@ class UI(ChildView):
         # Form variables
         self.reference = tk.StringVar()
         self.packaging = tk.StringVar()
-        self.label_text = tk.StringVar()  # Testo per etichetta lotto
-        self.label_font_size = tk.IntVar(value=36)  # Font size etichetta
-        self.shelf = tk.StringVar()  # Ripiano
-        self.order_by_piece = tk.IntVar(value=1)  # 1=al pezzo, 0=a confezione
+        self.label_text = tk.StringVar()  # Text for batch label
+        self.label_font_size = tk.IntVar(value=36)  # Label font size
+        self.shelf = tk.StringVar()  # Shelf
+        self.order_by_piece = tk.IntVar(value=1)  # 1=by piece, 0=by package
         self.pieces_per_label = tk.IntVar(value=1)
         self.labels_per_unit = tk.IntVar(value=1)
         self.reorder = tk.IntVar(value=0)
@@ -57,94 +57,94 @@ class UI(ChildView):
         field_width = 30
 
         r = 0
-        ttk.Label(w, text=_("Fornitore:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Supplier:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbSuppliers = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
         self.cbSuppliers.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Cod. Fornitore:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Supplier Code:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtReference = ttk.Entry(w, textvariable=self.reference, width=field_width)
         self.txtReference.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Confezionamento:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Packaging:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtPackaging = ttk.Entry(w, textvariable=self.packaging, width=field_width)
         self.txtPackaging.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Etichetta lotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Batch label:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtLabelText = ttk.Entry(w, textvariable=self.label_text, width=field_width)
         self.txtLabelText.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Font etichetta:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Label font:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.spnLabelFontSize = ttk.Spinbox(
             w, from_=28, to=52, textvariable=self.label_font_size, width=8
         )
         self.spnLabelFontSize.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Conservazione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Storage:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbConservations = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
         self.cbConservations.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Categoria:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Category:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbCategories = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
         self.cbCategories.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Ubicazione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Location:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbLocations = ttk.Combobox(w, state="readonly", width=field_width, style="App.TCombobox")
         self.cbLocations.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Ripiano:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Shelf:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtShelf = ttk.Entry(w, textvariable=self.shelf, width=10)
         self.txtShelf.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         # Ordinazione
         r += 1
-        ttk.Label(w, text=_("Ordinazione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Ordering:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         order_frame = ttk.Frame(w)
         order_frame.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         ttk.Radiobutton(
-            order_frame, text=_("Al pezzo"), variable=self.order_by_piece, value=1,
+            order_frame, text=_("By piece"), variable=self.order_by_piece, value=1,
             style="App.TRadiobutton"
         ).pack(side=tk.LEFT)
         ttk.Radiobutton(
-            order_frame, text=_("A confezione"), variable=self.order_by_piece, value=0,
+            order_frame, text=_("By package"), variable=self.order_by_piece, value=0,
             style="App.TRadiobutton"
         ).pack(side=tk.LEFT, padx=10)
 
         r += 1
-        ttk.Label(w, text=_("Pezzi per etichetta:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Pieces per label:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.spnPiecesPerLabel = ttk.Spinbox(
             w, from_=1, to=10000, textvariable=self.pieces_per_label, width=8
         )
         self.spnPiecesPerLabel.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Etichette per unità:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Labels per unit:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.spnLabelsPerUnit = ttk.Spinbox(
             w, from_=1, to=100, textvariable=self.labels_per_unit, width=8
         )
         self.spnLabelsPerUnit.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Soglia riordino:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Reorder level:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.spnReorder = ttk.Spinbox(
             w, from_=0, to=1000, textvariable=self.reorder, width=8
         )
         self.spnReorder.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Al buio:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("In the dark:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.in_the_dark, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Attivo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -153,14 +153,14 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
 
-        self.btnFunding = self.engine.create_button(bf, _("Fonti/Delibere"), self.on_funding)
+        self.btnFunding = self.engine.create_button(bf, _("Funding/Deliberations"), self.on_funding)
         self.btnFunding.pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-f>", self.on_funding)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -186,13 +186,13 @@ class UI(ChildView):
             # Edit mode
             self.selected_package = selected_package
             self.original_category_id = selected_package.get("category_id", 0)
-            self.title(f"Modifica Confezione - {product_name}")
+            self.title(f"{_('Edit Package')} - {product_name}")
             self.set_values()
             self.btnFunding.config(state=tk.NORMAL)
         else:
             # New package mode
             self.original_category_id = None
-            self.title(f"Nuova Confezione - {product_name}")
+            self.title(f"{_('New Package')} - {product_name}")
             self.order_by_piece.set(1)
             self.pieces_per_label.set(1)
             self.labels_per_unit.set(1)
@@ -382,7 +382,7 @@ class UI(ChildView):
         if self.cbSuppliers.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un fornitore!"),
+                _("Select a supplier!"),
                 parent=self
             )
             self.cbSuppliers.focus()
@@ -391,7 +391,7 @@ class UI(ChildView):
         if not self.reference.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Codice Fornitore è obbligatorio!"),
+                _("Supplier Code field is required!"),
                 parent=self
             )
             self.txtReference.focus()
@@ -400,7 +400,7 @@ class UI(ChildView):
         if not self.packaging.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Confezionamento è obbligatorio!"),
+                _("Packaging field is required!"),
                 parent=self
             )
             self.txtPackaging.focus()
@@ -409,7 +409,7 @@ class UI(ChildView):
         if self.cbConservations.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare una modalità di conservazione!"),
+                _("Select a storage condition!"),
                 parent=self
             )
             self.cbConservations.focus()

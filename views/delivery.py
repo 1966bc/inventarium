@@ -37,10 +37,10 @@ class UI(ParentView):
         # State variables
         self.batch_mode = tk.IntVar(value=0)  # 0=select existing, 1=create new
         self.quantity = tk.IntVar(value=1)
-        self.labels_count = tk.IntVar(value=1)  # Numero etichette da creare
+        self.labels_count = tk.IntVar(value=1)  # Number of labels to create
         self.ddt = tk.StringVar()
         self.new_lot = tk.StringVar()
-        self.print_labels_var = tk.IntVar(value=1)  # 1=stampa automatica attiva
+        self.print_labels_var = tk.IntVar(value=1)  # 1=auto print enabled
 
         # Display variables (readonly)
         self.product_name = tk.StringVar()
@@ -81,16 +81,16 @@ class UI(ParentView):
         paned.add(f1, weight=1)
 
         # Requests Treeview
-        w = ttk.LabelFrame(f1, text=_("Richieste Aperte"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f1, text=_("Open Requests"), style="App.TLabelframe")
 
         cols = ("reference", "date", "pending")
         self.treeRequests = ttk.Treeview(w, columns=cols, show="headings", height=12)
 
         self.treeRequests.column("reference", width=120, minwidth=100, anchor=tk.W, stretch=True)
-        self.treeRequests.heading("reference", text=_("Riferimento"), anchor=tk.W)
+        self.treeRequests.heading("reference", text=_("Reference"), anchor=tk.W)
 
         self.treeRequests.column("date", width=90, minwidth=80, anchor=tk.CENTER, stretch=False)
-        self.treeRequests.heading("date", text=_("Data"), anchor=tk.CENTER)
+        self.treeRequests.heading("date", text=_("Date"), anchor=tk.CENTER)
 
         self.treeRequests.column("pending", width=40, minwidth=30, anchor=tk.CENTER, stretch=False)
         self.treeRequests.heading("pending", text="P.", anchor=tk.CENTER)
@@ -107,13 +107,13 @@ class UI(ParentView):
         w.pack(fill=tk.BOTH, expand=1, pady=(0, 5))
 
         # Items Treeview
-        self.lbfItems = ttk.LabelFrame(f1, text=_("Articoli da Evadere"), style="App.TLabelframe")
+        self.lbfItems = ttk.LabelFrame(f1, text=_("Items to Deliver"), style="App.TLabelframe")
 
         cols = ("product", "ordered", "delivered")
         self.treeItems = ttk.Treeview(self.lbfItems, columns=cols, show="headings", height=12)
 
         self.treeItems.column("product", width=150, minwidth=100, anchor=tk.W, stretch=True)
-        self.treeItems.heading("product", text=_("Prodotto"), anchor=tk.W)
+        self.treeItems.heading("product", text=_("Product"), anchor=tk.W)
 
         self.treeItems.column("ordered", width=40, minwidth=30, anchor=tk.CENTER, stretch=False)
         self.treeItems.heading("ordered", text="O.", anchor=tk.CENTER)
@@ -136,47 +136,47 @@ class UI(ParentView):
         paned.add(f2, weight=0)
 
         # Item details (readonly)
-        w = ttk.LabelFrame(f2, text=_("Dettaglio Articolo"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Item Detail"), style="App.TLabelframe")
         r = 0
-        ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Product:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.product_name, state="readonly", width=25).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text=_("Fornitore:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Supplier:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.supplier_name, state="readonly", width=25).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text=_("Confezionamento:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Packaging:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.packaging, state="readonly", width=25).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text=_("Ordinato:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Ordered:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.ordered_qty, state="readonly", width=10).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text=_("Già Evaso:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Already Delivered:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.delivered_qty, state="readonly", width=10).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Delivery form
-        w = ttk.LabelFrame(f2, text=_("Nuova Consegna"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("New Delivery"), style="App.TLabelframe")
         r = 0
         ttk.Label(w, text=_("DDT:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         ttk.Entry(w, textvariable=self.ddt, width=15).grid(
             row=r, column=1, sticky=tk.W, padx=5, pady=2
         )
         r += 1
-        ttk.Label(w, text=_("Data Consegna:")).grid(row=r, column=0, sticky=tk.NW, padx=5, pady=2)
+        ttk.Label(w, text=_("Delivery Date:")).grid(row=r, column=0, sticky=tk.NW, padx=5, pady=2)
         self.cal_delivered = Calendarium(w, "")
         self.cal_delivered.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         r += 1
-        ttk.Label(w, text=_("Quantità:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Quantity:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         vcmd = self.engine.get_validate_integer(self)
         self.txt_quantity = ttk.Entry(
             w, textvariable=self.quantity, width=10,
@@ -186,7 +186,7 @@ class UI(ParentView):
         # Auto-update labels count when quantity changes
         self.quantity.trace_add("write", self.on_quantity_changed)
         r += 1
-        ttk.Label(w, text=_("Etichette:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
+        ttk.Label(w, text=_("Labels:")).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         self.txt_labels = ttk.Entry(
             w, textvariable=self.labels_count, width=10,
             validate="key", validatecommand=vcmd
@@ -195,10 +195,10 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Batch selection
-        w = ttk.LabelFrame(f2, text=_("Lotto"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Batch"), style="App.TLabelframe")
         r = 0
         ttk.Radiobutton(
-            w, text=_("Seleziona esistente:"),
+            w, text=_("Select existing:"),
             variable=self.batch_mode, value=0,
             command=self.on_batch_mode_changed,
             style="App.TRadiobutton"
@@ -207,37 +207,37 @@ class UI(ParentView):
         self.cb_batches.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         r += 1
         ttk.Radiobutton(
-            w, text=_("Crea nuovo:"),
+            w, text=_("Create new:"),
             variable=self.batch_mode, value=1,
             command=self.on_batch_mode_changed,
             style="App.TRadiobutton"
         ).grid(row=r, column=0, sticky=tk.W, padx=5, pady=2)
         r += 1
-        ttk.Label(w, text=_("Lotto:")).grid(row=r, column=0, sticky=tk.E, padx=5, pady=2)
+        ttk.Label(w, text=_("Batch:")).grid(row=r, column=0, sticky=tk.E, padx=5, pady=2)
         self.txt_new_lot = ttk.Entry(w, textvariable=self.new_lot, width=20, state="disabled")
         self.txt_new_lot.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         r += 1
-        ttk.Label(w, text=_("Scadenza:")).grid(row=r, column=0, sticky=tk.NE, padx=5, pady=2)
+        ttk.Label(w, text=_("Expiration:")).grid(row=r, column=0, sticky=tk.NE, padx=5, pady=2)
         self.cal_expiration = Calendarium(w, "")
         self.cal_expiration.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         self._set_calendarium_state(self.cal_expiration, False)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Print options
-        w = ttk.LabelFrame(f2, text=_("Opzioni"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Options"), style="App.TLabelframe")
         ttk.Checkbutton(
-            w, text=_("Stampa etichette"),
+            w, text=_("Print labels"),
             variable=self.print_labels_var,
             style="App.TCheckbutton"
         ).pack(anchor=tk.W, padx=5, pady=5)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Buttons (f3 already created at top)
-        w = ttk.LabelFrame(f3, text=_("Comandi"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f3, text=_("Commands"), style="App.TLabelframe")
         buttons = [
-            (_("Salva"), self.on_save, "<Alt-s>", 0),
-            (_("Aggiorna"), self.refresh, "<Alt-a>", 0),
-            (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
+            (_("Save"), self.on_save, "<Alt-s>", 0),
+            (_("Refresh"), self.refresh, "<Alt-a>", 0),
+            (_("Close"), self.on_cancel, "<Alt-c>", 0),
         ]
         for text, cmd, key, ul in buttons:
             self.engine.create_button(w, text, cmd, underline=ul).pack(fill=tk.X, padx=5, pady=3)
@@ -282,7 +282,7 @@ class UI(ParentView):
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Consegne"))
+        self.title(_("Deliveries"))
         self.engine.dict_instances["deliveries"] = self
 
         # Subscribe to events
@@ -479,7 +479,7 @@ class UI(ParentView):
                 self.dict_batches[idx] = row
                 lot = row["lot"] or ""
                 exp = row["expiration"] or ""
-                values.append(f"{lot} ({_('Scad')}: {exp})")
+                values.append(f"{lot} ({_('Exp')}: {exp})")
             self.cb_batches["values"] = values
             if values:
                 self.cb_batches.current(0)
@@ -501,7 +501,7 @@ class UI(ParentView):
         if not self.selected_item:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un articolo da evadere!"),
+                _("Select an item to deliver!"),
                 parent=self
             )
             return False
@@ -510,7 +510,7 @@ class UI(ParentView):
         if not self.ddt.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Inserire il numero DDT!"),
+                _("Enter the DDT number!"),
                 parent=self
             )
             return False
@@ -519,7 +519,7 @@ class UI(ParentView):
         if not self.cal_delivered.is_valid:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Data consegna non valida!"),
+                _("Invalid delivery date!"),
                 parent=self
             )
             return False
@@ -533,7 +533,7 @@ class UI(ParentView):
         if qty < 1 or qty > remaining:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("La quantità deve essere tra 1 e") + f" {remaining}!",
+                _("Quantity must be between 1 and") + f" {remaining}!",
                 parent=self
             )
             return False
@@ -543,7 +543,7 @@ class UI(ParentView):
         if pieces_per_label > 1 and qty % pieces_per_label != 0:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("La quantità deve essere un multiplo di") + f" {pieces_per_label}!",
+                _("Quantity must be a multiple of") + f" {pieces_per_label}!",
                 parent=self
             )
             return False
@@ -554,7 +554,7 @@ class UI(ParentView):
             if not self.cb_batches.get():
                 messagebox.showwarning(
                     self.engine.app_title,
-                    _("Selezionare un lotto esistente!"),
+                    _("Select an existing batch!"),
                     parent=self
                 )
                 return False
@@ -563,7 +563,7 @@ class UI(ParentView):
             if not self.new_lot.get().strip():
                 messagebox.showwarning(
                     self.engine.app_title,
-                    _("Inserire il numero di lotto!"),
+                    _("Enter the batch number!"),
                     parent=self
                 )
                 return False
@@ -571,7 +571,7 @@ class UI(ParentView):
             if not self.cal_expiration.is_valid:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    _("Data scadenza non valida!"),
+                    _("Invalid expiration date!"),
                     parent=self
                 )
                 return False
@@ -582,7 +582,7 @@ class UI(ParentView):
             if expiration_date and expiration_date <= today:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    _("La data di scadenza deve essere futura!"),
+                    _("Expiration date must be in the future!"),
                     parent=self
                 )
                 return False
@@ -600,8 +600,8 @@ class UI(ParentView):
             if existing:
                 messagebox.showwarning(
                     self.engine.app_title,
-                    _("Il lotto") + f" '{lot_number}' " + _("con scadenza") + f" {exp_str} " + _("esiste già!") + "\n" +
-                    _("Selezionarlo dalla lista dei lotti esistenti."),
+                    _("Batch") + f" '{lot_number}' " + _("with expiration") + f" {exp_str} " + _("already exists!") + "\n" +
+                    _("Select it from the existing batches list."),
                     parent=self
                 )
                 return False
@@ -620,7 +620,7 @@ class UI(ParentView):
             labels_to_create = 1
 
         # Confirm
-        msg = _("Registrare la consegna di") + f" {qty} " + _("unità?") + "\n\n" + _("Verranno create") + f" {labels_to_create} " + _("etichette.")
+        msg = _("Record delivery of") + f" {qty} " + _("units?") + "\n\n" + _("Will create") + f" {labels_to_create} " + _("labels.")
         if not messagebox.askyesno(self.engine.app_title, msg, parent=self):
             return
 
@@ -630,7 +630,7 @@ class UI(ParentView):
             if not batch_id:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Errore nella creazione del lotto!"),
+                    _("Error creating batch!"),
                     parent=self
                 )
                 return
@@ -640,7 +640,7 @@ class UI(ParentView):
             if not delivery_id:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Errore nella registrazione della consegna!"),
+                    _("Error recording delivery!"),
                     parent=self
                 )
                 return
@@ -649,11 +649,11 @@ class UI(ParentView):
             labels_created = self.create_labels(batch_id, labels_to_create)
 
             # Success message
-            label_word = _("etichetta") if labels_created == 1 else _("etichette")
+            label_word = _("label") if labels_created == 1 else _("labels")
             messagebox.showinfo(
                 self.engine.app_title,
-                _("Consegna registrata con successo!") + "\n\n" +
-                _("Create") + f" {labels_created} {label_word}.",
+                _("Delivery recorded successfully!") + "\n\n" +
+                _("Created") + f" {labels_created} {label_word}.",
                 parent=self
             )
 
@@ -681,7 +681,7 @@ class UI(ParentView):
             )
             messagebox.showerror(
                 self.engine.app_title,
-                _("Errore durante il salvataggio:") + f"\n{e}",
+                _("Error during save:") + f"\n{e}",
                 parent=self
             )
 
@@ -703,7 +703,7 @@ class UI(ParentView):
             self.engine.write(sql, (request_id,))
             messagebox.showinfo(
                 self.engine.app_title,
-                _("Tutti gli articoli sono stati evasi.") + "\n" + _("La richiesta è stata chiusa."),
+                _("All items have been delivered.") + "\n" + _("The request has been closed."),
                 parent=self
             )
 
@@ -770,7 +770,7 @@ class UI(ParentView):
         except Exception as e:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Etichette create ma errore nella stampa:") + f"\n{e}",
+                _("Labels created but error printing:") + f"\n{e}",
                 parent=self
             )
 

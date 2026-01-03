@@ -48,17 +48,17 @@ class UI(ChildView):
         entry_width = self.engine.get_entry_width()
 
         r = 0
-        ttk.Label(w, text=_("Codice:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Code:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtReference = ttk.Entry(w, textvariable=self.reference, width=entry_width)
         self.txtReference.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Descrizione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Description:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtDescription = ttk.Entry(w, textvariable=self.description, width=entry_width)
         self.txtDescription.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Attivo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -67,11 +67,11 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
         self.bind("<Return>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -85,11 +85,11 @@ class UI(ChildView):
         if self.index is not None and selected_item:
             # Edit mode
             self.selected_item = selected_item
-            self.title(_("Modifica Prodotto"))
+            self.title(_("Edit Product"))
             self.set_values()
         else:
             # New product mode
-            self.title(_("Nuovo Prodotto"))
+            self.title(_("New Product"))
             self.status.set(1)
 
         self.txtReference.focus()
@@ -114,7 +114,7 @@ class UI(ChildView):
         if not self.reference.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Codice è obbligatorio!"),
+                _("The Code field is required!"),
                 parent=self
             )
             self.txtReference.focus()
@@ -123,7 +123,7 @@ class UI(ChildView):
         if not self.engine.clean_text(self.description.get()):
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Descrizione è obbligatorio!"),
+                _("The Description field is required!"),
                 parent=self
             )
             self.txtDescription.focus()
@@ -175,11 +175,11 @@ class UI(ChildView):
             # If editing, allow same reference for same product
             if self.index is not None:
                 if rs["product_id"] != self.selected_item["product_id"]:
-                    msg = f"Il codice '{self.reference.get()}' è già assegnato!"
+                    msg = _("The code '{}' is already assigned!").format(self.reference.get())
                     messagebox.showwarning(self.engine.app_title, msg, parent=self)
                     return False
             else:
-                msg = f"Il codice '{self.reference.get()}' è già assegnato!"
+                msg = _("The code '{}' is already assigned!").format(self.reference.get())
                 messagebox.showwarning(self.engine.app_title, msg, parent=self)
                 return False
 
@@ -194,11 +194,11 @@ class UI(ChildView):
             # If editing, allow same description for same product
             if self.index is not None:
                 if rs["product_id"] != self.selected_item["product_id"]:
-                    msg = f"Il prodotto '{self.description.get()}' esiste già!"
+                    msg = _("The product '{}' already exists!").format(self.description.get())
                     messagebox.showwarning(self.engine.app_title, msg, parent=self)
                     return False
             else:
-                msg = f"Il prodotto '{self.description.get()}' esiste già!"
+                msg = _("The product '{}' already exists!").format(self.description.get())
                 messagebox.showwarning(self.engine.app_title, msg, parent=self)
                 return False
 

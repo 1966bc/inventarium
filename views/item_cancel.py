@@ -39,7 +39,7 @@ class UI(ChildView):
         self.lblInfo.pack(fill=tk.X, pady=(0, 10))
 
         # Note field
-        ttk.Label(w, text=_("Motivo annullamento:")).pack(anchor=tk.W, pady=(5, 2))
+        ttk.Label(w, text=_("Cancellation reason:")).pack(anchor=tk.W, pady=(5, 2))
 
         self.txtNote = ttk.Entry(w, textvariable=self.note, width=50)
         self.txtNote.pack(fill=tk.X, pady=(0, 10))
@@ -48,10 +48,10 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.pack(pady=10)
 
-        self.engine.create_button(bf, _("Annulla Articolo"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Cancel Item"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-a>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -64,11 +64,11 @@ class UI(ChildView):
             product_name: Product name for display
         """
         self.selected_item = selected_item
-        self.title(_("Annulla Articolo"))
+        self.title(_("Cancel Item"))
 
         # Show item info
         qty = selected_item.get("quantity", 0)
-        info = f"{_('Prodotto')}: {product_name}\n{_('Quantità')}: {qty}"
+        info = f"{_('Product')}: {product_name}\n{_('Quantity')}: {qty}"
         self.lblInfo.config(text=info)
 
         self.txtNote.focus()
@@ -80,7 +80,7 @@ class UI(ChildView):
         if not note:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Inserire il motivo dell'annullamento!"),
+                _("Please enter the cancellation reason!"),
                 parent=self
             )
             self.txtNote.focus()
@@ -88,7 +88,7 @@ class UI(ChildView):
 
         if messagebox.askyesno(
             self.engine.app_title,
-            _("Confermare l'annullamento dell'articolo?"),
+            _("Confirm item cancellation?"),
             parent=self
         ):
             # Set status = 2 (cancelled) and save note
@@ -107,7 +107,7 @@ class UI(ChildView):
                     # No more active items, ask to close
                     if messagebox.askyesno(
                         self.engine.app_title,
-                        _("Non ci sono più articoli attivi.") + "\n" + _("Chiudere la richiesta?"),
+                        _("No more active items.") + "\n" + _("Close the request?"),
                         parent=self
                     ):
                         sql = "UPDATE requests SET status = 0 WHERE request_id = ?"

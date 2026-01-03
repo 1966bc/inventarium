@@ -46,7 +46,7 @@ class UI(ParentView):
         f1 = ttk.Frame(f0)
 
         # Package fundings treeview with count in LabelFrame title
-        self.lbf = ttk.LabelFrame(f1, text=f"{_('Totale')}: 0", style="App.TLabelframe")
+        self.lbf = ttk.LabelFrame(f1, text=f"{_('Total')}: 0", style="App.TLabelframe")
         w = self.lbf
 
         cols = ("package_funding_id", "product", "package", "supplier", "funding", "deliberation", "valid_from")
@@ -58,22 +58,22 @@ class UI(ParentView):
 
         # Visible columns
         self.treeview.column("product", width=180, anchor=tk.W)
-        self.treeview.heading("product", text=_("Prodotto"), command=lambda: self.sort_column("product"))
+        self.treeview.heading("product", text=_("Product"), command=lambda: self.sort_column("product"))
 
         self.treeview.column("package", width=120, anchor=tk.W)
-        self.treeview.heading("package", text=_("Confezionamento"), command=lambda: self.sort_column("package"))
+        self.treeview.heading("package", text=_("Packaging"), command=lambda: self.sort_column("package"))
 
         self.treeview.column("supplier", width=130, anchor=tk.W)
-        self.treeview.heading("supplier", text=_("Fornitore"), command=lambda: self.sort_column("supplier"))
+        self.treeview.heading("supplier", text=_("Supplier"), command=lambda: self.sort_column("supplier"))
 
         self.treeview.column("funding", width=120, anchor=tk.W)
-        self.treeview.heading("funding", text=_("Fonte"), command=lambda: self.sort_column("funding"))
+        self.treeview.heading("funding", text=_("Source"), command=lambda: self.sort_column("funding"))
 
         self.treeview.column("deliberation", width=150, anchor=tk.W)
-        self.treeview.heading("deliberation", text=_("Delibera"), command=lambda: self.sort_column("deliberation"))
+        self.treeview.heading("deliberation", text=_("Resolution"), command=lambda: self.sort_column("deliberation"))
 
         self.treeview.column("valid_from", width=100, anchor=tk.CENTER)
-        self.treeview.heading("valid_from", text=_("Valido dal"), command=lambda: self.sort_column("valid_from"))
+        self.treeview.heading("valid_from", text=_("Valid from"), command=lambda: self.sort_column("valid_from"))
 
         # Scrollbar
         scrollbar = ttk.Scrollbar(w, orient=tk.VERTICAL, command=self.treeview.yview)
@@ -99,10 +99,10 @@ class UI(ParentView):
 
         # Action buttons
         buttons = [
-            (_("Nuovo"), self.on_add, "<Alt-n>", 0),
-            (_("Modifica"), self.on_edit, "<Alt-m>", 0),
-            (_("Aggiorna"), self.on_reset, "<Alt-a>", 0),
-            (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
+            (_("New"), self.on_add, "<Alt-n>", 0),
+            (_("Edit"), self.on_edit, "<Alt-m>", 0),
+            (_("Refresh"), self.on_reset, "<Alt-a>", 0),
+            (_("Close"), self.on_cancel, "<Alt-c>", 0),
         ]
 
         for text, cmd, key, ul in buttons:
@@ -110,8 +110,8 @@ class UI(ParentView):
             self.bind(key, lambda e, c=cmd: c())
 
         # Status filter
-        w = ttk.LabelFrame(f2, text=_("Stato"), style="App.TLabelframe")
-        for text, value in ((_("Attivi"), 1), (_("Non Attivi"), 0), (_("Tutti"), -1)):
+        w = ttk.LabelFrame(f2, text=_("Status"), style="App.TLabelframe")
+        for text, value in ((_("Active"), 1), (_("Inactive"), 0), (_("All"), -1)):
             ttk.Radiobutton(
                 w, text=text, variable=self.status,
                 value=value,
@@ -121,17 +121,17 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Legend
-        w = ttk.LabelFrame(f2, text=_("Legenda"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Legend"), style="App.TLabelframe")
         f_leg = tk.Frame(w, bg="#e6ffe6", height=15, width=15)
         f_leg.pack(side=tk.LEFT, padx=5, pady=5)
-        ttk.Label(w, text=_("In Gara"), style="App.TLabel").pack(side=tk.LEFT, padx=2)
+        ttk.Label(w, text=_("In Tender"), style="App.TLabel").pack(side=tk.LEFT, padx=2)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         f2.pack(side=tk.RIGHT, fill=tk.Y, padx=5, pady=5)
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Fonti Finanziamento Packages"))
+        self.title(_("Package Funding Sources"))
         self.engine.dict_instances["package_fundings"] = self
         self.on_reset()
 
@@ -187,11 +187,11 @@ class UI(ParentView):
                     row["packaging"] or "",
                     row["supplier"] or "",
                     row["funding"] or "",
-                    row["deliberation"] or _("Economia"),
+                    row["deliberation"] or _("Economy"),
                     row["valid_from"] or ""
                 ), tags=tuple(tags) if tags else ())
 
-        self.lbf.config(text=f"{_('Totale')}: {len(self.treeview.get_children())}")
+        self.lbf.config(text=f"{_('Total')}: {len(self.treeview.get_children())}")
 
     def sort_column(self, col):
         """Sort treeview by column."""

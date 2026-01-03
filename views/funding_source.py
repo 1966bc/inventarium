@@ -38,17 +38,17 @@ class UI(ChildView):
         w.pack(fill=tk.BOTH, expand=1)
 
         r = 0
-        ttk.Label(w, text=_("Codice:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Code:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtCode = ttk.Entry(w, textvariable=self.code, width=12)
         self.txtCode.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Descrizione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Description:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtDescription = ttk.Entry(w, textvariable=self.description, width=35)
         self.txtDescription.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Attivo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -57,10 +57,10 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -68,10 +68,10 @@ class UI(ChildView):
         """Open dialog for new or edit."""
         if self.index is not None and selected_item:
             self.selected_item = selected_item
-            self.title("Modifica Fonte Finanziamento")
+            self.title(_("Edit Funding Source"))
             self.set_values()
         else:
-            self.title("Nuova Fonte Finanziamento")
+            self.title(_("New Funding Source"))
             self.status.set(1)
 
         self.txtCode.focus()
@@ -95,7 +95,7 @@ class UI(ChildView):
         if not self.code.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Codice è obbligatorio!"),
+                _("The Code field is required!"),
                 parent=self
             )
             self.txtCode.focus()
@@ -104,7 +104,7 @@ class UI(ChildView):
         if not self.description.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Descrizione è obbligatorio!"),
+                _("The Description field is required!"),
                 parent=self
             )
             self.txtDescription.focus()

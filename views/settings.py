@@ -48,27 +48,27 @@ class UI(ChildView):
         entry_width = 40
 
         r = 0
-        ttk.Label(w, text=_("Ospedale:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Hospital:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtCompany = ttk.Entry(w, textvariable=self.company_name, width=entry_width)
         self.txtCompany.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Laboratorio:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Laboratory:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtLab = ttk.Entry(w, textvariable=self.lab_name, width=entry_width)
         self.txtLab.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Responsabile:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Manager:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtManager = ttk.Entry(w, textvariable=self.lab_manager, width=entry_width)
         self.txtManager.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Stanza/Locale:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Room/Location:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtRoom = ttk.Entry(w, textvariable=self.lab_room, width=entry_width)
         self.txtRoom.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Telefono:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Phone:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtPhone = ttk.Entry(w, textvariable=self.lab_phone, width=entry_width)
         self.txtPhone.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -78,23 +78,23 @@ class UI(ChildView):
 
         # Default VAT
         r += 1
-        ttk.Label(w, text=_("IVA predefinita %:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Default VAT %:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtVat = ttk.Entry(w, textvariable=self.default_vat, width=8)
         self.txtVat.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         # Idle timeout
         r += 1
-        ttk.Label(w, text=_("Timeout inattività (min):")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Idle timeout (min):")).grid(row=r, column=0, sticky=tk.W, pady=2)
         timeout_frame = ttk.Frame(w)
         timeout_frame.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         self.spnTimeout = ttk.Spinbox(timeout_frame, from_=0, to=120, width=5,
                                        textvariable=self.idle_timeout)
         self.spnTimeout.pack(side=tk.LEFT)
-        ttk.Label(timeout_frame, text=_("(0 = disabilitato)")).pack(side=tk.LEFT, padx=5)
+        ttk.Label(timeout_frame, text=_("(0 = disabled)")).pack(side=tk.LEFT, padx=5)
 
         # Language selection
         r += 1
-        ttk.Label(w, text=_("Lingua") + ":").grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Language:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         lang_frame = ttk.Frame(w)
         lang_frame.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         self.cmbLanguage = ttk.Combobox(lang_frame, textvariable=self.language,
@@ -107,13 +107,13 @@ class UI(ChildView):
         ttk.Separator(w, orient=tk.HORIZONTAL).grid(row=r, column=0, columnspan=2, sticky="ew", pady=10)
 
         r += 1
-        ttk.Label(w, text=_("Impostazioni locali"), font=("", 9, "bold")).grid(
+        ttk.Label(w, text=_("Local Settings"), font=("", 9, "bold")).grid(
             row=r, column=0, columnspan=2, sticky=tk.W, pady=2)
 
         # Printer enabled (local setting - config.ini)
         r += 1
-        ttk.Label(w, text=_("Stampa etichette:")).grid(row=r, column=0, sticky=tk.W, pady=2)
-        self.chkPrinter = ttk.Checkbutton(w, text=_("Abilitata su questa postazione"),
+        ttk.Label(w, text=_("Label Printing:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        self.chkPrinter = ttk.Checkbutton(w, text=_("Enabled on this workstation"),
                                            variable=self.printer_enabled, style="App.TCheckbutton")
         self.chkPrinter.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -122,16 +122,16 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, sticky=tk.E, pady=15)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save, width=12).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", lambda e: self.on_save())
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", lambda e: self.on_cancel())
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the dialog."""
-        self.title(_("Impostazioni Laboratorio"))
+        self.title(_("Laboratory Settings"))
         self.load_settings()
         self.txtCompany.focus()
 
@@ -155,7 +155,7 @@ class UI(ChildView):
         """Save settings."""
         if messagebox.askyesno(
             self.engine.app_title,
-            _("Vuoi salvare?"),
+            self.engine.ask_to_save,
             parent=self
         ):
             self.engine.set_setting("company_name", self.company_name.get().strip())
@@ -183,7 +183,7 @@ class UI(ChildView):
 
             messagebox.showinfo(
                 self.engine.app_title,
-                _("Impostazioni salvate."),
+                _("Settings saved."),
                 parent=self
             )
 
@@ -191,7 +191,7 @@ class UI(ChildView):
             if lang_code != self._original_language:
                 if messagebox.askyesno(
                     self.engine.app_title,
-                    _("Riavvio richiesto"),
+                    _("Language changed. Restart application to apply?"),
                     parent=self
                 ):
                     self.destroy()
@@ -202,7 +202,7 @@ class UI(ChildView):
         else:
             messagebox.showinfo(
                 self.engine.app_title,
-                _("Operazione annullata."),
+                self.engine.abort,
                 parent=self
             )
 

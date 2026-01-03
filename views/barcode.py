@@ -32,7 +32,7 @@ class UI(ParentView):
         self.attributes("-topmost", True)
 
         self.barcode = tk.StringVar()
-        self.action = tk.IntVar(value=0)  # 0=Scarica, 1=Info
+        self.action = tk.IntVar(value=0)  # 0=Unload, 1=Info
 
         self.init_ui()
         self.engine.center_window(self)
@@ -46,7 +46,7 @@ class UI(ParentView):
         # Instructions
         ttk.Label(
             w,
-            text=_("Scansiona il barcode o inserisci il codice etichetta:")
+            text=_("Scan barcode or enter label code:")
         ).pack(anchor=tk.W, pady=(0, 10))
 
         # Barcode entry
@@ -55,11 +55,11 @@ class UI(ParentView):
         self.txtBarcode.bind("<Return>", self.on_scan)
 
         # Action radio buttons
-        rf = ttk.LabelFrame(w, text=_("Azione"), padding=5)
+        rf = ttk.LabelFrame(w, text=_("Action"), padding=5)
         rf.pack(fill=tk.X, pady=10)
 
         ttk.Radiobutton(
-            rf, text=_("Scarica"), variable=self.action, value=0
+            rf, text=_("Unload"), variable=self.action, value=0
         ).pack(side=tk.LEFT, padx=10)
 
         ttk.Radiobutton(
@@ -74,9 +74,9 @@ class UI(ParentView):
         bf = ttk.Frame(w)
         bf.pack(fill=tk.X, pady=(10, 0))
 
-        self.engine.create_button(bf, _("Esegui"), self.on_scan).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Execute"), self.on_scan).pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
@@ -96,7 +96,7 @@ class UI(ParentView):
         try:
             code_int = int(code)
         except ValueError:
-            self.show_result(_("Codice non valido!"), "red")
+            self.show_result(_("Invalid code!"), "red")
             self.clear_entry()
             return
 
@@ -125,7 +125,7 @@ class UI(ParentView):
         row = self.engine.read(False, sql, (code_int, code_int))
 
         if not row:
-            self.show_result(_("Etichetta") + f" {code_int} " + _("non trovata!"), "red")
+            self.show_result(_("Label") + f" {code_int} " + _("not found!"), "red")
             self.clear_entry()
             return
 
@@ -133,12 +133,12 @@ class UI(ParentView):
         label_id = row["label_id"]
 
         if row["status"] == 0:
-            self.show_result(_("Etichetta") + f" {label_id} " + _("già scaricata!"), "orange")
+            self.show_result(_("Label") + f" {label_id} " + _("already unloaded!"), "orange")
             self.clear_entry()
             return
 
         if row["status"] == -1:
-            self.show_result(_("Etichetta") + f" {label_id} " + _("annullata!"), "orange")
+            self.show_result(_("Label") + f" {label_id} " + _("cancelled!"), "orange")
             self.clear_entry()
             return
 
@@ -149,13 +149,13 @@ class UI(ParentView):
             product = row.get("product_name", "")
             lot = row.get("lot", "")
             self.show_result(
-                _("Scaricata:") + f" {product}\n" + _("Lotto:") + f" {lot}",
+                _("Unloaded:") + f" {product}\n" + _("Batch:") + f" {lot}",
                 "green"
             )
             # Notify subscribers that a label was unloaded
             self.engine.notify("label_unloaded")
         else:
-            self.show_result(_("Errore nello scarico!"), "red")
+            self.show_result(_("Error unloading!"), "red")
 
         self.clear_entry()
 
@@ -164,7 +164,7 @@ class UI(ParentView):
         row = self.engine.get_label_info(code_int)
 
         if not row:
-            self.show_result(_("Etichetta") + f" {code_int} " + _("non trovata!"), "red")
+            self.show_result(_("Label") + f" {code_int} " + _("not found!"), "red")
             self.clear_entry()
             return
 
@@ -177,30 +177,30 @@ class UI(ParentView):
         # Status text
         status_map = {
             1: (_("In stock"), "green"),
-            0: (_("Usata"), "gray"),
-            -1: (_("Annullata"), "red")
+            0: (_("Used"), "gray"),
+            -1: (_("Cancelled"), "red")
         }
-        status_text, status_color = status_map.get(data["status"], (_("Sconosciuto"), "black"))
+        status_text, status_color = status_map.get(data["status"], (_("Unknown"), "black"))
 
         # Days left text
         days_left = data.get("days_left")
         if days_left is not None:
             if days_left < 0:
-                exp_text = _("SCADUTA da") + f" {abs(days_left)} " + _("giorni")
+                exp_text = _("EXPIRED by") + f" {abs(days_left)} " + _("days")
                 exp_color = "red"
             elif days_left <= 30:
-                exp_text = _("Scade tra") + f" {days_left} " + _("giorni")
+                exp_text = _("Expires in") + f" {days_left} " + _("days")
                 exp_color = "orange"
             else:
-                exp_text = _("Scade tra") + f" {days_left} " + _("giorni")
+                exp_text = _("Expires in") + f" {days_left} " + _("days")
                 exp_color = "green"
         else:
-            exp_text = _("Nessuna scadenza")
+            exp_text = _("No expiration")
             exp_color = "gray"
 
         # Build info window
         info_win = tk.Toplevel(self)
-        info_win.title(_("Dettaglio Etichetta"))
+        info_win.title(_("Label Detail"))
         info_win.transient(self)
         info_win.resizable(0, 0)
         info_win.attributes("-topmost", True)
@@ -229,18 +229,18 @@ class UI(ParentView):
 
         fields = [
             (_("Barcode:"), data.get("tick") or data.get("label_id")),
-            (_("Codice prodotto:"), data.get("product_code", "")),
-            (_("Confezionamento:"), data.get("packaging", "")),
-            (_("Lotto:"), data.get("lot", "")),
-            (_("Scadenza:"), data.get("expiration", "")),
-            (_("Stato scadenza:"), exp_text),
-            (_("Fornitore:"), data.get("supplier", "")),
-            (_("Cod. fornitore:"), data.get("supplier_code", "")),
-            (_("Categoria:"), data.get("category", "")),
-            (_("Ubicazione:"), data.get("location", "")),
-            (_("Conservazione:"), data.get("conservation", "")),
-            (_("Caricata il:"), data.get("loaded", "")),
-            (_("Scaricata il:"), data.get("unloaded", "") or "-"),
+            (_("Product code:"), data.get("product_code", "")),
+            (_("Packaging:"), data.get("packaging", "")),
+            (_("Batch:"), data.get("lot", "")),
+            (_("Expiration:"), data.get("expiration", "")),
+            (_("Expiration status:"), exp_text),
+            (_("Supplier:"), data.get("supplier", "")),
+            (_("Supplier code:"), data.get("supplier_code", "")),
+            (_("Category:"), data.get("category", "")),
+            (_("Location:"), data.get("location", "")),
+            (_("Storage:"), data.get("conservation", "")),
+            (_("Loaded on:"), data.get("loaded", "")),
+            (_("Unloaded on:"), data.get("unloaded", "") or "-"),
         ]
 
         for r, (label, value) in enumerate(fields):
@@ -249,12 +249,12 @@ class UI(ParentView):
             val_lbl.grid(row=r, column=1, sticky=tk.W, padx=(10, 0), pady=2)
 
             # Color the expiration status
-            if label == _("Stato scadenza:"):
+            if label == _("Expiration status:"):
                 val_lbl.config(foreground=exp_color)
 
         # Close button
         ttk.Separator(f, orient=tk.HORIZONTAL).pack(fill=tk.X, pady=10)
-        self.engine.create_button(f, _("Chiudi"), info_win.destroy).pack()
+        self.engine.create_button(f, _("Close"), info_win.destroy).pack()
 
         info_win.bind("<Escape>", lambda e: info_win.destroy())
         info_win.bind("<Return>", lambda e: info_win.destroy())

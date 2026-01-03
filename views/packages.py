@@ -44,7 +44,7 @@ class UI(ParentView):
         # Left panel - Packages treeview
         f1 = ttk.Frame(f0)
 
-        self.lbf = ttk.LabelFrame(f1, text=f"{_('Totale')}: 0", style="App.TLabelframe")
+        self.lbf = ttk.LabelFrame(f1, text=f"{_('Total')}: 0", style="App.TLabelframe")
         w = self.lbf
 
         # Treeview with columns
@@ -54,14 +54,14 @@ class UI(ParentView):
         self.tree = ttk.Treeview(w, columns=columns, show="headings", height=12)
 
         # Define headings
-        self.tree.heading("reference", text=_("Cod.Forn."))
-        self.tree.heading("supplier", text=_("Fornitore"))
-        self.tree.heading("labels", text=_("Et."))
-        self.tree.heading("packaging", text=_("Confezionamento"))
-        self.tree.heading("conservation", text=_("Conserv."))
-        self.tree.heading("dark", text=_("B"))
-        self.tree.heading("category", text=_("Categoria"))
-        self.tree.heading("fonte", text=_("Fonte"))
+        self.tree.heading("reference", text=_("Supp.Code"))
+        self.tree.heading("supplier", text=_("Supplier"))
+        self.tree.heading("labels", text=_("Lb."))
+        self.tree.heading("packaging", text=_("Packaging"))
+        self.tree.heading("conservation", text=_("Storage"))
+        self.tree.heading("dark", text=_("D"))
+        self.tree.heading("category", text=_("Category"))
+        self.tree.heading("fonte", text=_("Source"))
 
         # Define column widths
         self.tree.column("reference", width=80, anchor=tk.W)
@@ -93,10 +93,10 @@ class UI(ParentView):
         f2 = ttk.Frame(f0)
 
         buttons = [
-            (_("Nuovo"), self.on_add, "<Alt-n>", 0),
-            (_("Modifica"), self.on_edit, "<Alt-m>", 0),
-            (_("Aggiorna"), self.on_reset, "<Alt-a>", 0),
-            (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
+            (_("New"), self.on_add, "<Alt-n>", 0),
+            (_("Edit"), self.on_edit, "<Alt-m>", 0),
+            (_("Refresh"), self.on_reset, "<Alt-a>", 0),
+            (_("Close"), self.on_cancel, "<Alt-c>", 0),
         ]
 
         for text, cmd, key, ul in buttons:
@@ -117,7 +117,7 @@ class UI(ParentView):
         """
         self.selected_product = selected_product
         product_name = selected_product.get("description", "")
-        self.title(f"{_('Confezioni')} - {product_name}")
+        self.title(f"{_('Packages')} - {product_name}")
         self.engine.dict_instances["packages"] = self
         self.on_reset()
 
@@ -173,7 +173,7 @@ class UI(ParentView):
                     tags=tag
                 )
 
-        self.lbf.config(text=f"{_('Totale')}: {len(self.tree.get_children())}")
+        self.lbf.config(text=f"{_('Total')}: {len(self.tree.get_children())}")
 
     def on_item_selected(self, evt=None):
         """Handle item selection."""

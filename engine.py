@@ -139,9 +139,9 @@ class Engine(DBMS, Controller, Tools, Launcher, metaclass=_EngineMeta):
         self.entry_width = 20
 
         # Standard messages (translated)
-        self.ask_to_save = _("Vuoi salvare?")
-        self.abort = _("Operazione annullata.")
-        self.no_selected = _("Seleziona un elemento!")
+        self.ask_to_save = _("Do you want to save?")
+        self.abort = _("Operation cancelled.")
+        self.no_selected = _("Select an element!")
 
     def _init_i18n(self):
         """Initialize internationalization from settings."""

@@ -37,12 +37,12 @@ class UI(ChildView):
         w.pack(fill=tk.BOTH, expand=1)
 
         r = 0
-        ttk.Label(w, text=_("Riferimento:")).grid(row=r, column=0, sticky=tk.W, pady=5)
+        ttk.Label(w, text=_("Reference:")).grid(row=r, column=0, sticky=tk.W, pady=5)
         self.txtReference = ttk.Entry(w, textvariable=self.reference, width=30)
         self.txtReference.grid(row=r, column=1, sticky=tk.W, padx=5, pady=5)
 
         r += 1
-        ttk.Label(w, text=_("Data:")).grid(row=r, column=0, sticky=tk.W, pady=5)
+        ttk.Label(w, text=_("Date:")).grid(row=r, column=0, sticky=tk.W, pady=5)
         self.cal_issued = Calendarium(w, "")
         self.cal_issued.grid(row=r, column=1, sticky=tk.W, padx=5, pady=5)
 
@@ -51,10 +51,10 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, pady=15)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -66,7 +66,7 @@ class UI(ChildView):
             selected_request: Dict with request data
         """
         self.selected_request = selected_request
-        self.title(_("Modifica Richiesta"))
+        self.title(_("Edit Request"))
         self.set_values()
         self.txtReference.focus()
 

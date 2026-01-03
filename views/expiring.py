@@ -43,18 +43,18 @@ class UI(ParentView):
         main_frame.pack(fill=tk.BOTH, expand=1)
 
         # Expired batches section
-        f1 = ttk.LabelFrame(main_frame, text=_("Lotti Scaduti"), style="App.TLabelframe")
+        f1 = ttk.LabelFrame(main_frame, text=_("Expired Batches"), style="App.TLabelframe")
         f1.pack(fill=tk.BOTH, expand=1, pady=(0, 10))
 
         # Expired treeview
         cols = ("batch_id", "product", "lot", "expiration", "days", "stock")
         self.treeExpired = ttk.Treeview(f1, columns=cols, show="headings", height=8)
         self.treeExpired.column("batch_id", width=0, stretch=False)  # Hidden column
-        self.treeExpired.heading("product", text=_("Prodotto"))
-        self.treeExpired.heading("lot", text=_("Lotto"))
-        self.treeExpired.heading("expiration", text=_("Scadenza"))
-        self.treeExpired.heading("days", text=_("GG Scad."))
-        self.treeExpired.heading("stock", text=_("Giac."))
+        self.treeExpired.heading("product", text=_("Product"))
+        self.treeExpired.heading("lot", text=_("Batch"))
+        self.treeExpired.heading("expiration", text=_("Expiration"))
+        self.treeExpired.heading("days", text=_("Days Exp."))
+        self.treeExpired.heading("stock", text=_("Stock"))
 
         self.treeExpired.column("product", width=250)
         self.treeExpired.column("lot", width=120)
@@ -70,16 +70,16 @@ class UI(ParentView):
         sb1.pack(side=tk.RIGHT, fill=tk.Y, padx=(0, 5), pady=5)
 
         # Expiring batches section
-        f2 = ttk.LabelFrame(main_frame, text=_("Lotti in Scadenza (30 giorni)"), style="App.TLabelframe")
+        f2 = ttk.LabelFrame(main_frame, text=_("Expiring Batches (30 days)"), style="App.TLabelframe")
         f2.pack(fill=tk.BOTH, expand=1)
 
         # Expiring treeview
         self.treeExpiring = ttk.Treeview(f2, columns=cols, show="headings", height=8)
-        self.treeExpiring.heading("product", text=_("Prodotto"))
-        self.treeExpiring.heading("lot", text=_("Lotto"))
-        self.treeExpiring.heading("expiration", text=_("Scadenza"))
-        self.treeExpiring.heading("days", text=_("GG Rim."))
-        self.treeExpiring.heading("stock", text=_("Giac."))
+        self.treeExpiring.heading("product", text=_("Product"))
+        self.treeExpiring.heading("lot", text=_("Batch"))
+        self.treeExpiring.heading("expiration", text=_("Expiration"))
+        self.treeExpiring.heading("days", text=_("Days Left"))
+        self.treeExpiring.heading("stock", text=_("Stock"))
 
         self.treeExpiring.column("product", width=250)
         self.treeExpiring.column("lot", width=120)
@@ -103,20 +103,20 @@ class UI(ParentView):
         bf = ttk.Frame(main_frame)
         bf.pack(fill=tk.X, pady=(10, 0))
 
-        self.engine.create_button(bf, _("Aggiorna"), self.refresh, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Refresh"), self.refresh, width=12).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-a>", lambda e: self.refresh())
 
-        self.btnAnnulla = self.engine.create_button(bf, _("Annulla Lotto"), self.on_cancel_batch, width=14, underline=1)
+        self.btnAnnulla = self.engine.create_button(bf, _("Cancel Batch"), self.on_cancel_batch, width=14, underline=0)
         self.btnAnnulla.pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-n>", lambda e: self.on_cancel_batch())
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
         self.bind("<Alt-c>", lambda e: self.on_cancel())
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Scadenze"))
+        self.title(_("Expiring"))
         self.engine.dict_instances["expiring"] = self
         self.refresh()
 
@@ -174,7 +174,7 @@ class UI(ParentView):
         if not selection:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Seleziona un lotto scaduto da annullare!"),
+                _("Select an expired batch to cancel!"),
                 parent=self
             )
             return
@@ -187,7 +187,7 @@ class UI(ParentView):
         labels_count = values[5]
 
         # Confirm
-        msg = _("Annullare il lotto '{}' di '{}'?\n\nVerranno annullate {} etichette in giacenza.\n\nQuesta operazione non è reversibile.").format(lot, product_name, labels_count)
+        msg = _("Cancel batch '{}' of '{}'?\n\n{} labels in stock will be cancelled.\n\nThis operation is not reversible.").format(lot, product_name, labels_count)
 
         if not messagebox.askyesno(self.engine.app_title, msg, parent=self):
             return
@@ -202,7 +202,7 @@ class UI(ParentView):
 
         messagebox.showinfo(
             self.engine.app_title,
-            _("Lotto '{}' annullato con successo.").format(lot),
+            _("Batch '{}' cancelled successfully.").format(lot),
             parent=self
         )
 

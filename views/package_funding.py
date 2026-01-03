@@ -53,7 +53,7 @@ class UI(ChildView):
 
         # Search section
         r = 0
-        ttk.Label(w, text=_("Cerca Package:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Search Package:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         search_frame = ttk.Frame(w)
         search_frame.grid(row=r, column=1, columnspan=2, sticky=tk.W, padx=5, pady=2)
 
@@ -62,16 +62,16 @@ class UI(ChildView):
         self.txtSearch.bind("<Return>", self.on_search)
         self.txtSearch.bind("<KeyRelease>", self.on_search_keyrelease)
 
-        self.engine.create_button(search_frame, _("Cerca"), self.on_search).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(search_frame, _("Search"), self.on_search).pack(side=tk.LEFT, padx=5)
 
         # Search hint
         r += 1
-        ttk.Label(w, text=_("(descrizione o codice)"), style="App.TLabel").grid(
+        ttk.Label(w, text=_("(description or code)"), style="App.TLabel").grid(
             row=r, column=1, sticky=tk.W, padx=5)
 
         # Results listbox
         r += 1
-        ttk.Label(w, text=_("Risultati:")).grid(row=r, column=0, sticky=tk.NW, pady=2)
+        ttk.Label(w, text=_("Results:")).grid(row=r, column=0, sticky=tk.NW, pady=2)
         list_frame = ttk.Frame(w)
         list_frame.grid(row=r, column=1, columnspan=2, sticky=tk.W, padx=5, pady=2)
 
@@ -85,7 +85,7 @@ class UI(ChildView):
 
         # Selected package display
         r += 1
-        ttk.Label(w, text=_("Selezionato:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Selected:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.lblSelected = ttk.Label(w, text="-", style="App.TLabel", width=entry_width)
         self.lblSelected.grid(row=r, column=1, columnspan=2, sticky=tk.W, padx=5, pady=2)
 
@@ -93,23 +93,23 @@ class UI(ChildView):
         ttk.Separator(w, orient=tk.HORIZONTAL).grid(row=r, column=0, columnspan=3, sticky="ew", pady=10)
 
         r += 1
-        ttk.Label(w, text=_("Fonte Finanziamento:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Funding Source:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbFunding = ttk.Combobox(w, width=entry_width-2, state="readonly")
         self.cbFunding.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Delibera:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Resolution:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbDeliberation = ttk.Combobox(w, width=entry_width-2, state="readonly")
         self.cbDeliberation.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
-        ttk.Label(w, text=_("(opzionale - se in gara)"), style="App.TLabel").grid(row=r, column=2, sticky=tk.W)
+        ttk.Label(w, text=_("(optional - if in tender)"), style="App.TLabel").grid(row=r, column=2, sticky=tk.W)
 
         r += 1
-        ttk.Label(w, text=_("Valido dal:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Valid from:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.calValidFrom = Calendarium(w, "")
         self.calValidFrom.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Attivo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -118,10 +118,10 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=3, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -221,11 +221,11 @@ class UI(ChildView):
         if self.index is not None and selected_item:
             # Edit mode
             self.selected_item = selected_item
-            self.title(_("Modifica Fonte Finanziamento"))
+            self.title(_("Edit Funding Source"))
             self.set_values()
         else:
             # New package funding mode
-            self.title(_("Nuova Fonte Finanziamento"))
+            self.title(_("New Funding Source"))
             self.status.set(1)
             self.calValidFrom.set_today()
 
@@ -262,7 +262,7 @@ class UI(ChildView):
         self.txtSearch.config(state=tk.DISABLED)
         self.lstResults.config(state=tk.DISABLED)
 
-        self.title(f"{_('Nuova Fonte Finanziamento')} - {product_name}")
+        self.title(f"{_('New Funding Source')} - {product_name}")
         self.status.set(1)
         self.calValidFrom.set_today()
 
@@ -346,7 +346,7 @@ class UI(ChildView):
         if not self.selected_package_id:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un Package!"),
+                _("Please select a Package!"),
                 parent=self
             )
             self.txtSearch.focus()
@@ -355,7 +355,7 @@ class UI(ChildView):
         if not self.cbFunding.get():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare una Fonte Finanziamento!"),
+                _("Please select a Funding Source!"),
                 parent=self
             )
             self.cbFunding.focus()

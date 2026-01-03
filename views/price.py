@@ -44,7 +44,7 @@ class UI(ChildView):
         entry_width = 30
 
         r = 0
-        ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Product:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbProduct = ttk.Combobox(w, width=entry_width-2, state="readonly")
         self.cbProduct.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
         self.cbProduct.bind("<<ComboboxSelected>>", self.on_product_selected)
@@ -55,30 +55,30 @@ class UI(ChildView):
         self.cbPackage.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Fornitore:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Supplier:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbSupplier = ttk.Combobox(w, width=entry_width-2, state="readonly")
         self.cbSupplier.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Prezzo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Price:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         vcmd = self.engine.get_validate_float(self)
         self.txtPrice = ttk.Entry(w, textvariable=self.price, width=entry_width,
                                    validate="key", validatecommand=vcmd)
         self.txtPrice.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("IVA %:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("VAT %:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtVat = ttk.Entry(w, textvariable=self.vat, width=entry_width,
                                  validate="key", validatecommand=vcmd)
         self.txtVat.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Valido dal:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Valid from:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.calValidFrom = Calendarium(w, "")
         self.calValidFrom.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Attivo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -87,11 +87,11 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=3, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
         self.bind("<Return>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -167,11 +167,11 @@ class UI(ChildView):
         if self.index is not None and selected_item:
             # Edit mode
             self.selected_item = selected_item
-            self.title(_("Modifica Prezzo"))
+            self.title(_("Edit Price"))
             self.set_values()
         else:
             # New price mode
-            self.title(_("Nuovo Prezzo"))
+            self.title(_("New Price"))
             self.status.set(1)
             self.calValidFrom.set_today()
 
@@ -266,7 +266,7 @@ class UI(ChildView):
         if not self.cbPackage.get():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un Package!"),
+                _("Please select a Package!"),
                 parent=self
             )
             self.cbPackage.focus()
@@ -275,7 +275,7 @@ class UI(ChildView):
         if not self.cbSupplier.get():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un Fornitore!"),
+                _("Please select a Supplier!"),
                 parent=self
             )
             self.cbSupplier.focus()
@@ -284,7 +284,7 @@ class UI(ChildView):
         if not self.price.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Prezzo è obbligatorio!"),
+                _("The Price field is required!"),
                 parent=self
             )
             self.txtPrice.focus()
@@ -293,7 +293,7 @@ class UI(ChildView):
         if not self.calValidFrom.is_valid:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Valido dal è obbligatorio!"),
+                _("The Valid from field is required!"),
                 parent=self
             )
             return

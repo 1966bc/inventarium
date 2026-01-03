@@ -49,7 +49,7 @@ class UI(ParentView):
         f1 = ttk.Frame(f0)
 
         # Treeview with count
-        self.lbf = ttk.LabelFrame(f1, text=f"{_('Totale')}: 0", style="App.TLabelframe")
+        self.lbf = ttk.LabelFrame(f1, text=f"{_('Total')}: 0", style="App.TLabelframe")
         w = self.lbf
 
         cols = ("product", "package", "supplier", "funding", "deliberation", "cig", "valid_from")
@@ -57,25 +57,25 @@ class UI(ParentView):
 
         # Columns
         self.treeview.column("product", width=180, anchor=tk.W)
-        self.treeview.heading("product", text=_("Prodotto"), command=lambda: self.sort_column("product"))
+        self.treeview.heading("product", text=_("Product"), command=lambda: self.sort_column("product"))
 
         self.treeview.column("package", width=130, anchor=tk.W)
-        self.treeview.heading("package", text=_("Confezionamento"), command=lambda: self.sort_column("package"))
+        self.treeview.heading("package", text=_("Packaging"), command=lambda: self.sort_column("package"))
 
         self.treeview.column("supplier", width=150, anchor=tk.W)
-        self.treeview.heading("supplier", text=_("Fornitore"), command=lambda: self.sort_column("supplier"))
+        self.treeview.heading("supplier", text=_("Supplier"), command=lambda: self.sort_column("supplier"))
 
         self.treeview.column("funding", width=120, anchor=tk.W)
-        self.treeview.heading("funding", text=_("Fonte"), command=lambda: self.sort_column("funding"))
+        self.treeview.heading("funding", text=_("Source"), command=lambda: self.sort_column("funding"))
 
         self.treeview.column("deliberation", width=150, anchor=tk.W)
-        self.treeview.heading("deliberation", text=_("Delibera"), command=lambda: self.sort_column("deliberation"))
+        self.treeview.heading("deliberation", text=_("Resolution"), command=lambda: self.sort_column("deliberation"))
 
         self.treeview.column("cig", width=120, anchor=tk.W)
         self.treeview.heading("cig", text=_("CIG"), command=lambda: self.sort_column("cig"))
 
         self.treeview.column("valid_from", width=100, anchor=tk.CENTER)
-        self.treeview.heading("valid_from", text=_("Valido dal"), command=lambda: self.sort_column("valid_from"))
+        self.treeview.heading("valid_from", text=_("Valid from"), command=lambda: self.sort_column("valid_from"))
 
         # Scrollbars
         scrollbar_y = ttk.Scrollbar(w, orient=tk.VERTICAL, command=self.treeview.yview)
@@ -102,9 +102,9 @@ class UI(ParentView):
 
         # Action buttons
         buttons = [
-            (_("Aggiorna"), self.on_refresh, "<Alt-a>", 0),
-            (_("Esporta CSV"), self.on_export_csv, "<Alt-e>", 0),
-            (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
+            (_("Refresh"), self.on_refresh, "<Alt-a>", 0),
+            (_("Export CSV"), self.on_export_csv, "<Alt-e>", 0),
+            (_("Close"), self.on_cancel, "<Alt-c>", 0),
         ]
 
         for text, cmd, key, ul in buttons:
@@ -112,22 +112,22 @@ class UI(ParentView):
             self.bind(key, lambda e, c=cmd: c())
 
         # Funding source filter
-        w = ttk.LabelFrame(f2, text=_("Fonte"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Source"), style="App.TLabelframe")
         self.cbFundingFilter = ttk.Combobox(w, width=18, state="readonly", textvariable=self.funding_filter)
         self.cbFundingFilter.pack(padx=5, pady=5)
         self.cbFundingFilter.bind("<<ComboboxSelected>>", self.on_refresh)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Supplier filter
-        w = ttk.LabelFrame(f2, text=_("Fornitore"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Supplier"), style="App.TLabelframe")
         self.cbSupplierFilter = ttk.Combobox(w, width=18, state="readonly", textvariable=self.supplier_filter)
         self.cbSupplierFilter.pack(padx=5, pady=5)
         self.cbSupplierFilter.bind("<<ComboboxSelected>>", self.on_refresh)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Status filter
-        w = ttk.LabelFrame(f2, text=_("Stato"), style="App.TLabelframe")
-        for text, value in ((_("Attivi"), 1), (_("Non Attivi"), 0), (_("Tutti"), -1)):
+        w = ttk.LabelFrame(f2, text=_("Status"), style="App.TLabelframe")
+        for text, value in ((_("Active"), 1), (_("Inactive"), 0), (_("All"), -1)):
             ttk.Radiobutton(
                 w, text=text, variable=self.status,
                 value=value,
@@ -137,25 +137,25 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Legend
-        w = ttk.LabelFrame(f2, text=_("Legenda"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Legend"), style="App.TLabelframe")
 
         f_leg1 = tk.Frame(w)
         f_leg1.pack(fill=tk.X, padx=5, pady=2)
         tk.Frame(f_leg1, bg="#e6ffe6", height=15, width=15).pack(side=tk.LEFT)
-        ttk.Label(f_leg1, text=_("In Gara"), style="App.TLabel").pack(side=tk.LEFT, padx=5)
+        ttk.Label(f_leg1, text=_("In Tender"), style="App.TLabel").pack(side=tk.LEFT, padx=5)
 
         f_leg2 = tk.Frame(w)
         f_leg2.pack(fill=tk.X, padx=5, pady=2)
         tk.Frame(f_leg2, bg="#fff9e6", height=15, width=15).pack(side=tk.LEFT)
-        ttk.Label(f_leg2, text=_("Economia"), style="App.TLabel").pack(side=tk.LEFT, padx=5)
+        ttk.Label(f_leg2, text=_("Economy"), style="App.TLabel").pack(side=tk.LEFT, padx=5)
 
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Summary
-        self.lbfSummary = ttk.LabelFrame(f2, text=_("Riepilogo"), style="App.TLabelframe")
-        self.lblInGara = ttk.Label(self.lbfSummary, text=_("In Gara:") + " 0", style="App.TLabel")
+        self.lbfSummary = ttk.LabelFrame(f2, text=_("Summary"), style="App.TLabelframe")
+        self.lblInGara = ttk.Label(self.lbfSummary, text=_("In Tender:") + " 0", style="App.TLabel")
         self.lblInGara.pack(anchor=tk.W, padx=5, pady=2)
-        self.lblEconomia = ttk.Label(self.lbfSummary, text=_("Economia:") + " 0", style="App.TLabel")
+        self.lblEconomia = ttk.Label(self.lbfSummary, text=_("Economy:") + " 0", style="App.TLabel")
         self.lblEconomia.pack(anchor=tk.W, padx=5, pady=2)
         self.lbfSummary.pack(fill=tk.X, padx=5, pady=5)
 
@@ -167,8 +167,8 @@ class UI(ParentView):
         sql = "SELECT funding_id, description FROM funding_sources WHERE status = 1 ORDER BY description"
         rs = self.engine.read(True, sql)
 
-        self.fundings_filter = {_("Tutti"): None}
-        values = [_("Tutti")]
+        self.fundings_filter = {_("All"): None}
+        values = [_("All")]
 
         if rs:
             for row in rs:
@@ -176,14 +176,14 @@ class UI(ParentView):
                 values.append(row["description"])
 
         self.cbFundingFilter["values"] = values
-        self.cbFundingFilter.set(_("Tutti"))
+        self.cbFundingFilter.set(_("All"))
 
         # Load suppliers
         sql = "SELECT supplier_id, description FROM suppliers WHERE status = 1 ORDER BY description"
         rs = self.engine.read(True, sql)
 
-        self.suppliers_filter = {_("Tutti"): None}
-        values = [_("Tutti")]
+        self.suppliers_filter = {_("All"): None}
+        values = [_("All")]
 
         if rs:
             for row in rs:
@@ -191,11 +191,11 @@ class UI(ParentView):
                 values.append(row["description"])
 
         self.cbSupplierFilter["values"] = values
-        self.cbSupplierFilter.set(_("Tutti"))
+        self.cbSupplierFilter.set(_("All"))
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Report Fonti Finanziamento"))
+        self.title(_("Funding Sources Report"))
         self.engine.dict_instances["report_fundings"] = self
         self.load_filters()
         self.on_refresh()
@@ -269,7 +269,7 @@ class UI(ParentView):
                     tags.append("economia")
                     count_economia += 1
 
-                deliberation_text = row["deliberation"] or _("Economia")
+                deliberation_text = row["deliberation"] or _("Economy")
 
                 self.treeview.insert("", tk.END, values=(
                     row["product"] or "",
@@ -282,9 +282,9 @@ class UI(ParentView):
                 ), tags=tuple(tags) if tags else ())
 
         total = len(self.treeview.get_children())
-        self.lbf.config(text=f"{_('Totale')}: {total}")
-        self.lblInGara.config(text=f"{_('In Gara')}: {count_gara}")
-        self.lblEconomia.config(text=f"{_('Economia')}: {count_economia}")
+        self.lbf.config(text=f"{_('Total')}: {total}")
+        self.lblInGara.config(text=f"{_('In Tender')}: {count_gara}")
+        self.lblEconomia.config(text=f"{_('Economy')}: {count_economia}")
 
     def sort_column(self, col):
         """Sort treeview by column."""
@@ -299,7 +299,7 @@ class UI(ParentView):
         if not self.treeview.get_children():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Nessun dato da esportare!"),
+                _("No data to export!"),
                 parent=self
             )
             return
@@ -308,8 +308,8 @@ class UI(ParentView):
             parent=self,
             defaultextension=".csv",
             filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
-            initialfile="report_fonti.csv",
-            title=_("Esporta CSV")
+            initialfile="report_fundings.csv",
+            title=_("Export CSV")
         )
 
         if filename:
@@ -319,13 +319,13 @@ class UI(ParentView):
 
                     # Header
                     writer.writerow([
-                        _("Prodotto"),
-                        _("Confezionamento"),
-                        _("Fornitore"),
-                        _("Fonte"),
-                        _("Delibera"),
+                        _("Product"),
+                        _("Packaging"),
+                        _("Supplier"),
+                        _("Source"),
+                        _("Resolution"),
                         _("CIG"),
-                        _("Valido dal")
+                        _("Valid from")
                     ])
 
                     # Data
@@ -335,7 +335,7 @@ class UI(ParentView):
 
                 messagebox.showinfo(
                     self.engine.app_title,
-                    f"{_('File esportato')}: {filename}",
+                    f"{_('File exported')}: {filename}",
                     parent=self
                 )
 
@@ -349,7 +349,7 @@ class UI(ParentView):
             except Exception as e:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Errore durante esportazione") + f": {e}",
+                    _("Error during export") + f": {e}",
                     parent=self
                 )
 

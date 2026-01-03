@@ -46,17 +46,17 @@ class UI(ChildView):
         left.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
 
         r = 0
-        ttk.Label(left, text=_("Lotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(left, text=_("Batch:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtLot = ttk.Entry(left, textvariable=self.lot, width=25)
         self.txtLot.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(left, text=_("Scadenza:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(left, text=_("Expiration:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.calExpiration = Calendarium(left, "")
         self.calExpiration.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(left, text=_("Attivo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(left, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(left, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -64,10 +64,10 @@ class UI(ChildView):
         right = ttk.Frame(main)
         right.pack(side=tk.RIGHT, fill=tk.Y, padx=(10, 0))
 
-        self.engine.create_button(right, _("Salva"), self.on_save).pack(fill=tk.X, pady=2)
+        self.engine.create_button(right, _("Save"), self.on_save).pack(fill=tk.X, pady=2)
         self.bind("<Alt-s>", self.on_save)
 
-        self.engine.create_button(right, _("Chiudi"), self.on_cancel).pack(fill=tk.X, pady=2)
+        self.engine.create_button(right, _("Close"), self.on_cancel).pack(fill=tk.X, pady=2)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -88,11 +88,11 @@ class UI(ChildView):
         if self.index is not None and selected_batch:
             # Edit mode
             self.selected_batch = selected_batch
-            self.title(f"{_('Modifica Lotto')} - {product_name}")
+            self.title(f"{_('Edit Batch')} - {product_name}")
             self.set_values()
         else:
             # New batch mode
-            self.title(f"{_('Nuovo Lotto')} - {product_name}")
+            self.title(f"{_('New Batch')} - {product_name}")
             self.calExpiration.set_today()
             self.status.set(1)
 
@@ -104,7 +104,7 @@ class UI(ChildView):
         if not self.lot.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Lotto è obbligatorio!"),
+                _("The Batch field is required!"),
                 parent=self
             )
             self.txtLot.focus()
@@ -113,7 +113,7 @@ class UI(ChildView):
         if not self.calExpiration.is_valid:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("La data Scadenza non è valida!"),
+                _("The Expiration date is not valid!"),
                 parent=self
             )
             return
@@ -135,7 +135,7 @@ class UI(ChildView):
             if existing:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Il lotto '{}' con scadenza {} esiste già!").format(lot_name, exp_date.strftime('%d-%m-%Y')),
+                    _("Batch '{}' with expiration {} already exists!").format(lot_name, exp_date.strftime('%d-%m-%Y')),
                     parent=self
                 )
                 return
@@ -157,7 +157,7 @@ class UI(ChildView):
 
                 if not messagebox.askyesno(
                     self.engine.app_title,
-                    _("Il lotto '{}' esiste già con scadenza {}.\nVuoi inserirlo comunque con scadenza {}?").format(
+                    _("Batch '{}' already exists with expiration {}.\nInsert anyway with expiration {}?").format(
                         lot_name, existing_fmt, exp_date.strftime('%d-%m-%Y')),
                     parent=self
                 ):
@@ -167,7 +167,7 @@ class UI(ChildView):
                 # Expired - don't allow
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Il lotto è già scaduto!\nImpossibile inserire."),
+                    _("The batch has already expired!\nCannot insert."),
                     parent=self
                 )
                 return
@@ -176,7 +176,7 @@ class UI(ChildView):
                 # Expiring soon - ask confirmation
                 if not messagebox.askyesno(
                     self.engine.app_title,
-                    _("Attenzione: il lotto scade tra {} giorni.\nProcedere comunque?").format(days_left),
+                    _("Warning: the batch expires in {} days.\nProceed anyway?").format(days_left),
                     parent=self
                 ):
                     return

@@ -39,49 +39,49 @@ class UI(ParentView):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # Filters frame
-        filters = ttk.LabelFrame(f0, text=_("Periodo di Analisi"), style="App.TLabelframe")
+        filters = ttk.LabelFrame(f0, text=_("Analysis Period"), style="App.TLabelframe")
         filters.pack(fill=tk.X, pady=(0, 10))
 
         r1 = ttk.Frame(filters)
         r1.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r1, text=_("Da:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("From:")).pack(side=tk.LEFT)
         self.cal_from = Calendarium(r1, "")
         self.cal_from.pack(side=tk.LEFT, padx=(5, 20))
 
-        ttk.Label(r1, text=_("A:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("To:")).pack(side=tk.LEFT)
         self.cal_to = Calendarium(r1, "")
         self.cal_to.pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(r1, _("Calcola"), self.load_data).pack(side=tk.LEFT, padx=20)
+        self.engine.create_button(r1, _("Calculate"), self.load_data).pack(side=tk.LEFT, padx=20)
 
         # Quick period buttons
         r2 = ttk.Frame(filters)
         r2.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r2, text=_("Periodo rapido:")).pack(side=tk.LEFT)
-        for text, days in [(_("30 gg"), 30), (_("90 gg"), 90), (_("6 mesi"), 180), (_("Anno"), 365)]:
+        ttk.Label(r2, text=_("Quick period:")).pack(side=tk.LEFT)
+        for text, days in [(_("30 days"), 30), (_("90 days"), 90), (_("6 months"), 180), (_("Year"), 365)]:
             self.engine.create_button(r2, text, lambda d=days: self.set_quick_period(d), width=8).pack(side=tk.LEFT, padx=2)
 
         # Summary metrics
-        metrics = ttk.LabelFrame(f0, text=_("Metriche TAT"), style="App.TLabelframe")
+        metrics = ttk.LabelFrame(f0, text=_("TAT Metrics"), style="App.TLabelframe")
         metrics.pack(fill=tk.X, pady=(0, 10))
 
         self.frm_metrics = ttk.Frame(metrics)
         self.frm_metrics.pack(fill=tk.X, padx=10, pady=10)
 
         # Results treeview - Order TAT
-        ttk.Label(f0, text=_("Tempo Richiesta → Consegna (per fornitore)"),
+        ttk.Label(f0, text=_("Request → Delivery Time (by supplier)"),
                  font=("", 10, "bold")).pack(anchor=tk.W)
 
         columns = ("supplier", "orders", "avg_days", "min_days", "max_days")
         self.tree_order = ttk.Treeview(f0, columns=columns, show="headings", height=8)
 
-        self.tree_order.heading("supplier", text=_("Fornitore"))
-        self.tree_order.heading("orders", text=_("Ordini"))
-        self.tree_order.heading("avg_days", text=_("Media (gg)"))
-        self.tree_order.heading("min_days", text=_("Min (gg)"))
-        self.tree_order.heading("max_days", text=_("Max (gg)"))
+        self.tree_order.heading("supplier", text=_("Supplier"))
+        self.tree_order.heading("orders", text=_("Orders"))
+        self.tree_order.heading("avg_days", text=_("Avg (days)"))
+        self.tree_order.heading("min_days", text=_("Min (days)"))
+        self.tree_order.heading("max_days", text=_("Max (days)"))
 
         self.tree_order.column("supplier", width=250)
         self.tree_order.column("orders", width=100, anchor=tk.E)
@@ -92,17 +92,17 @@ class UI(ParentView):
         self.tree_order.pack(fill=tk.X, pady=5)
 
         # Results treeview - Stock TAT
-        ttk.Label(f0, text=_("Tempo in Magazzino (Carico → Scarico)"),
+        ttk.Label(f0, text=_("Stock Time (Loading → Unloading)"),
                  font=("", 10, "bold")).pack(anchor=tk.W, pady=(10, 0))
 
         columns2 = ("product", "labels", "avg_days", "min_days", "max_days")
         self.tree_stock = ttk.Treeview(f0, columns=columns2, show="headings", height=8)
 
-        self.tree_stock.heading("product", text=_("Prodotto"))
-        self.tree_stock.heading("labels", text=_("Etichette"))
-        self.tree_stock.heading("avg_days", text=_("Media (gg)"))
-        self.tree_stock.heading("min_days", text=_("Min (gg)"))
-        self.tree_stock.heading("max_days", text=_("Max (gg)"))
+        self.tree_stock.heading("product", text=_("Product"))
+        self.tree_stock.heading("labels", text=_("Labels"))
+        self.tree_stock.heading("avg_days", text=_("Avg (days)"))
+        self.tree_stock.heading("min_days", text=_("Min (days)"))
+        self.tree_stock.heading("max_days", text=_("Max (days)"))
 
         self.tree_stock.column("product", width=250)
         self.tree_stock.column("labels", width=100, anchor=tk.E)
@@ -116,14 +116,14 @@ class UI(ParentView):
         bf = ttk.Frame(f0)
         bf.pack(fill=tk.X, pady=(10, 0))
 
-        self.engine.create_button(bf, _("Esporta CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Export CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title("Analisi Tempi (TAT)")
+        self.title(_("Time Analysis (TAT)"))
         self.engine.dict_instances["stats_tat"] = self
         self.set_quick_period(90)  # Default: last 90 days
 
@@ -150,9 +150,10 @@ class UI(ParentView):
 
         # Get date range
         if not self.cal_from.is_valid or not self.cal_to.is_valid:
+            from tkinter import messagebox
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Le date non sono valide!"),
+                _("The dates are not valid!"),
                 parent=self
             )
             return
@@ -263,8 +264,8 @@ class UI(ParentView):
         avg_stock_tat = round(row["avg_stock_tat"], 1) if row and row["avg_stock_tat"] else "N/D"
 
         # Display metrics
-        self._add_metric(_("TAT medio ordini:"), f"{avg_order_tat} giorni")
-        self._add_metric(_("TAT medio magazzino:"), f"{avg_stock_tat} giorni")
+        self._add_metric(_("Avg order TAT:"), f"{avg_order_tat} {_('days')}")
+        self._add_metric(_("Avg stock TAT:"), f"{avg_stock_tat} {_('days')}")
 
     def _add_metric(self, label, value):
         """Add a metric to the metrics frame."""
@@ -283,7 +284,7 @@ class UI(ParentView):
             parent=self,
             defaultextension=".csv",
             filetypes=[("CSV files", "*.csv")],
-            title="Esporta TAT"
+            title=_("Export TAT")
         )
 
         if filename:
@@ -291,8 +292,8 @@ class UI(ParentView):
                 writer = csv.writer(f, delimiter=";")
 
                 # Order TAT
-                writer.writerow(["=== TAT Ordini ==="])
-                writer.writerow(["Fornitore", "Ordini", "Media (gg)", "Min (gg)", "Max (gg)"])
+                writer.writerow([_("=== Order TAT ===")])
+                writer.writerow([_("Supplier"), _("Orders"), _("Avg (days)"), _("Min (days)"), _("Max (days)")])
                 for item in self.tree_order.get_children():
                     values = self.tree_order.item(item)["values"]
                     writer.writerow(values)
@@ -300,8 +301,8 @@ class UI(ParentView):
                 writer.writerow([])
 
                 # Stock TAT
-                writer.writerow(["=== TAT Magazzino ==="])
-                writer.writerow(["Prodotto", "Etichette", "Media (gg)", "Min (gg)", "Max (gg)"])
+                writer.writerow([_("=== Stock TAT ===")])
+                writer.writerow([_("Product"), _("Labels"), _("Avg (days)"), _("Min (days)"), _("Max (days)")])
                 for item in self.tree_stock.get_children():
                     values = self.tree_stock.item(item)["values"]
                     writer.writerow(values)

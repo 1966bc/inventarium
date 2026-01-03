@@ -30,7 +30,7 @@ class ConfigDialog(tk.Toplevel):
         self.parent = parent
         self.result = None
 
-        self.title(_("Configurazione Database"))
+        self.title(_("Database Configuration"))
         self.transient(parent)
         self.grab_set()
         self.resizable(False, False)
@@ -57,8 +57,8 @@ class ConfigDialog(tk.Toplevel):
         # Message
         msg = ttk.Label(
             frame,
-            text=_("Database non trovato.") + "\n\n" +
-                 _("Cosa vuoi fare?"),
+            text=_("Database not found.") + "\n\n" +
+                 _("What do you want to do?"),
             justify=tk.LEFT,
             font=('', 10)
         )
@@ -71,7 +71,7 @@ class ConfigDialog(tk.Toplevel):
         # Find existing database button
         btn_find = ttk.Button(
             btn_frame,
-            text=_("Cerca database esistente..."),
+            text=_("Find existing database..."),
             command=self.on_find_database,
             width=30
         )
@@ -80,7 +80,7 @@ class ConfigDialog(tk.Toplevel):
         # Create new database button
         btn_create = ttk.Button(
             btn_frame,
-            text=_("Crea nuovo database"),
+            text=_("Create new database"),
             command=self.on_create_database,
             width=30
         )
@@ -89,7 +89,7 @@ class ConfigDialog(tk.Toplevel):
         # Cancel button
         btn_cancel = ttk.Button(
             btn_frame,
-            text=_("Annulla"),
+            text=_("Cancel"),
             command=self.on_cancel,
             width=30
         )
@@ -103,11 +103,11 @@ class ConfigDialog(tk.Toplevel):
 
         filename = filedialog.askopenfilename(
             parent=self,
-            title=_("Seleziona Database"),
+            title=_("Select Database"),
             initialdir=initial_dir,
             filetypes=[
                 ("SQLite Database", "*.db"),
-                (_("Tutti i file"), "*.*")
+                (_("All files"), "*.*")
             ]
         )
 
@@ -118,8 +118,8 @@ class ConfigDialog(tk.Toplevel):
                 self.destroy()
             else:
                 messagebox.showerror(
-                    _("Errore"),
-                    _("Il file selezionato non è un database Inventarium valido."),
+                    _("Error"),
+                    _("The selected file is not a valid Inventarium database."),
                     parent=self
                 )
 
@@ -129,13 +129,13 @@ class ConfigDialog(tk.Toplevel):
 
         filename = filedialog.asksaveasfilename(
             parent=self,
-            title=_("Crea Nuovo Database"),
+            title=_("Create New Database"),
             initialdir=initial_dir,
             initialfile="inventarium.db",
             defaultextension=".db",
             filetypes=[
                 ("SQLite Database", "*.db"),
-                (_("Tutti i file"), "*.*")
+                (_("All files"), "*.*")
             ]
         )
 
@@ -143,16 +143,16 @@ class ConfigDialog(tk.Toplevel):
             # Create the database
             if self._create_database(filename):
                 messagebox.showinfo(
-                    _("Database Creato"),
-                    _("Database creato con successo!") + f"\n\n{filename}",
+                    _("Database Created"),
+                    _("Database created successfully!") + f"\n\n{filename}",
                     parent=self
                 )
                 self.result = filename
                 self.destroy()
             else:
                 messagebox.showerror(
-                    _("Errore"),
-                    _("Impossibile creare il database."),
+                    _("Error"),
+                    _("Unable to create the database."),
                     parent=self
                 )
 
@@ -210,8 +210,8 @@ class ConfigDialog(tk.Toplevel):
             
             if not sql_file:
                 messagebox.showerror(
-                    _("Errore"),
-                    _("File init.sql non trovato!"),
+                    _("Error"),
+                    _("File init.sql not found!"),
                     parent=self
                 )
                 return False
@@ -230,8 +230,8 @@ class ConfigDialog(tk.Toplevel):
             
         except Exception as e:
             messagebox.showerror(
-                _("Errore"),
-                f"{_('Errore durante la creazione del database:')}\n{e}",
+                _("Error"),
+                f"{_('Error during database creation:')}\n{e}",
                 parent=self
             )
             return False

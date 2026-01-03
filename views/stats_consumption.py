@@ -41,18 +41,18 @@ class UI(ParentView):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # Filters frame
-        filters = ttk.LabelFrame(f0, text=_("Filtri"), style="App.TLabelframe")
+        filters = ttk.LabelFrame(f0, text=_("Filters"), style="App.TLabelframe")
         filters.pack(fill=tk.X, pady=(0, 10))
 
         # Row 1: dates
         r1 = ttk.Frame(filters)
         r1.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r1, text=_("Da:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("From:")).pack(side=tk.LEFT)
         self.cal_from = Calendarium(r1, "")
         self.cal_from.pack(side=tk.LEFT, padx=(5, 20))
 
-        ttk.Label(r1, text=_("A:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("To:")).pack(side=tk.LEFT)
         self.cal_to = Calendarium(r1, "")
         self.cal_to.pack(side=tk.LEFT, padx=5)
 
@@ -60,18 +60,18 @@ class UI(ParentView):
         r2 = ttk.Frame(filters)
         r2.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r2, text=_("Categoria:")).pack(side=tk.LEFT)
+        ttk.Label(r2, text=_("Category:")).pack(side=tk.LEFT)
         self.cbCategories = ttk.Combobox(r2, state="readonly", width=25, style="App.TCombobox")
         self.cbCategories.pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(r2, _("Calcola"), self.load_data).pack(side=tk.LEFT, padx=20)
+        self.engine.create_button(r2, _("Calculate"), self.load_data).pack(side=tk.LEFT, padx=20)
 
         # Quick period buttons
         r3 = ttk.Frame(filters)
         r3.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r3, text=_("Periodo rapido:")).pack(side=tk.LEFT)
-        for text, days in [(_("30 gg"), 30), (_("60 gg"), 60), (_("90 gg"), 90), (_("Anno"), 365)]:
+        ttk.Label(r3, text=_("Quick period:")).pack(side=tk.LEFT)
+        for text, days in [(_("30 days"), 30), (_("60 days"), 60), (_("90 days"), 90), (_("Year"), 365)]:
             self.engine.create_button(r3, text, lambda d=days: self.set_quick_period(d), width=8).pack(side=tk.LEFT, padx=2)
 
         # Results treeview
@@ -81,10 +81,10 @@ class UI(ParentView):
         columns = ("product", "supplier", "consumed", "avg_month")
         self.tree = ttk.Treeview(tree_frame, columns=columns, show="headings", height=15)
 
-        self.tree.heading("product", text=_("Prodotto"))
-        self.tree.heading("supplier", text=_("Fornitore"))
-        self.tree.heading("consumed", text=_("Consumato"))
-        self.tree.heading("avg_month", text=_("Media/Mese"))
+        self.tree.heading("product", text=_("Product"))
+        self.tree.heading("supplier", text=_("Supplier"))
+        self.tree.heading("consumed", text=_("Consumed"))
+        self.tree.heading("avg_month", text=_("Avg/Month"))
 
         self.tree.column("product", width=250)
         self.tree.column("supplier", width=200)
@@ -105,14 +105,14 @@ class UI(ParentView):
         bf = ttk.Frame(f0)
         bf.pack(fill=tk.X, pady=(5, 0))
 
-        self.engine.create_button(bf, _("Esporta CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Export CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Analisi Consumi"))
+        self.title(_("Consumption Analysis"))
         self.engine.dict_instances["stats_consumption"] = self
         self.set_categories()
         self.set_quick_period(30)  # Default: last 30 days
@@ -120,7 +120,7 @@ class UI(ParentView):
     def set_categories(self):
         """Load categories into combobox."""
         self.dict_categories = {}
-        voices = [_("-- Tutte --")]
+        voices = [_("-- All --")]
         self.dict_categories[0] = None
 
         sql = """SELECT category_id, description
@@ -155,9 +155,10 @@ class UI(ParentView):
 
         # Get date range
         if not self.cal_from.is_valid or not self.cal_to.is_valid:
+            from tkinter import messagebox
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Le date non sono valide!"),
+                _("The dates are not valid!"),
                 parent=self
             )
             return
@@ -218,9 +219,9 @@ class UI(ParentView):
 
         # Update summary
         self.lbl_summary.config(
-            text=f"{_('Totale prodotti')}: {len(rs) if rs else 0} | "
-                 f"{_('Totale consumato')}: {total_consumed} | "
-                 f"{_('Periodo')}: {days} {_('giorni')}"
+            text=f"{_('Total products')}: {len(rs) if rs else 0} | "
+                 f"{_('Total consumed')}: {total_consumed} | "
+                 f"{_('Period')}: {days} {_('days')}"
         )
 
     def export_csv(self):
@@ -232,13 +233,13 @@ class UI(ParentView):
             parent=self,
             defaultextension=".csv",
             filetypes=[("CSV files", "*.csv")],
-            title=_("Esporta Consumi")
+            title=_("Export Consumption")
         )
 
         if filename:
             with open(filename, "w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f, delimiter=";")
-                writer.writerow([_("Prodotto"), _("Fornitore"), _("Consumato"), _("Media/Mese")])
+                writer.writerow([_("Product"), _("Supplier"), _("Consumed"), _("Avg/Month")])
 
                 for item in self.tree.get_children():
                     values = self.tree.item(item)["values"]

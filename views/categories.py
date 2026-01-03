@@ -34,8 +34,8 @@ class UI(ParentView):
 
         # reference_id: 1=Prodotti, 2=Ubicazioni
         self.reference_types = {
-            1: _("Prodotti"),
-            2: _("Ubicazioni")
+            1: _("Products"),
+            2: _("Locations")
         }
         self.reference_id = tk.IntVar(value=1)
         self.status = tk.IntVar(value=1)
@@ -55,7 +55,7 @@ class UI(ParentView):
         f1 = ttk.Frame(f0)
 
         # Categories listbox with count in LabelFrame title
-        self.lbf = ttk.LabelFrame(f1, text=f"{_('Totale')}: 0", style="App.TLabelframe")
+        self.lbf = ttk.LabelFrame(f1, text=f"{_('Total')}: 0", style="App.TLabelframe")
         w = self.lbf
 
         # Header
@@ -88,10 +88,10 @@ class UI(ParentView):
 
         # Action buttons
         buttons = [
-            (_("Nuovo"), self.on_add, "<Alt-n>", 0),
-            (_("Modifica"), self.on_edit, "<Alt-m>", 0),
-            (_("Aggiorna"), self.on_reset, "<Alt-a>", 0),
-            (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
+            (_("New"), self.on_add, "<Alt-n>", 0),
+            (_("Edit"), self.on_edit, "<Alt-m>", 0),
+            (_("Refresh"), self.on_reset, "<Alt-a>", 0),
+            (_("Close"), self.on_cancel, "<Alt-c>", 0),
         ]
 
         for text, cmd, key, ul in buttons:
@@ -99,7 +99,7 @@ class UI(ParentView):
             self.bind(key, lambda e, c=cmd: c())
 
         # Reference type filter
-        w = ttk.LabelFrame(f2, text=_("Tipo"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f2, text=_("Type"), style="App.TLabelframe")
         for ref_id, text in self.reference_types.items():
             ttk.Radiobutton(
                 w, text=text, variable=self.reference_id,
@@ -110,8 +110,8 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Status filter
-        w = ttk.LabelFrame(f2, text=_("Stato"), style="App.TLabelframe")
-        for text, value in ((_("Attivi"), 1), (_("Non Attivi"), 0), (_("Tutti"), -1)):
+        w = ttk.LabelFrame(f2, text=_("Status"), style="App.TLabelframe")
+        for text, value in ((_("Active"), 1), (_("Inactive"), 0), (_("All"), -1)):
             ttk.Radiobutton(
                 w, text=text, variable=self.status,
                 value=value,
@@ -124,7 +124,7 @@ class UI(ParentView):
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Categorie"))
+        self.title(_("Categories"))
         self.engine.dict_instances["categories"] = self
         self.on_reset()
 
@@ -162,7 +162,7 @@ class UI(ParentView):
                     self.lstItems.itemconfig(idx, bg="light gray")
 
         type_name = self.reference_types.get(self.reference_id.get(), "")
-        self.lbf.config(text=f"{_('Categorie')} {type_name}: {self.lstItems.size()}")
+        self.lbf.config(text=f"{_('Categories')} {type_name}: {self.lstItems.size()}")
 
     def on_item_selected(self, evt=None):
         """Handle item selection."""

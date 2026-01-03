@@ -38,7 +38,7 @@ class UI(ParentView):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # Title
-        title = ttk.Label(f0, text=_("Dashboard Magazzino"), font=("", 14, "bold"))
+        title = ttk.Label(f0, text=_("Warehouse Dashboard"), font=("", 14, "bold"))
         title.pack(pady=(0, 15))
 
         # Metrics frame - 2 columns
@@ -50,15 +50,15 @@ class UI(ParentView):
         left.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, padx=5)
 
         # Giacenze
-        self.frm_stock = ttk.LabelFrame(left, text=_("Giacenze"), style="App.TLabelframe")
+        self.frm_stock = ttk.LabelFrame(left, text=_("Stock"), style="App.TLabelframe")
         self.frm_stock.pack(fill=tk.X, pady=5)
 
         # Sotto soglia
-        self.frm_reorder = ttk.LabelFrame(left, text=_("Sotto Soglia Riordino"), style="App.TLabelframe")
+        self.frm_reorder = ttk.LabelFrame(left, text=_("Below Reorder Threshold"), style="App.TLabelframe")
         self.frm_reorder.pack(fill=tk.X, pady=5)
 
         # Scadenze
-        self.frm_expiring = ttk.LabelFrame(left, text=_("Scadenze"), style="App.TLabelframe")
+        self.frm_expiring = ttk.LabelFrame(left, text=_("Expirations"), style="App.TLabelframe")
         self.frm_expiring.pack(fill=tk.X, pady=5)
 
         # Right column
@@ -66,29 +66,29 @@ class UI(ParentView):
         right.pack(side=tk.LEFT, fill=tk.BOTH, expand=1, padx=5)
 
         # Movimenti periodo
-        self.frm_movements = ttk.LabelFrame(right, text=_("Movimenti (ultimi 30 giorni)"), style="App.TLabelframe")
+        self.frm_movements = ttk.LabelFrame(right, text=_("Movements (last 30 days)"), style="App.TLabelframe")
         self.frm_movements.pack(fill=tk.X, pady=5)
 
         # Richieste aperte
-        self.frm_requests = ttk.LabelFrame(right, text=_("Richieste"), style="App.TLabelframe")
+        self.frm_requests = ttk.LabelFrame(right, text=_("Requests"), style="App.TLabelframe")
         self.frm_requests.pack(fill=tk.X, pady=5)
 
         # Top prodotti
-        self.frm_top = ttk.LabelFrame(right, text=_("Top 5 Consumi (30 giorni)"), style="App.TLabelframe")
+        self.frm_top = ttk.LabelFrame(right, text=_("Top 5 Consumption (30 days)"), style="App.TLabelframe")
         self.frm_top.pack(fill=tk.BOTH, expand=1, pady=5)
 
         # Buttons
         bf = ttk.Frame(f0)
         bf.pack(fill=tk.X, pady=(15, 0))
 
-        self.engine.create_button(bf, _("Aggiorna"), self.load_data, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Refresh"), self.load_data, width=12).pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Dashboard Statistiche"))
+        self.title(_("Statistics Dashboard"))
         self.engine.dict_instances["stats_dashboard"] = self
         self.load_data()
 
@@ -122,9 +122,9 @@ class UI(ParentView):
         row = self.engine.read(False, sql)
         active_batches = row["cnt"] if row else 0
 
-        self._add_metric(self.frm_stock, _("Prodotti attivi:"), total_products)
-        self._add_metric(self.frm_stock, _("Etichette in giacenza:"), labels_in_stock)
-        self._add_metric(self.frm_stock, _("Lotti attivi:"), active_batches)
+        self._add_metric(self.frm_stock, _("Active products:"), total_products)
+        self._add_metric(self.frm_stock, _("Labels in stock:"), labels_in_stock)
+        self._add_metric(self.frm_stock, _("Active batches:"), active_batches)
 
     def load_reorder_metrics(self):
         """Load reorder threshold metrics."""
@@ -159,9 +159,9 @@ class UI(ParentView):
         row = self.engine.read(False, sql)
         zero_stock = row["cnt"] if row else 0
 
-        self._add_metric(self.frm_reorder, _("Prodotti sotto soglia:"), below_reorder,
+        self._add_metric(self.frm_reorder, _("Products below threshold:"), below_reorder,
                         color="orange" if below_reorder > 0 else None)
-        self._add_metric(self.frm_reorder, _("Prodotti esauriti:"), zero_stock,
+        self._add_metric(self.frm_reorder, _("Out of stock products:"), zero_stock,
                         color="red" if zero_stock > 0 else None)
 
     def load_expiring_metrics(self):
@@ -202,12 +202,12 @@ class UI(ParentView):
         row = self.engine.read(False, sql, (today, in_90))
         exp_90 = row["cnt"] if row else 0
 
-        self._add_metric(self.frm_expiring, _("Lotti scaduti:"), expired,
+        self._add_metric(self.frm_expiring, _("Expired batches:"), expired,
                         color="red" if expired > 0 else None)
-        self._add_metric(self.frm_expiring, _("In scadenza (30 gg):"), exp_30,
+        self._add_metric(self.frm_expiring, _("Expiring (30 days):"), exp_30,
                         color="orange" if exp_30 > 0 else None)
-        self._add_metric(self.frm_expiring, _("In scadenza (60 gg):"), exp_60)
-        self._add_metric(self.frm_expiring, _("In scadenza (90 gg):"), exp_90)
+        self._add_metric(self.frm_expiring, _("Expiring (60 days):"), exp_60)
+        self._add_metric(self.frm_expiring, _("Expiring (90 days):"), exp_90)
 
     def load_movement_metrics(self):
         """Load movement metrics for last 30 days."""
@@ -231,9 +231,9 @@ class UI(ParentView):
         row = self.engine.read(False, sql)
         cancelled = row["cnt"] if row else 0
 
-        self._add_metric(self.frm_movements, _("Etichette caricate:"), loaded)
-        self._add_metric(self.frm_movements, _("Etichette scaricate:"), unloaded)
-        self._add_metric(self.frm_movements, _("Etichette annullate:"), cancelled)
+        self._add_metric(self.frm_movements, _("Labels loaded:"), loaded)
+        self._add_metric(self.frm_movements, _("Labels unloaded:"), unloaded)
+        self._add_metric(self.frm_movements, _("Labels cancelled:"), cancelled)
 
     def load_request_metrics(self):
         """Load request metrics."""
@@ -258,8 +258,8 @@ class UI(ParentView):
         row = self.engine.read(False, sql)
         pending_items = row["cnt"] if row else 0
 
-        self._add_metric(self.frm_requests, _("Richieste aperte:"), open_req)
-        self._add_metric(self.frm_requests, _("Articoli in attesa:"), pending_items)
+        self._add_metric(self.frm_requests, _("Open requests:"), open_req)
+        self._add_metric(self.frm_requests, _("Pending items:"), pending_items)
 
     def load_top_consumption(self):
         """Load top 5 consumed products in last 30 days."""
@@ -287,7 +287,7 @@ class UI(ParentView):
                 consumed = row["consumed"]
                 self._add_metric(self.frm_top, f"{product}:", consumed)
         else:
-            ttk.Label(self.frm_top, text=_("Nessun dato disponibile")).pack(anchor=tk.W, padx=10, pady=2)
+            ttk.Label(self.frm_top, text=_("No data available")).pack(anchor=tk.W, padx=10, pady=2)
 
     def _add_metric(self, parent, label, value, color=None):
         """Add a metric row to the frame."""

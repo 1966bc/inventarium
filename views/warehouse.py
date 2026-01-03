@@ -41,7 +41,7 @@ class UI(ParentView):
 
         self.search_var = tk.StringVar()
         self.search_option = tk.IntVar()
-        # 0=Stampa, 1=Evadi, 2=Elimina
+        # 0=Print, 1=Dispatch, 2=Cancel
         self.label_action = tk.IntVar(value=0)
         self.dict_categories = {}
         self.dict_labels = {}  # Maps listbox index to label_id
@@ -76,23 +76,23 @@ class UI(ParentView):
         paned.add(f1, weight=1)
 
         # Categories combobox
-        w = ttk.LabelFrame(f1, text=_("Categorie"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f1, text=_("Categories"), style="App.TLabelframe")
         self.cbCategories = ttk.Combobox(w, state="readonly", style="App.TCombobox")
         self.cbCategories.bind("<<ComboboxSelected>>", self.on_select_category)
         self.cbCategories.pack(fill=tk.X, expand=1)
         w.pack(side=tk.TOP, fill=tk.X, expand=0)
 
         # Products Treeview
-        self.lbfProducts = ttk.LabelFrame(f1, text=_("Prodotti"), style="App.TLabelframe")
+        self.lbfProducts = ttk.LabelFrame(f1, text=_("Products"), style="App.TLabelframe")
 
         cols = ("product", "stock")
         self.treeProducts = ttk.Treeview(self.lbfProducts, columns=cols, show="headings", height=12)
 
         self.treeProducts.column("product", width=250, minwidth=150, anchor=tk.W, stretch=True)
-        self.treeProducts.heading("product", text=_("Prodotto"), anchor=tk.W)
+        self.treeProducts.heading("product", text=_("Product"), anchor=tk.W)
 
         self.treeProducts.column("stock", width=40, minwidth=40, anchor=tk.CENTER, stretch=False)
-        self.treeProducts.heading("stock", text=_("G."), anchor=tk.CENTER)
+        self.treeProducts.heading("stock", text=_("Stk"), anchor=tk.CENTER)
 
         sb = ttk.Scrollbar(self.lbfProducts, orient=tk.VERTICAL, command=self.treeProducts.yview)
         self.treeProducts.configure(yscrollcommand=sb.set)
@@ -113,19 +113,19 @@ class UI(ParentView):
         paned.add(f2, weight=1)
 
         # Batches Treeview
-        self.lbfBatches = ttk.LabelFrame(f2, text=_("Lotti"), style="App.TLabelframe")
+        self.lbfBatches = ttk.LabelFrame(f2, text=_("Batches"), style="App.TLabelframe")
 
         cols = ("lot", "expiration", "days")
         self.treeBatches = ttk.Treeview(self.lbfBatches, columns=cols, show="headings", height=8)
 
         self.treeBatches.column("lot", width=120, minwidth=80, anchor=tk.W, stretch=True)
-        self.treeBatches.heading("lot", text=_("Lotto"), anchor=tk.W)
+        self.treeBatches.heading("lot", text=_("Batch"), anchor=tk.W)
 
         self.treeBatches.column("expiration", width=90, minwidth=80, anchor=tk.CENTER, stretch=False)
-        self.treeBatches.heading("expiration", text=_("Scadenza"), anchor=tk.CENTER)
+        self.treeBatches.heading("expiration", text=_("Expiration"), anchor=tk.CENTER)
 
         self.treeBatches.column("days", width=50, minwidth=40, anchor=tk.CENTER, stretch=False)
-        self.treeBatches.heading("days", text=_("GG"), anchor=tk.CENTER)
+        self.treeBatches.heading("days", text=_("Days"), anchor=tk.CENTER)
 
         sb = ttk.Scrollbar(self.lbfBatches, orient=tk.VERTICAL, command=self.treeBatches.yview)
         self.treeBatches.configure(yscrollcommand=sb.set)
@@ -142,7 +142,7 @@ class UI(ParentView):
         self.lbfBatches.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
         # Labels list
-        self.lbfLabels = ttk.LabelFrame(f2, text=_("Etichette"), style="App.TLabelframe")
+        self.lbfLabels = ttk.LabelFrame(f2, text=_("Labels"), style="App.TLabelframe")
 
         sb = ttk.Scrollbar(self.lbfLabels, orient=tk.VERTICAL)
         self.lstLabels = tk.Listbox(
@@ -163,28 +163,28 @@ class UI(ParentView):
         self.lbfLabels.pack(side=tk.TOP, fill=tk.BOTH, expand=1, pady=5)
 
         # Search (f3 already created at top)
-        w = ttk.LabelFrame(f3, text=_("Ricerca"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f3, text=_("Search"), style="App.TLabelframe")
         self.txSearch = ttk.Entry(w, width=15, textvariable=self.search_var)
         self.txSearch.bind("<Return>", self.on_search)
         self.txSearch.pack(fill=tk.X, padx=2, pady=2)
 
         # Search options
-        for idx, text in enumerate((_("Prodotto"), _("Codice"))):
+        for idx, text in enumerate((_("Product"), _("Code"))):
             ttk.Radiobutton(w, text=text, variable=self.search_option,
                             value=idx, style="App.TRadiobutton").pack(anchor=tk.W)
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Buttons
-        w = ttk.LabelFrame(f3, text=_("Comandi"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f3, text=_("Commands"), style="App.TLabelframe")
         buttons = [
-            (_("Aggiorna"), self.on_refresh, "<Alt-a>", 0),
-            (_("Dettagli"), self.on_details, "<Alt-d>", 0),
-            (_("Modifica"), self.on_edit_package, "<Alt-m>", 0),
-            (_("Storico"), self.on_history, "<Alt-s>", 0),
-            (_("Nuovo Lotto"), self.on_new_batch, "<Alt-l>", 6),
-            (_("Carica Etichette"), self.on_load_labels, "<Alt-e>", 7),
-            (_("Etichetta Lotto"), self.on_print_lot_label, "<Alt-t>", 4),
-            (_("Chiudi"), self.on_cancel, "<Alt-c>", 0),
+            (_("Refresh"), self.on_refresh, "<Alt-a>", 0),
+            (_("Details"), self.on_details, "<Alt-d>", 0),
+            (_("Edit"), self.on_edit_package, "<Alt-m>", 0),
+            (_("History"), self.on_history, "<Alt-s>", 0),
+            (_("New Batch"), self.on_new_batch, "<Alt-l>", 4),
+            (_("Load Labels"), self.on_load_labels, "<Alt-e>", 5),
+            (_("Lot Label"), self.on_print_lot_label, "<Alt-t>", 4),
+            (_("Close"), self.on_cancel, "<Alt-c>", 0),
         ]
 
         for text, cmd, key, ul in buttons:
@@ -193,15 +193,15 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Label action options
-        w = ttk.LabelFrame(f3, text=_("Azione etichetta"), style="App.TLabelframe")
-        for idx, text in enumerate((_("Stampa"), _("Evadi"), _("Elimina"))):
+        w = ttk.LabelFrame(f3, text=_("Label action"), style="App.TLabelframe")
+        for idx, text in enumerate((_("Print"), _("Unload"), _("Cancel"))):
             ttk.Radiobutton(w, text=text, variable=self.label_action,
                             value=idx, style="App.TRadiobutton").pack(anchor=tk.W)
         w.pack(fill=tk.X, padx=5, pady=5)
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Magazzino"))
+        self.title(_("Warehouse"))
         self.engine.dict_instances["warehouse"] = self
 
         # Subscribe to events
@@ -214,7 +214,7 @@ class UI(ParentView):
         self.set_categories()
         # Don't load all products at startup - wait for category selection
         self.clear_lists()
-        self.lbfProducts.config(text=_("Prodotti (selezionare categoria)"))
+        self.lbfProducts.config(text=_("Products (select category)"))
 
     def on_stock_changed(self, data=None):
         """Handle stock_changed event from delivery."""
@@ -249,7 +249,7 @@ class UI(ParentView):
         else:
             # No category selected - just clear lists
             self.clear_lists()
-            self.lbfProducts.config(text=_("Prodotti (selezionare categoria)"))
+            self.lbfProducts.config(text=_("Products (select category)"))
 
     def clear_lists(self):
         """Clear all lists."""
@@ -267,13 +267,13 @@ class UI(ParentView):
         prod_count = len(self.treeProducts.get_children())
         batch_count = len(self.treeBatches.get_children())
         label_count = self.lstLabels.size()
-        self.lbfProducts.config(text=f"{_('Prodotti')} ({prod_count})")
-        self.lbfBatches.config(text=f"{_('Lotti')} ({batch_count})")
-        self.lbfLabels.config(text=f"{_('Etichette')} ({label_count})")
+        self.lbfProducts.config(text=f"{_('Products')} ({prod_count})")
+        self.lbfBatches.config(text=f"{_('Batches')} ({batch_count})")
+        self.lbfLabels.config(text=f"{_('Labels')} ({label_count})")
 
     def set_categories(self):
         """Load categories into combobox."""
-        # Salva la categoria attualmente selezionata PRIMA di svuotare
+        # Save currently selected category BEFORE clearing
         current_idx = self.cbCategories.current()
         current_category_id = self.dict_categories.get(current_idx) if current_idx != -1 else None
 
@@ -294,11 +294,11 @@ class UI(ParentView):
 
         # Add "All" option
         self.dict_categories[len(voices)] = 0
-        voices.append(_("-- Tutte --"))
+        voices.append(_("-- All --"))
 
         self.cbCategories["values"] = voices
 
-        # Ri-seleziona la stessa categoria (se esiste ancora)
+        # Re-select the same category (if it still exists)
         if current_category_id is not None:
             for idx, cat_id in self.dict_categories.items():
                 if cat_id == current_category_id:
@@ -519,26 +519,26 @@ class UI(ParentView):
             row = self.engine.read(False, sql, (package_id,))
 
             if row:
-                in_dark = "Sì" if row["in_the_dark"] == 1 else "No"
+                in_dark = _("Yes") if row["in_the_dark"] == 1 else _("No")
                 msg = (
-                    f"Prodotto: {row['product_name'] or '-'}\n"
-                    f"Codice: {row['product_code'] or '-'}\n"
-                    f"Fornitore: {row['supplier'] or '-'}\n"
-                    f"Confezionamento: {row['packaging'] or '-'}\n"
-                    f"Conservazione: {row['conservation'] or '-'}\n"
-                    f"Al buio: {in_dark}\n"
-                    f"Categoria: {row['category'] or '-'}\n"
-                    f"Giacenza: {row['in_stock'] or 0}"
+                    f"{_('Product')}: {row['product_name'] or '-'}\n"
+                    f"{_('Code')}: {row['product_code'] or '-'}\n"
+                    f"{_('Supplier')}: {row['supplier'] or '-'}\n"
+                    f"{_('Packaging')}: {row['packaging'] or '-'}\n"
+                    f"{_('Storage')}: {row['conservation'] or '-'}\n"
+                    f"{_('Keep in dark')}: {in_dark}\n"
+                    f"{_('Category')}: {row['category'] or '-'}\n"
+                    f"{_('Stock')}: {row['in_stock'] or 0}"
                 )
                 messagebox.showinfo(
-                    _("Dettagli Prodotto"),
+                    _("Product Details"),
                     msg,
                     parent=self
                 )
         else:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un prodotto!"),
+                _("Select a product!"),
                 parent=self
             )
 
@@ -555,7 +555,7 @@ class UI(ParentView):
         else:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un prodotto!"),
+                _("Select a product!"),
                 parent=self
             )
 
@@ -579,7 +579,7 @@ class UI(ParentView):
         else:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un prodotto!"),
+                _("Select a product!"),
                 parent=self
             )
 
@@ -649,27 +649,27 @@ class UI(ParentView):
                 action = self.label_action.get()
 
                 if action == 0:
-                    # Stampa
+                    # Print
                     self.on_print_label(label_id)
 
                 elif action == 1:
-                    # Evadi (scarica)
+                    # Unload
                     if status == 1:
-                        msg = f"Scaricare l'etichetta {label_id}?"
+                        msg = _("Unload label {}?").format(label_id)
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.unload_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
                             self.update_product_stock()
                     elif status == 0:
-                        msg = f"Ripristinare l'etichetta {label_id}?"
+                        msg = _("Restore label {}?").format(label_id)
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.restore_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
                             self.update_product_stock()
                     elif status == -1:
-                        msg = f"Ripristinare l'etichetta annullata {label_id}?"
+                        msg = _("Restore cancelled label {}?").format(label_id)
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.restore_label(label_id)
                             self.load_labels(self.selected_batch_id)
@@ -677,16 +677,16 @@ class UI(ParentView):
                             self.update_product_stock()
 
                 elif action == 2:
-                    # Elimina (annulla)
+                    # Cancel
                     if status == 1:
-                        msg = f"Annullare l'etichetta {label_id}?"
+                        msg = _("Cancel label {}?").format(label_id)
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.cancel_label(label_id)
                             self.load_labels(self.selected_batch_id)
                             self.reposition_label(label_id)
                             self.update_product_stock()
                     elif status == -1:
-                        msg = f"L'etichetta {label_id} è già annullata.\nRipristinare?"
+                        msg = _("Label {} is already cancelled.\nRestore?").format(label_id)
                         if messagebox.askyesno(self.engine.app_title, msg, parent=self):
                             self.engine.restore_label(label_id)
                             self.load_labels(self.selected_batch_id)
@@ -695,7 +695,7 @@ class UI(ParentView):
                     else:
                         messagebox.showwarning(
                             self.engine.app_title,
-                            f"L'etichetta {label_id} è già stata evasa.\nUsare 'Evadi' per ripristinarla.",
+                            _("Label {} has already been unloaded.\nUse 'Unload' to restore.").format(label_id),
                             parent=self
                         )
 
@@ -751,7 +751,7 @@ class UI(ParentView):
         if not self.engine.is_printer_enabled():
             messagebox.showinfo(
                 self.engine.app_title,
-                _("Stampa disabilitata su questa postazione."),
+                _("Printing disabled on this workstation."),
                 parent=self
             )
             return
@@ -765,13 +765,13 @@ class UI(ParentView):
             if not path:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Etichetta non trovata!"),
+                    _("Label not found!"),
                     parent=self
                 )
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                _("Errore nella generazione dell'etichetta:") + f"\n{e}",
+                _("Error generating label:") + f"\n{e}",
                 parent=self
             )
 
@@ -789,7 +789,7 @@ class UI(ParentView):
         else:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un prodotto!"),
+                _("Select a product!"),
                 parent=self
             )
 
@@ -815,7 +815,7 @@ class UI(ParentView):
         else:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un lotto!"),
+                _("Select a batch!"),
                 parent=self
             )
 
@@ -825,7 +825,7 @@ class UI(ParentView):
         if not selection:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un lotto!"),
+                _("Select a batch!"),
                 parent=self
             )
             return
@@ -833,7 +833,7 @@ class UI(ParentView):
         if not self.engine.is_printer_enabled():
             messagebox.showinfo(
                 self.engine.app_title,
-                _("Stampa disabilitata su questa postazione."),
+                _("Printing disabled on this workstation."),
                 parent=self
             )
             return
@@ -849,13 +849,13 @@ class UI(ParentView):
             if not path:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Dati lotto non trovati!"),
+                    _("Batch data not found!"),
                     parent=self
                 )
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                _("Errore nella generazione dell'etichetta:") + f"\n{e}",
+                _("Error generating label:") + f"\n{e}",
                 parent=self
             )
 

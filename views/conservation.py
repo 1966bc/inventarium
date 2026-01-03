@@ -40,12 +40,12 @@ class UI(ChildView):
         entry_width = self.engine.get_entry_width()
 
         r = 0
-        ttk.Label(w, text=_("Descrizione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Description:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtDescription = ttk.Entry(w, textvariable=self.description, width=entry_width)
         self.txtDescription.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Attivo:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Active:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         chk = ttk.Checkbutton(w, onvalue=1, offvalue=0, variable=self.status, style="App.TCheckbutton")
         chk.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
@@ -54,11 +54,11 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
         self.bind("<Return>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
@@ -72,11 +72,11 @@ class UI(ChildView):
         if self.index is not None and selected_item:
             # Edit mode
             self.selected_item = selected_item
-            self.title(_("Modifica Conservazione"))
+            self.title(_("Edit Storage Condition"))
             self.set_values()
         else:
             # New conservation mode
-            self.title(_("Nuova Conservazione"))
+            self.title(_("New Storage Condition"))
             self.status.set(1)
 
         self.txtDescription.focus()
@@ -99,7 +99,7 @@ class UI(ChildView):
         if not self.description.get().strip():
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Il campo Descrizione è obbligatorio!"),
+                _("The Description field is required!"),
                 parent=self
             )
             self.txtDescription.focus()
@@ -147,11 +147,11 @@ class UI(ChildView):
             # If editing, allow same description for same conservation
             if self.index is not None:
                 if rs["conservation_id"] != self.selected_item["conservation_id"]:
-                    msg = f"La conservazione '{self.description.get()}' esiste già!"
+                    msg = _("The storage condition '{}' already exists!").format(self.description.get())
                     messagebox.showwarning(self.engine.app_title, msg, parent=self)
                     return False
             else:
-                msg = f"La conservazione '{self.description.get()}' esiste già!"
+                msg = _("The storage condition '{}' already exists!").format(self.description.get())
                 messagebox.showwarning(self.engine.app_title, msg, parent=self)
                 return False
 

@@ -36,12 +36,12 @@ class UI(ChildView):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # History listbox
-        w = ttk.LabelFrame(f0, text=_("Storico Ordini"), style="App.TLabelframe")
+        w = ttk.LabelFrame(f0, text=_("Order History"), style="App.TLabelframe")
 
         # Header
         header = ttk.Label(
             w,
-            text=f"{_('Data'):<12} {_('Rif. Richiesta'):<20} {_('Ord.'):>5} {_('Evaso'):>5}",
+            text=f"{_('Date'):<12} {_('Request Ref.'):<20} {_('Ord.'):>5} {_('Del.'):>5}",
             font=("Courier", 9, "bold")
         )
         header.pack(fill=tk.X, padx=2)
@@ -64,7 +64,7 @@ class UI(ChildView):
 
         ttk.Label(bf, textvariable=self.count, anchor=tk.W).pack(side=tk.LEFT, fill=tk.X, expand=1)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", self.on_cancel)
         self.bind("<Alt-c>", self.on_cancel)
 
@@ -79,7 +79,7 @@ class UI(ChildView):
             product_name: Name of the product for title
         """
         self.package_id = package_id
-        self.title(f"{_('Storico')} - {product_name}")
+        self.title(f"{_('History')} - {product_name}")
         self.load_history()
 
     def load_history(self):
@@ -134,7 +134,7 @@ class UI(ChildView):
                 if delivered >= ordered and ordered > 0:
                     self.lstHistory.itemconfig(idx, fg="gray")
 
-        self.count.set(f"{_('Righe')}: {self.lstHistory.size()} | {_('Tot. Ord')}: {total_ordered} | {_('Tot. Evaso')}: {total_delivered}")
+        self.count.set(f"{_('Rows')}: {self.lstHistory.size()} | {_('Tot. Ord')}: {total_ordered} | {_('Tot. Delivered')}: {total_delivered}")
 
     def on_cancel(self, evt=None):
         """Close the window."""

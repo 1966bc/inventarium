@@ -44,25 +44,25 @@ class UI(ChildView):
         combo_width = 50  # Wider for long product names
 
         r = 0
-        ttk.Label(w, text=_("Categoria:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Category:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbCategories = ttk.Combobox(w, state="readonly", width=combo_width, style="App.TCombobox")
         self.cbCategories.bind("<<ComboboxSelected>>", self.on_category_selected)
         self.cbCategories.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Prodotto:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Product:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbProducts = ttk.Combobox(w, state="readonly", width=combo_width, style="App.TCombobox")
         self.cbProducts.bind("<<ComboboxSelected>>", self.on_product_selected)
         self.cbProducts.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Confezione:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Package:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.cbPackages = ttk.Combobox(w, state="readonly", width=combo_width, style="App.TCombobox")
         self.cbPackages.bind("<<ComboboxSelected>>", self.on_package_selected)
         self.cbPackages.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         r += 1
-        ttk.Label(w, text=_("Quantità:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        ttk.Label(w, text=_("Quantity:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         vcmd = self.engine.get_validate_integer(self)
         self.txtQuantity = ttk.Entry(
             w, textvariable=self.quantity, width=8,
@@ -75,16 +75,16 @@ class UI(ChildView):
         bf = ttk.Frame(w)
         bf.grid(row=r, column=0, columnspan=2, pady=10)
 
-        self.engine.create_button(bf, _("Salva"), self.on_save).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Save"), self.on_save).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-s>", self.on_save)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
         self.bind("<Escape>", self.on_cancel)
 
         # History treeview
         r += 1
-        self.lbfHistory = ttk.LabelFrame(w, text=_("Storico Ordini"), style="App.TLabelframe")
+        self.lbfHistory = ttk.LabelFrame(w, text=_("Order History"), style="App.TLabelframe")
         self.lbfHistory.grid(row=r, column=0, columnspan=2, sticky=tk.NSEW, pady=(10, 0))
 
         # Treeview with columns
@@ -98,10 +98,10 @@ class UI(ChildView):
         )
 
         # Configure columns
-        self.trvHistory.heading("date", text=_("Data"))
-        self.trvHistory.heading("reference", text=_("Riferimento"))
-        self.trvHistory.heading("ordered", text=_("Ord"))
-        self.trvHistory.heading("delivered", text=_("Eva"))
+        self.trvHistory.heading("date", text=_("Date"))
+        self.trvHistory.heading("reference", text=_("Reference"))
+        self.trvHistory.heading("ordered", text=_("Ord."))
+        self.trvHistory.heading("delivered", text=_("Del."))
 
         self.trvHistory.column("date", width=90, anchor=tk.W)
         self.trvHistory.column("reference", width=120, anchor=tk.W)
@@ -138,11 +138,11 @@ class UI(ChildView):
         if self.index is not None and selected_item:
             # Edit mode
             self.selected_item = selected_item
-            self.title(_("Modifica Articolo"))
+            self.title(_("Edit Item"))
             self.set_values()
         else:
             # New item mode
-            self.title(_("Nuovo Articolo"))
+            self.title(_("New Item"))
             self.quantity.set(1)
 
             # Pre-select category if provided
@@ -185,7 +185,7 @@ class UI(ChildView):
             self.cbPackages.set("")
             for item in self.trvHistory.get_children():
                 self.trvHistory.delete(item)
-            self.lbfHistory.config(text=_("Storico Ordini"))
+            self.lbfHistory.config(text=_("Order History"))
 
     def set_products(self, category_id):
         """Load products into combobox filtered by category."""
@@ -304,7 +304,7 @@ class UI(ChildView):
 
         # Update label with count
         count = len(self.trvHistory.get_children())
-        self.lbfHistory.config(text=f"{_('Storico Ordini')} ({count})")
+        self.lbfHistory.config(text=f"{_('Order History')} ({count})")
 
     def set_values(self):
         """Set form values from selected item."""
@@ -367,7 +367,7 @@ class UI(ChildView):
         if self.cbCategories.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare una categoria!"),
+                _("Please select a category!"),
                 parent=self
             )
             self.cbCategories.focus()
@@ -376,7 +376,7 @@ class UI(ChildView):
         if self.cbProducts.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare un prodotto!"),
+                _("Please select a product!"),
                 parent=self
             )
             self.cbProducts.focus()
@@ -385,7 +385,7 @@ class UI(ChildView):
         if self.cbPackages.current() == -1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Selezionare una confezione!"),
+                _("Please select a package!"),
                 parent=self
             )
             self.cbPackages.focus()
@@ -394,7 +394,7 @@ class UI(ChildView):
         if self.quantity.get() < 1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("La quantità deve essere almeno 1!"),
+                _("Quantity must be at least 1!"),
                 parent=self
             )
             self.txtQuantity.focus()
@@ -429,7 +429,7 @@ class UI(ChildView):
                     self.engine.write(sql, (self.quantity.get(), existing["item_id"]))
                     messagebox.showinfo(
                         self.engine.app_title,
-                        _("Articolo già presente.") + "\n" + _("La quantità è stata sommata."),
+                        _("Item already exists.") + "\n" + _("Quantity has been added."),
                         parent=self
                     )
                 else:

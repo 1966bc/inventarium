@@ -78,9 +78,9 @@ class Main(tk.Toplevel):
         toolbar = ttk.Frame(self.main_frame)
 
         buttons = (
-            ("▣", self.on_warehouse),       # Giacenze 
-            ("⊕", self.on_open_requests),   # Richieste 
-            ("≡", self.on_stocks),          # Stampa 
+            ("▣", self.on_warehouse),       # Stock
+            ("⊕", self.on_open_requests),   # Requests
+            ("≡", self.on_stocks),          # Print
             ("▮▯▮", self.on_barcode),       # Barcode
             ("ℹ", self.on_about),           # Info
             ("⏻", self.on_exit),            # Exit
@@ -97,23 +97,23 @@ class Main(tk.Toplevel):
         # File menu
         m_file = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label=_("File"), underline=0, menu=m_file)
-        m_file.add_command(label=_("Impostazioni"), underline=0, command=self.on_settings)
+        m_file.add_command(label=_("Settings"), underline=0, command=self.on_settings)
 
         # Database submenu
         m_database = tk.Menu(m_file, tearoff=0)
         m_file.add_cascade(label=_("Database"), underline=0, menu=m_database)
-        m_database.add_command(label=_("Configura"), underline=0, command=self.on_config_database)
+        m_database.add_command(label=_("Configure"), underline=0, command=self.on_config_database)
         m_database.add_command(label=_("Backup"), underline=0, command=self.on_backup)
-        m_database.add_command(label=_("Compatta"), underline=0, command=self.on_vacuum)
+        m_database.add_command(label=_("Compact"), underline=0, command=self.on_vacuum)
 
         m_file.add_command(label=_("Log"), underline=0, command=self.on_log)
         m_file.add_separator()
-        m_file.add_command(label=_("Etichetta Personalizzata"), underline=0, command=self.on_custom_label)
+        m_file.add_command(label=_("Custom Label"), underline=0, command=self.on_custom_label)
         m_file.add_separator()
 
         # Language submenu
         m_lang = tk.Menu(m_file, tearoff=0)
-        m_file.add_cascade(label=_("Lingua"), underline=0, menu=m_lang)
+        m_file.add_cascade(label=_("Language"), underline=0, menu=m_lang)
         current_lang = self.engine.get_setting("language", "it")
         for code, name in LANGUAGES.items():
             m_lang.add_radiobutton(
@@ -124,64 +124,64 @@ class Main(tk.Toplevel):
             )
 
         m_file.add_separator()
-        m_file.add_command(label=_("Esci"), underline=0, command=self.on_exit)
+        m_file.add_command(label=_("Exit"), underline=0, command=self.on_exit)
 
-        # Magazzino menu
+        # Warehouse menu
         m_warehouse = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label=_("Magazzino"), underline=0, menu=m_warehouse)
-        m_warehouse.add_command(label=_("Giacenze"), underline=0, command=self.on_warehouse)
-        m_warehouse.add_command(label=_("Stampa Giacenze"), underline=0, command=self.on_stocks)
-        m_warehouse.add_command(label=_("Scarico"), underline=0, command=self.on_barcode)
+        menubar.add_cascade(label=_("Warehouse"), underline=0, menu=m_warehouse)
+        m_warehouse.add_command(label=_("Stock"), underline=0, command=self.on_warehouse)
+        m_warehouse.add_command(label=_("Print Stock"), underline=0, command=self.on_stocks)
+        m_warehouse.add_command(label=_("Unload"), underline=0, command=self.on_barcode)
         m_warehouse.add_separator()
-        m_warehouse.add_command(label=_("Scadenze"), underline=0, command=self.on_expiring)
+        m_warehouse.add_command(label=_("Expiring"), underline=0, command=self.on_expiring)
 
-        # Richieste menu
+        # Requests menu
         m_requests = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label=_("Richieste"), underline=0, menu=m_requests)
-        m_requests.add_command(label=_("Richieste"), underline=0, command=self.on_open_requests)
+        menubar.add_cascade(label=_("Requests"), underline=0, menu=m_requests)
+        m_requests.add_command(label=_("Requests"), underline=0, command=self.on_open_requests)
         m_requests.add_separator()
-        m_requests.add_command(label=_("Consegne"), underline=0, command=self.on_deliveries)
+        m_requests.add_command(label=_("Deliveries"), underline=0, command=self.on_deliveries)
 
         # Admin menu
         m_admin = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label=_("Anagrafiche"), underline=0, menu=m_admin)
-        m_admin.add_command(label=_("Prodotti"), underline=0, command=self.on_products)
-        m_admin.add_command(label=_("Fornitori"), underline=0, command=self.on_suppliers)
-        m_admin.add_command(label=_("Categorie"), underline=0, command=self.on_categories)
-        m_admin.add_command(label=_("Conservazioni"), underline=0, command=self.on_conservations)
-        m_admin.add_command(label=_("Ubicazioni"), underline=0, command=self.on_locations)
-        m_admin.add_command(label=_("Fonti Finanziamento"), underline=0, command=self.on_funding_sources)
+        menubar.add_cascade(label=_("Master Data"), underline=0, menu=m_admin)
+        m_admin.add_command(label=_("Products"), underline=0, command=self.on_products)
+        m_admin.add_command(label=_("Suppliers"), underline=0, command=self.on_suppliers)
+        m_admin.add_command(label=_("Categories"), underline=0, command=self.on_categories)
+        m_admin.add_command(label=_("Storage Conditions"), underline=0, command=self.on_conservations)
+        m_admin.add_command(label=_("Locations"), underline=0, command=self.on_locations)
+        m_admin.add_command(label=_("Funding Sources"), underline=0, command=self.on_funding_sources)
 
-        # Acquisti menu
+        # Purchases menu
         m_purchases = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label=_("Acquisti"), underline=0, menu=m_purchases)
-        m_purchases.add_command(label=_("Delibere"), underline=0, command=self.on_deliberations)
-        m_purchases.add_command(label=_("Listino Prezzi"), underline=0, command=self.on_prices)
+        menubar.add_cascade(label=_("Purchases"), underline=0, menu=m_purchases)
+        m_purchases.add_command(label=_("Deliberations"), underline=0, command=self.on_deliberations)
+        m_purchases.add_command(label=_("Price List"), underline=0, command=self.on_prices)
         m_purchases.add_separator()
-        m_purchases.add_command(label=_("Fonti Package"), underline=0, command=self.on_package_fundings)
+        m_purchases.add_command(label=_("Package Fundings"), underline=0, command=self.on_package_fundings)
         m_purchases.add_separator()
-        m_purchases.add_command(label=_("Report Fonti"), underline=0, command=self.on_report_fundings)
+        m_purchases.add_command(label=_("Fundings Report"), underline=0, command=self.on_report_fundings)
 
-        # Statistiche menu
+        # Statistics menu
         m_stats = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label=_("Statistiche"), underline=0, menu=m_stats)
+        menubar.add_cascade(label=_("Statistics"), underline=0, menu=m_stats)
         m_stats.add_command(label=_("Dashboard"), underline=0, command=self.on_stats_dashboard)
         m_stats.add_separator()
-        m_stats.add_command(label=_("Consumi"), underline=0, command=self.on_stats_consumption)
-        m_stats.add_command(label=_("Rotazione"), underline=0, command=self.on_stats_rotation)
-        m_stats.add_command(label=_("Tempi (TAT)"), underline=0, command=self.on_stats_tat)
+        m_stats.add_command(label=_("Consumption"), underline=0, command=self.on_stats_consumption)
+        m_stats.add_command(label=_("Rotation"), underline=0, command=self.on_stats_rotation)
+        m_stats.add_command(label=_("Times (TAT)"), underline=0, command=self.on_stats_tat)
         m_stats.add_separator()
-        m_stats.add_command(label=_("Fornitori"), underline=0, command=self.on_stats_suppliers)
-        m_stats.add_command(label=_("Scadenze"), underline=0, command=self.on_stats_expiring)
+        m_stats.add_command(label=_("Suppliers"), underline=0, command=self.on_stats_suppliers)
+        m_stats.add_command(label=_("Expiring"), underline=0, command=self.on_stats_expiring)
 
         # Help menu
         m_help = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="?", underline=0, menu=m_help)
-        m_help.add_command(label=_("Informazioni"), underline=0, command=self.on_about)
-        m_help.add_command(label=_("Licenza"), underline=0, command=self.on_license)
+        m_help.add_command(label=_("About"), underline=0, command=self.on_about)
+        m_help.add_command(label=_("License"), underline=0, command=self.on_license)
         m_help.add_separator()
-        m_help.add_command(label=_("Versione Python"), underline=0, command=self.on_python_version)
-        m_help.add_command(label=_("Versione Tkinter"), underline=0, command=self.on_tkinter_version)
+        m_help.add_command(label=_("Python Version"), underline=0, command=self.on_python_version)
+        m_help.add_command(label=_("Tkinter Version"), underline=0, command=self.on_tkinter_version)
 
         self.config(menu=menubar)
 
@@ -237,7 +237,7 @@ class Main(tk.Toplevel):
         if not self.engine.is_printer_enabled():
             messagebox.showinfo(
                 self.engine.app_title,
-                _("Stampa disabilitata su questa postazione."),
+                _("Printing disabled on this workstation."),
                 parent=self
             )
             return
@@ -409,7 +409,7 @@ class Main(tk.Toplevel):
         # Show config dialog
         dialog = inventarium.ConfigDialog(self)
         dialog.db_path.set(current_path)
-        dialog.title(_("Configura Percorso Database"))
+        dialog.title(_("Configure Database Path"))
         self.wait_window(dialog)
 
         if dialog.result is not None and dialog.result != current_path:
@@ -419,9 +419,9 @@ class Main(tk.Toplevel):
             # Ask to restart
             if messagebox.askyesno(
                 self.engine.app_title,
-                _("Percorso database aggiornato.") + "\n\n" +
-                _("Riavviare l'applicazione per utilizzare il nuovo database.") + "\n\n" +
-                _("Riavviare ora?"),
+                _("Database path updated.") + "\n\n" +
+                _("Restart the application to use the new database.") + "\n\n" +
+                _("Restart now?"),
                 parent=self
             ):
                 self.nametowidget(".").on_exit(silent=True)
@@ -441,9 +441,9 @@ class Main(tk.Toplevel):
         filename = filedialog.asksaveasfilename(
             parent=self,
             defaultextension=".db",
-            filetypes=[("SQLite Database", "*.db"), (_("Tutti i file"), "*.*")],
+            filetypes=[("SQLite Database", "*.db"), (_("All files"), "*.*")],
             initialfile=default_name,
-            title=_("Salva Backup Database")
+            title=_("Save Database Backup")
         )
 
         if filename:
@@ -456,13 +456,13 @@ class Main(tk.Toplevel):
 
                 messagebox.showinfo(
                     self.engine.app_title,
-                    _("Backup completato!") + f"\n\n{filename}",
+                    _("Backup completed!") + f"\n\n{filename}",
                     parent=self
                 )
             except Exception as e:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Errore durante il backup:") + f"\n{e}",
+                    _("Error during backup:") + f"\n{e}",
                     parent=self
                 )
 
@@ -491,16 +491,16 @@ class Main(tk.Toplevel):
 
             messagebox.showinfo(
                 self.engine.app_title,
-                f"{_('Database compattato!')}\n\n"
-                f"{_('Prima')}: {fmt_size(size_before)}\n"
-                f"{_('Dopo')}: {fmt_size(size_after)}\n"
-                f"{_('Risparmiato')}: {fmt_size(saved)}",
+                f"{_('Database compacted!')}\n\n"
+                f"{_('Before')}: {fmt_size(size_before)}\n"
+                f"{_('After')}: {fmt_size(size_after)}\n"
+                f"{_('Saved')}: {fmt_size(saved)}",
                 parent=self
             )
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"{_('Errore durante la compattazione')}:\n{e}",
+                f"{_('Error during compaction')}:\n{e}",
                 parent=self
             )
 
@@ -534,7 +534,7 @@ class Main(tk.Toplevel):
         # Ask to restart
         if messagebox.askyesno(
             self.engine.app_title,
-            _("Riavvio richiesto"),
+            _("Restart required"),
             parent=self
         ):
             self.nametowidget(".").on_exit(silent=True)

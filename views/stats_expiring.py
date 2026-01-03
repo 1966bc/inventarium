@@ -39,52 +39,52 @@ class UI(ParentView):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # Period filter
-        filters = ttk.LabelFrame(f0, text=_("Analisi Storica Scaduti"), style="App.TLabelframe")
+        filters = ttk.LabelFrame(f0, text=_("Historical Expiration Analysis"), style="App.TLabelframe")
         filters.pack(fill=tk.X, pady=(0, 10))
 
         r1 = ttk.Frame(filters)
         r1.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r1, text=_("Periodo scadenza - Da:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("Expiration period - From:")).pack(side=tk.LEFT)
         self.cal_from = Calendarium(r1, "")
         self.cal_from.pack(side=tk.LEFT, padx=(5, 20))
 
-        ttk.Label(r1, text=_("A:")).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("To:")).pack(side=tk.LEFT)
         self.cal_to = Calendarium(r1, "")
         self.cal_to.pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(r1, _("Calcola"), self.load_data).pack(side=tk.LEFT, padx=20)
+        self.engine.create_button(r1, _("Calculate"), self.load_data).pack(side=tk.LEFT, padx=20)
 
         # Quick period buttons
         r2 = ttk.Frame(filters)
         r2.pack(fill=tk.X, padx=10, pady=5)
 
-        ttk.Label(r2, text=_("Periodo rapido:")).pack(side=tk.LEFT)
-        for text, days in [(_("Anno scorso"), -365), (_("6 mesi fa"), -180), (_("Oggi"), 0),
-                          (_("+30 gg"), 30), (_("+90 gg"), 90)]:
+        ttk.Label(r2, text=_("Quick period:")).pack(side=tk.LEFT)
+        for text, days in [(_("Last year"), -365), (_("6 months ago"), -180), (_("Today"), 0),
+                          (_("+30 days"), 30), (_("+90 days"), 90)]:
             self.engine.create_button(r2, text, lambda d=days: self.set_quick_period(d)).pack(side=tk.LEFT, padx=2)
 
         # Summary metrics
-        metrics = ttk.LabelFrame(f0, text=_("Riepilogo"), style="App.TLabelframe")
+        metrics = ttk.LabelFrame(f0, text=_("Summary"), style="App.TLabelframe")
         metrics.pack(fill=tk.X, pady=(0, 10))
 
         self.frm_metrics = ttk.Frame(metrics)
         self.frm_metrics.pack(fill=tk.X, padx=10, pady=10)
 
         # Expired batches tree
-        ttk.Label(f0, text=_("Lotti Scaduti (con giacenza residua)"),
+        ttk.Label(f0, text=_("Expired Batches (with remaining stock)"),
                  font=("", 10, "bold")).pack(anchor=tk.W)
 
         columns = ("product", "supplier", "lot", "expiration", "in_stock", "used", "loss_pct")
         self.tree_expired = ttk.Treeview(f0, columns=columns, show="headings", height=8)
 
-        self.tree_expired.heading("product", text=_("Prodotto"))
-        self.tree_expired.heading("supplier", text=_("Fornitore"))
-        self.tree_expired.heading("lot", text=_("Lotto"))
-        self.tree_expired.heading("expiration", text=_("Scadenza"))
-        self.tree_expired.heading("in_stock", text=_("Residuo"))
-        self.tree_expired.heading("used", text=_("Usato"))
-        self.tree_expired.heading("loss_pct", text=_("Perdita %"))
+        self.tree_expired.heading("product", text=_("Product"))
+        self.tree_expired.heading("supplier", text=_("Supplier"))
+        self.tree_expired.heading("lot", text=_("Lot"))
+        self.tree_expired.heading("expiration", text=_("Expiration"))
+        self.tree_expired.heading("in_stock", text=_("Remaining"))
+        self.tree_expired.heading("used", text=_("Used"))
+        self.tree_expired.heading("loss_pct", text=_("Loss %"))
 
         self.tree_expired.column("product", width=180)
         self.tree_expired.column("supplier", width=150)
@@ -100,16 +100,16 @@ class UI(ParentView):
         self.tree_expired.pack(fill=tk.X, pady=5)
 
         # FEFO efficiency
-        ttk.Label(f0, text=_("Efficienza FEFO (First Expired First Out)"),
+        ttk.Label(f0, text=_("FEFO Efficiency (First Expired First Out)"),
                  font=("", 10, "bold")).pack(anchor=tk.W, pady=(10, 0))
 
         columns2 = ("product", "total_labels", "fefo_correct", "fefo_pct")
         self.tree_fefo = ttk.Treeview(f0, columns=columns2, show="headings", height=8)
 
-        self.tree_fefo.heading("product", text=_("Prodotto"))
-        self.tree_fefo.heading("total_labels", text=_("Etichette Scaricate"))
-        self.tree_fefo.heading("fefo_correct", text=_("FEFO Corrette"))
-        self.tree_fefo.heading("fefo_pct", text=_("Efficienza %"))
+        self.tree_fefo.heading("product", text=_("Product"))
+        self.tree_fefo.heading("total_labels", text=_("Labels Unloaded"))
+        self.tree_fefo.heading("fefo_correct", text=_("FEFO Correct"))
+        self.tree_fefo.heading("fefo_pct", text=_("Efficiency %"))
 
         self.tree_fefo.column("product", width=250)
         self.tree_fefo.column("total_labels", width=150, anchor=tk.E)
@@ -126,14 +126,14 @@ class UI(ParentView):
         bf = ttk.Frame(f0)
         bf.pack(fill=tk.X, pady=(10, 0))
 
-        self.engine.create_button(bf, _("Esporta CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Export CSV"), self.export_csv, width=12).pack(side=tk.LEFT, padx=5)
 
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
         self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Analisi Scadenze"))
+        self.title(_("Expiration Analysis"))
         self.engine.dict_instances["stats_expiring"] = self
         self.set_quick_period(0)  # Default: around today
 
@@ -168,9 +168,10 @@ class UI(ParentView):
 
         # Get date range
         if not self.cal_from.is_valid or not self.cal_to.is_valid:
+            from tkinter import messagebox
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Le date non sono valide!"),
+                _("The dates are not valid!"),
                 parent=self
             )
             return
@@ -341,11 +342,11 @@ class UI(ParentView):
         expiring_30 = row["cnt"] if row else 0
 
         # Display metrics
-        self._add_metric(_("Lotti scaduti con giacenza:"), expired_with_stock,
+        self._add_metric(_("Expired batches with stock:"), expired_with_stock,
                         color="red" if expired_with_stock > 0 else None)
-        self._add_metric(_("Etichette scadute (perdite):"), expired_labels,
+        self._add_metric(_("Expired labels (losses):"), expired_labels,
                         color="red" if expired_labels > 0 else None)
-        self._add_metric(_("In scadenza (30 gg):"), expiring_30,
+        self._add_metric(_("Expiring (30 days):"), expiring_30,
                         color="orange" if expiring_30 > 0 else None)
 
     def _add_metric(self, label, value, color=None):
@@ -368,7 +369,7 @@ class UI(ParentView):
             parent=self,
             defaultextension=".csv",
             filetypes=[("CSV files", "*.csv")],
-            title="Esporta Scadenze"
+            title=_("Export Expirations")
         )
 
         if filename:
@@ -376,9 +377,9 @@ class UI(ParentView):
                 writer = csv.writer(f, delimiter=";")
 
                 # Expired batches
-                writer.writerow(["=== Lotti Scaduti ==="])
-                writer.writerow(["Prodotto", "Fornitore", "Lotto", "Scadenza",
-                               "Residuo", "Usato", "Perdita %"])
+                writer.writerow([_("=== Expired Batches ===")])
+                writer.writerow([_("Product"), _("Supplier"), _("Lot"), _("Expiration"),
+                               _("Remaining"), _("Used"), _("Loss %")])
                 for item in self.tree_expired.get_children():
                     values = self.tree_expired.item(item)["values"]
                     writer.writerow(values)
@@ -386,8 +387,8 @@ class UI(ParentView):
                 writer.writerow([])
 
                 # FEFO analysis
-                writer.writerow(["=== Efficienza FEFO ==="])
-                writer.writerow(["Prodotto", "Etichette Scaricate", "FEFO Corrette", "Efficienza %"])
+                writer.writerow([_("=== FEFO Efficiency ===")])
+                writer.writerow([_("Product"), _("Labels Unloaded"), _("FEFO Correct"), _("Efficiency %")])
                 for item in self.tree_fefo.get_children():
                     values = self.tree_fefo.item(item)["values"]
                     writer.writerow(values)

@@ -56,7 +56,7 @@ class UI(ParentView):
         f0.pack(fill=tk.BOTH, expand=1)
 
         # Number of lines selection
-        lf_lines = ttk.LabelFrame(f0, text=_("Righe da stampare"), style="App.TLabelframe")
+        lf_lines = ttk.LabelFrame(f0, text=_("Lines to print"), style="App.TLabelframe")
         lf_lines.pack(fill=tk.X, pady=(0, 10))
 
         rf = ttk.Frame(lf_lines)
@@ -70,34 +70,34 @@ class UI(ParentView):
             ).pack(side=tk.LEFT, padx=10)
 
         # Text fields
-        lf_text = ttk.LabelFrame(f0, text=_("Testo Etichetta"), style="App.TLabelframe")
+        lf_text = ttk.LabelFrame(f0, text=_("Label Text"), style="App.TLabelframe")
         lf_text.pack(fill=tk.X, pady=(0, 10))
 
         # Line 1
         r1 = ttk.Frame(lf_text)
         r1.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r1, text=_("Riga 1:"), width=8).pack(side=tk.LEFT)
+        ttk.Label(r1, text=_("Line 1:"), width=8).pack(side=tk.LEFT)
         self.entry1 = ttk.Entry(r1, textvariable=self.line1_var, width=40)
         self.entry1.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         # Line 2
         r2 = ttk.Frame(lf_text)
         r2.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r2, text=_("Riga 2:"), width=8).pack(side=tk.LEFT)
+        ttk.Label(r2, text=_("Line 2:"), width=8).pack(side=tk.LEFT)
         self.entry2 = ttk.Entry(r2, textvariable=self.line2_var, width=40)
         self.entry2.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         # Line 3
         r3 = ttk.Frame(lf_text)
         r3.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r3, text=_("Riga 3:"), width=8).pack(side=tk.LEFT)
+        ttk.Label(r3, text=_("Line 3:"), width=8).pack(side=tk.LEFT)
         self.entry3 = ttk.Entry(r3, textvariable=self.line3_var, width=40)
         self.entry3.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         # Font size control
         r4 = ttk.Frame(lf_text)
         r4.pack(fill=tk.X, padx=10, pady=5)
-        ttk.Label(r4, text=_("Dim. Font:"), width=8).pack(side=tk.LEFT)
+        ttk.Label(r4, text=_("Font Size:"), width=8).pack(side=tk.LEFT)
         self.spn_font = ttk.Spinbox(
             r4, from_=16, to=48, width=5,
             textvariable=self.font_size
@@ -107,13 +107,13 @@ class UI(ParentView):
 
         # Include lab name checkbox
         ttk.Checkbutton(
-            lf_text, text=_("Includi nome laboratorio"),
+            lf_text, text=_("Include laboratory name"),
             variable=self.include_lab,
             style="App.TCheckbutton"
         ).pack(anchor=tk.W, padx=10, pady=5)
 
         # Templates section
-        lf_templates = ttk.LabelFrame(f0, text=_("Modelli Salvati"), style="App.TLabelframe")
+        lf_templates = ttk.LabelFrame(f0, text=_("Saved Templates"), style="App.TLabelframe")
         lf_templates.pack(fill=tk.BOTH, expand=1, pady=(0, 10))
 
         # Templates listbox
@@ -132,17 +132,17 @@ class UI(ParentView):
         tb = ttk.Frame(lf_templates)
         tb.pack(fill=tk.X, padx=10, pady=5)
 
-        self.engine.create_button(tb, _("Carica"), self.on_load_template).pack(side=tk.LEFT, padx=2)
-        self.engine.create_button(tb, _("Salva"), self.on_save_template).pack(side=tk.LEFT, padx=2)
-        self.engine.create_button(tb, _("Elimina"), self.on_delete_template).pack(side=tk.LEFT, padx=2)
+        self.engine.create_button(tb, _("Load"), self.on_load_template).pack(side=tk.LEFT, padx=2)
+        self.engine.create_button(tb, _("Save"), self.on_save_template).pack(side=tk.LEFT, padx=2)
+        self.engine.create_button(tb, _("Delete"), self.on_delete_template).pack(side=tk.LEFT, padx=2)
 
         # Action buttons
         bf = ttk.Frame(f0)
         bf.pack(fill=tk.X, pady=(10, 0))
 
-        self.engine.create_button(bf, _("Anteprima"), self.on_preview, width=12).pack(side=tk.LEFT, padx=5)
-        self.engine.create_button(bf, _("Stampa"), self.on_print, width=12).pack(side=tk.LEFT, padx=5)
-        self.engine.create_button(bf, _("Chiudi"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
+        self.engine.create_button(bf, _("Preview"), self.on_preview, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Print"), self.on_print, width=12).pack(side=tk.LEFT, padx=5)
+        self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
 
         self.bind("<Escape>", lambda e: self.on_cancel())
 
@@ -151,7 +151,7 @@ class UI(ParentView):
 
     def on_open(self):
         """Initialize and show the window."""
-        self.title(_("Etichetta Personalizzata"))
+        self.title(_("Custom Label"))
         self.engine.dict_instances["custom_label"] = self
         self.refresh_templates_list()
         self.entry1.focus_set()
@@ -186,7 +186,7 @@ class UI(ParentView):
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                _("Errore nel salvare i modelli:") + f"\n{e}",
+                _("Error saving templates:") + f"\n{e}",
                 parent=self
             )
 
@@ -202,7 +202,7 @@ class UI(ParentView):
         if not line1:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Inserire almeno la prima riga!"),
+                _("Please enter at least the first line!"),
                 parent=self
             )
             return
@@ -214,7 +214,7 @@ class UI(ParentView):
         if name in self.templates:
             if not messagebox.askyesno(
                 self.engine.app_title,
-                _("Il modello '{}' esiste.\nSovrascrivere?").format(name),
+                _("Template '{}' exists.\nOverwrite?").format(name),
                 parent=self
             ):
                 return
@@ -233,7 +233,7 @@ class UI(ParentView):
 
         messagebox.showinfo(
             self.engine.app_title,
-            _("Modello '{}' salvato!").format(name),
+            _("Template '{}' saved!").format(name),
             parent=self
         )
 
@@ -266,7 +266,7 @@ class UI(ParentView):
 
         if messagebox.askyesno(
             self.engine.app_title,
-            _("Eliminare il modello '{}'?").format(name),
+            _("Delete template '{}'?").format(name),
             parent=self
         ):
             del self.templates[name]
@@ -301,7 +301,7 @@ class UI(ParentView):
         if not lines:
             messagebox.showwarning(
                 self.engine.app_title,
-                _("Inserire almeno una riga di testo!"),
+                _("Please enter at least one line of text!"),
                 parent=self
             )
             return None
@@ -329,7 +329,7 @@ class UI(ParentView):
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                _("Errore nella generazione:") + f"\n{e}",
+                _("Error generating label:") + f"\n{e}",
                 parent=self
             )
             return None
@@ -351,13 +351,13 @@ class UI(ParentView):
 
                 messagebox.showinfo(
                     self.engine.app_title,
-                    _("Etichetta inviata alla stampa!"),
+                    _("Label sent to printer!"),
                     parent=self
                 )
             except Exception as e:
                 messagebox.showerror(
                     self.engine.app_title,
-                    _("Errore nella stampa:") + f"\n{e}",
+                    _("Error printing:") + f"\n{e}",
                     parent=self
                 )
 
