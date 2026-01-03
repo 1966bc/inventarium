@@ -90,16 +90,21 @@ python3 inventarium.py
 
 1. Clone or download the repository
 2. Open Command Prompt in the project folder
-3. Create and activate virtual environment:
-```cmd
-python -m venv venv
-venv\Scripts\activate
-```
-4. Install dependencies and run:
+3. Install dependencies and run:
 ```cmd
 pip install -r requirements.txt
 python inventarium.py
 ```
+
+**Optional**: If you prefer to use a virtual environment:
+```cmd
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python inventarium.py
+```
+
+**Note**: For production use, we recommend the standalone executable (see [Build Standalone Executable](#build-standalone-executable-windows)) which requires no Python installation.
 
 ## Database
 
