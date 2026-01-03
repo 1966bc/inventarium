@@ -252,7 +252,7 @@ def on_stock_changed(self, data=None):
 
 #### Singleton via Metaclass
 
-Engine uses a metaclass to guarantee a single instance:
+Engine uses a metaclass to guarantee a single instance. This is not strictly necessary since Engine is already instantiated once in `App`, but it's implemented for educational purposes:
 
 ```python
 class _EngineMeta(type):
