@@ -435,13 +435,11 @@ class UI(ChildView):
 
             self.parent.refresh_and_select(pk)
 
-            # Refresh warehouse solo se la categoria è cambiata
+            # Notify subscribers if category changed
             category_idx = self.cbCategories.current()
             new_category_id = self.dict_categories.get(category_idx, 0)
             if new_category_id != self.original_category_id:
-                warehouse = self.engine.dict_instances.get("warehouse")
-                if warehouse and warehouse.winfo_exists():
-                    warehouse.refresh()
+                self.engine.notify("package_changed")
 
             self.on_cancel()
 

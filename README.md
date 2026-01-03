@@ -222,6 +222,51 @@ The application uses a **mixin-based architecture** where the Engine class combi
 
 All views access the engine via `self.engine = self.nametowidget(".").engine`.
 
+### Design Patterns
+
+Inventarium implements several classic design patterns, making it a useful reference for learning software architecture:
+
+| Pattern | Where | Purpose |
+|---------|-------|---------|
+| **Singleton** | `Engine` (`_EngineMeta`), `ParentView` | Ensures single instance per window/engine |
+| **Mixin** | `Engine` | Composition over inheritance |
+| **Template Method** | `ChildView` | Common structure for CRUD dialogs |
+| **Registry** | `dict_instances` | Global access to open windows |
+| **Builder** | `build_sql()` | Dynamic SQL query construction |
+| **Observer** | `Engine` (`subscribe`, `notify`) | Decoupled view communication |
+
+#### Observer Pattern Example
+
+Views communicate without knowing each other:
+
+```python
+# In delivery.py (publisher)
+self.engine.notify("stock_changed")
+
+# In warehouse.py (subscriber)
+self.engine.subscribe("stock_changed", self.on_stock_changed)
+
+def on_stock_changed(self, data=None):
+    self.refresh_batches()
+```
+
+#### Singleton via Metaclass
+
+Engine uses a metaclass to guarantee a single instance:
+
+```python
+class _EngineMeta(type):
+    _instance = None
+
+    def __call__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+        return cls._instance
+
+class Engine(..., metaclass=_EngineMeta):
+    ...
+```
+
 ## Build Standalone Executable (Windows)
 
 To create a standalone `.exe` that runs without Python installed:

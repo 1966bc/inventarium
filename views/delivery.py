@@ -284,9 +284,17 @@ class UI(ParentView):
         """Initialize and show the window."""
         self.title(_("Consegne"))
         self.engine.dict_instances["deliveries"] = self
+
+        # Subscribe to events
+        self.engine.subscribe("request_changed", self.on_request_changed)
+
         self.cal_delivered.set_today()
         self.cal_expiration.set_today()
         self.load_requests()
+
+    def on_request_changed(self, data=None):
+        """Handle request_changed event from requests view."""
+        self.refresh()
 
     def load_requests(self):
         """Load sent requests that have pending items."""
@@ -661,11 +669,8 @@ class UI(ParentView):
             self.clear_form()
             self.refresh_and_reposition(current_request_id, current_item_id)
 
-            # Refresh warehouse if open
-            if "warehouse" in self.engine.dict_instances:
-                warehouse = self.engine.dict_instances["warehouse"]
-                warehouse.refresh_batches()
-                warehouse.update_product_stock()
+            # Notify subscribers that stock changed
+            self.engine.notify("stock_changed")
 
         except Exception as e:
             self.engine.on_log(
@@ -806,6 +811,9 @@ class UI(ParentView):
 
     def on_cancel(self, evt=None):
         """Close the window."""
+        # Unsubscribe from events
+        self.engine.unsubscribe("request_changed", self.on_request_changed)
+
         if "deliveries" in self.engine.dict_instances:
             del self.engine.dict_instances["deliveries"]
         super().on_cancel()

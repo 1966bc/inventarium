@@ -133,11 +133,9 @@ class UI(ChildView):
 
             self.parent.refresh_and_select(pk)
 
-            # Refresh combobox categorie in warehouse (solo per categorie prodotti)
+            # Notify subscribers that a category changed (only for product categories)
             if self.reference_id == 1:
-                warehouse = self.engine.dict_instances.get("warehouse")
-                if warehouse and warehouse.winfo_exists():
-                    warehouse.set_categories()
+                self.engine.notify("category_changed")
 
             self.on_cancel()
 

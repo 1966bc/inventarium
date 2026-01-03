@@ -209,10 +209,8 @@ class UI(ParentView):
         # Refresh this window
         self.refresh()
 
-        # Refresh warehouse if open
-        warehouse = self.engine.dict_instances.get("warehouse")
-        if warehouse and warehouse.winfo_exists():
-            warehouse.refresh()
+        # Notify subscribers that a batch was cancelled
+        self.engine.notify("batch_cancelled")
 
     def on_cancel(self, evt=None):
         """Close the window."""

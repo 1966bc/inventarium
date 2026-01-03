@@ -203,10 +203,40 @@ class UI(ParentView):
         """Initialize and show the window."""
         self.title(_("Magazzino"))
         self.engine.dict_instances["warehouse"] = self
+
+        # Subscribe to events
+        self.engine.subscribe("stock_changed", self.on_stock_changed)
+        self.engine.subscribe("label_unloaded", self.on_label_unloaded)
+        self.engine.subscribe("batch_cancelled", self.on_batch_cancelled)
+        self.engine.subscribe("category_changed", self.on_category_changed)
+        self.engine.subscribe("package_changed", self.on_package_changed)
+
         self.set_categories()
         # Don't load all products at startup - wait for category selection
         self.clear_lists()
         self.lbfProducts.config(text=_("Prodotti (selezionare categoria)"))
+
+    def on_stock_changed(self, data=None):
+        """Handle stock_changed event from delivery."""
+        self.refresh_batches()
+        self.update_product_stock()
+
+    def on_label_unloaded(self, data=None):
+        """Handle label_unloaded event from barcode."""
+        if self.selected_batch_id:
+            self.load_labels(self.selected_batch_id)
+
+    def on_batch_cancelled(self, data=None):
+        """Handle batch_cancelled event from expiring."""
+        self.refresh()
+
+    def on_category_changed(self, data=None):
+        """Handle category_changed event from category."""
+        self.set_categories()
+
+    def on_package_changed(self, data=None):
+        """Handle package_changed event from package."""
+        self.refresh()
 
     def on_refresh(self, evt=None):
         """Refresh lists respecting current category selection."""
@@ -886,6 +916,13 @@ class UI(ParentView):
 
     def on_cancel(self, evt=None):
         """Close the window."""
+        # Unsubscribe from events
+        self.engine.unsubscribe("stock_changed", self.on_stock_changed)
+        self.engine.unsubscribe("label_unloaded", self.on_label_unloaded)
+        self.engine.unsubscribe("batch_cancelled", self.on_batch_cancelled)
+        self.engine.unsubscribe("category_changed", self.on_category_changed)
+        self.engine.unsubscribe("package_changed", self.on_package_changed)
+
         if "warehouse" in self.engine.dict_instances:
             del self.engine.dict_instances["warehouse"]
         super().on_cancel()

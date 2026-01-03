@@ -40,12 +40,51 @@ from i18n import set_language, _
 APP_TITLE = "Inventarium"
 
 
-class Engine(DBMS, Controller, Tools, Launcher):
+class _EngineMeta(type):
+    """
+    Metaclass that ensures only one Engine instance exists.
+
+    This implements the Singleton pattern at the metaclass level,
+    intercepting instance creation before __new__ and __init__ are called.
+
+    How it works:
+        1. First call to Engine(...) creates and stores the instance
+        2. Subsequent calls return the stored instance, ignoring new arguments
+
+    Attributes:
+        _instance: The single Engine instance, or None if not yet created
+
+    Example:
+        >>> engine1 = Engine("db.sqlite")
+        >>> engine2 = Engine("other.db")  # Returns same instance!
+        >>> engine1 is engine2
+        True
+    """
+
+    _instance = None
+
+    def __call__(cls, *args, **kwargs):
+        """
+        Intercept instance creation.
+
+        Returns the existing instance if one exists, otherwise creates
+        a new one using the normal class instantiation process.
+        """
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+        return cls._instance
+
+
+class Engine(DBMS, Controller, Tools, Launcher, metaclass=_EngineMeta):
     """
     Main orchestrator for Inventarium.
 
     Combines all system components via mixin inheritance to provide
     a unified interface for all application functionality.
+
+    Singleton:
+        Engine uses _EngineMeta metaclass to ensure only one instance exists.
+        Multiple calls to Engine() return the same instance.
 
     Mixin Architecture (in MRO order):
         1. DBMS: Database connection and query execution
@@ -53,8 +92,23 @@ class Engine(DBMS, Controller, Tools, Launcher):
         3. Tools: Shared utility functions
         4. Launcher: Cross-platform file opener
 
+    Observer Pattern:
+        Engine provides an event system for decoupled view communication:
+        - subscribe(event, callback): Register for an event
+        - unsubscribe(event, callback): Unregister from an event
+        - notify(event, data): Emit an event to all subscribers
+
+        Events:
+        - "stock_changed": Fired when stock is modified (delivery)
+        - "label_unloaded": Fired when a label is unloaded (barcode)
+        - "batch_cancelled": Fired when a batch is cancelled (expiring)
+        - "category_changed": Fired when a category is modified (category)
+        - "package_changed": Fired when a package is modified (package)
+        - "request_changed": Fired when a request is modified (requests)
+
     Attributes:
         dict_instances (dict): Registry of open GUI windows for singleton management
+        _subscribers (dict): Event subscribers registry
         title (str): Application title
         entry_width (int): Standard entry width for forms
 
@@ -70,6 +124,9 @@ class Engine(DBMS, Controller, Tools, Launcher):
 
         # Windows registry: name -> widget
         self.dict_instances = {}
+
+        # Event system: event_name -> [callbacks]
+        self._subscribers = {}
 
         # Initialize i18n from settings
         self._init_i18n()
@@ -140,6 +197,68 @@ class Engine(DBMS, Controller, Tools, Launcher):
                 pass
             # Ensure cleanup
             self.dict_instances.pop(name, None)
+
+    # -------------------------------------------------------------------------
+    # Observer Pattern: Event System
+    # -------------------------------------------------------------------------
+
+    def subscribe(self, event: str, callback) -> None:
+        """
+        Register a callback for an event.
+
+        Views call this to receive notifications when something changes.
+        Remember to unsubscribe in on_cancel() to avoid dead references.
+
+        Args:
+            event: Event name (e.g., "stock_changed", "request_changed")
+            callback: Function to call when event fires
+
+        Example:
+            # In warehouse.__init__:
+            self.engine.subscribe("stock_changed", self.on_stock_changed)
+        """
+        if event not in self._subscribers:
+            self._subscribers[event] = []
+        if callback not in self._subscribers[event]:
+            self._subscribers[event].append(callback)
+
+    def unsubscribe(self, event: str, callback) -> None:
+        """
+        Remove a callback from an event.
+
+        Call this in on_cancel() before the window closes.
+
+        Args:
+            event: Event name
+            callback: Function to remove
+        """
+        if event in self._subscribers:
+            try:
+                self._subscribers[event].remove(callback)
+            except ValueError:
+                pass
+
+    def notify(self, event: str, data=None) -> None:
+        """
+        Notify all subscribers of an event.
+
+        Views call this after making changes that other views might
+        need to know about. Subscribers receive the event asynchronously.
+
+        Args:
+            event: Event name
+            data: Optional data to pass to callbacks
+
+        Example:
+            # In delivery after saving:
+            self.engine.notify("stock_changed")
+        """
+        for callback in self._subscribers.get(event, []):
+            try:
+                callback(data)
+            except Exception:
+                # Subscriber might be dead or have errors, ignore
+                pass
 
     def __str__(self):
         return "class: {0}\nMRO: {1}".format(

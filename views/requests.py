@@ -278,7 +278,7 @@ class UI(ParentView):
         # Update label
         if self.selected_request:
             ref = self.selected_request.get("reference", "")
-            self.lblItems.config(text=f"Dettaglio: {ref}")
+            self.lblItems.config(text=_("Dettaglio:") + f" {ref}")
 
         sql = """
             SELECT
@@ -338,9 +338,9 @@ class UI(ParentView):
             ref = self.selected_request.get("reference", "") if self.selected_request else ""
             if item_data and item_data.get("status") == 2:
                 note = item_data.get("note", "")
-                self.lblItems.config(text=f"Dettaglio: {ref} - {_('Nota')}: {note}")
+                self.lblItems.config(text=_("Dettaglio:") + f" {ref} - " + _("Nota:") + f" {note}")
             else:
-                self.lblItems.config(text=f"Dettaglio: {ref}")
+                self.lblItems.config(text=_("Dettaglio:") + f" {ref}")
 
     def on_add(self, evt=None):
         """Add new request."""
@@ -433,9 +433,8 @@ class UI(ParentView):
             self.engine.write(sql, (request_id,))
             self.refresh_request_list()
 
-            # Refresh delivery view if open
-            if "deliveries" in self.engine.dict_instances:
-                self.engine.dict_instances["deliveries"].refresh()
+            # Notify subscribers that request changed
+            self.engine.notify("request_changed")
 
     def on_add_item(self, evt=None):
         """Add item to selected request."""
@@ -504,7 +503,7 @@ class UI(ParentView):
         else:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare un articolo!",
+                _("Selezionare un articolo!"),
                 parent=self
             )
 
@@ -542,7 +541,7 @@ class UI(ParentView):
 
             if messagebox.askyesno(
                 self.engine.app_title,
-                "Eliminare l'articolo selezionato?",
+                _("Eliminare l'articolo selezionato?"),
                 parent=self
             ):
                 sql = "UPDATE items SET status = 0 WHERE item_id = ?"
@@ -553,7 +552,7 @@ class UI(ParentView):
         else:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare un articolo!",
+                _("Selezionare un articolo!"),
                 parent=self
             )
 
@@ -677,16 +676,15 @@ class UI(ParentView):
 
             self.on_reset()
 
-            # Refresh delivery view if open
-            if "deliveries" in self.engine.dict_instances:
-                self.engine.dict_instances["deliveries"].refresh()
+            # Notify subscribers that request changed
+            self.engine.notify("request_changed")
 
     def on_delete_request(self, evt=None):
         """Delete selected request and all its items."""
         if self.selected_request is None:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare prima una richiesta!",
+                _("Selezionare prima una richiesta!"),
                 parent=self
             )
             return
@@ -694,7 +692,7 @@ class UI(ParentView):
         ref = self.selected_request.get("reference", "")
         if messagebox.askyesno(
             self.engine.app_title,
-            f"Eliminare la richiesta '{ref}' e tutti i suoi articoli?",
+            _("Eliminare la richiesta '{}' e tutti i suoi articoli?").format(ref),
             parent=self
         ):
             pk = self.selected_request["request_id"]
@@ -710,16 +708,15 @@ class UI(ParentView):
             self.selected_request = None
             self.on_reset()
 
-            # Refresh delivery view if open
-            if "deliveries" in self.engine.dict_instances:
-                self.engine.dict_instances["deliveries"].refresh()
+            # Notify subscribers that request changed
+            self.engine.notify("request_changed")
 
     def on_print(self, evt=None):
         """Print selected request."""
         if self.selected_request is None:
             messagebox.showwarning(
                 self.engine.app_title,
-                "Selezionare prima una richiesta!",
+                _("Selezionare prima una richiesta!"),
                 parent=self
             )
             return
@@ -753,14 +750,14 @@ class UI(ParentView):
             else:
                 messagebox.showinfo(
                     self.engine.app_title,
-                    "La richiesta non contiene articoli.",
+                    _("La richiesta non contiene articoli."),
                     parent=self
                 )
 
         except Exception as e:
             messagebox.showerror(
                 self.engine.app_title,
-                f"Errore nella generazione del report:\n{e}",
+                _("Errore nella generazione del report:") + f"\n{e}",
                 parent=self
             )
 

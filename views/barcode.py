@@ -152,14 +152,8 @@ class UI(ParentView):
                 _("Scaricata:") + f" {product}\n" + _("Lotto:") + f" {lot}",
                 "green"
             )
-            # Refresh warehouse labels list if open
-            if "warehouse" in self.engine.dict_instances:
-                try:
-                    wh = self.engine.dict_instances["warehouse"]
-                    if wh.selected_batch_id:
-                        wh.load_labels(wh.selected_batch_id)
-                except:
-                    pass
+            # Notify subscribers that a label was unloaded
+            self.engine.notify("label_unloaded")
         else:
             self.show_result(_("Errore nello scarico!"), "red")
 
