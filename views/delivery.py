@@ -31,7 +31,6 @@ class UI(ParentView):
         if self._reusing:
             return
 
-        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
         self.minsize(900, 600)
 
         # State variables
@@ -244,7 +243,6 @@ class UI(ParentView):
         w.pack(fill=tk.X, padx=5, pady=5)
 
         # Keyboard shortcuts
-        self.bind("<Escape>", lambda e: self.on_cancel())
 
     def _set_calendarium_state(self, cal, enabled):
         """Enable or disable a Calendarium widget."""

@@ -25,7 +25,6 @@ class UI(ParentView):
         if self._reusing:
             return
 
-        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
         self.minsize(500, 350)
 
         self.table = "funding_sources"

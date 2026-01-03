@@ -24,7 +24,6 @@ class UI(ChildView):
         super().__init__(parent, name="package_funding")
 
         self.index = index
-        self.resizable(0, 0)
 
         # Table info (used for SQL generation)
         self.table = "package_fundings"
@@ -122,7 +121,6 @@ class UI(ChildView):
 
         self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
-        self.bind("<Escape>", self.on_cancel)
 
     def on_search_keyrelease(self, evt=None):
         """Auto-search after typing (with delay)."""

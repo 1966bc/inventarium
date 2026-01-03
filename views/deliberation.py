@@ -24,7 +24,6 @@ class UI(ChildView):
         super().__init__(parent, name="deliberation")
 
         self.index = index
-        self.resizable(0, 0)
 
         self.reference = tk.StringVar()
         self.description = tk.StringVar()
@@ -91,7 +90,6 @@ class UI(ChildView):
 
         self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
-        self.bind("<Escape>", self.on_cancel)
 
     def load_suppliers(self):
         """Load suppliers into combobox."""

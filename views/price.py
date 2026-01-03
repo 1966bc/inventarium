@@ -24,7 +24,6 @@ class UI(ChildView):
         super().__init__(parent, name="price")
 
         self.index = index
-        self.resizable(0, 0)
 
         self.package_id = tk.IntVar()
         self.supplier_id = tk.IntVar()
@@ -92,7 +91,6 @@ class UI(ChildView):
 
         self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
-        self.bind("<Escape>", self.on_cancel)
 
     def load_products(self):
         """Load products into combobox."""

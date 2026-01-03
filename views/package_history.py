@@ -20,7 +20,6 @@ class UI(ChildView):
     def __init__(self, parent):
         super().__init__(parent, name="package_history")
 
-        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
         self.minsize(500, 300)
 
         self.count = tk.StringVar()
@@ -64,7 +63,6 @@ class UI(ChildView):
         ttk.Label(bf, textvariable=self.count, anchor=tk.W).pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.RIGHT, padx=5)
-        self.bind("<Escape>", self.on_cancel)
         self.bind("<Alt-c>", self.on_cancel)
 
         bf.pack(fill=tk.X, pady=5)

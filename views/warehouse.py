@@ -36,7 +36,6 @@ class UI(ParentView):
         if self._reusing:
             return
 
-        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
         self.minsize(900, 550)
 
         self.search_var = tk.StringVar()

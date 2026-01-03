@@ -27,7 +27,6 @@ class UI(ParentView):
         if self._reusing:
             return
 
-        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
 
         self.init_ui()
         self.show()
@@ -111,7 +110,6 @@ class UI(ParentView):
 
         self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.RIGHT, padx=5)
         self.bind("<Alt-c>", lambda e: self.on_cancel())
-        self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the window."""

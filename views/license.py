@@ -21,8 +21,6 @@ class UI(ParentView):
             return
 
         self.attributes("-topmost", True)
-        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.bind("<Escape>", self.on_cancel)
 
         self._build_ui()
         self.show()

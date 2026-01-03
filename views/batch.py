@@ -25,7 +25,6 @@ class UI(ChildView):
 
         self.index = index
         self.attributes('-topmost', True)
-        self.resizable(0, 0)
 
         self.lot = tk.StringVar()
         self.status = tk.BooleanVar()
@@ -68,7 +67,6 @@ class UI(ChildView):
 
         self.engine.create_button(right, _("Close"), self.on_cancel).pack(fill=tk.X, pady=2)
         self.bind("<Alt-c>", self.on_cancel)
-        self.bind("<Escape>", self.on_cancel)
 
     def on_open(self, selected_package, selected_batch=None):
         """

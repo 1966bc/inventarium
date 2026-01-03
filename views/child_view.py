@@ -73,6 +73,15 @@ class ChildView(tk.Toplevel):
         # Bind to parent window
         self.transient(parent)
 
+        # Fixed size by default (subclasses can override with resizable(1,1))
+        self.resizable(0, 0)
+
+        # Escape closes the dialog
+        self.bind("<Escape>", self.on_cancel)
+
+        # Window close button calls on_cancel
+        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
+
         # Register in dict_instances
         if name:
             self.engine.dict_instances[name] = self

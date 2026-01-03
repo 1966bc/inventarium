@@ -55,7 +55,6 @@ class UI(ChildView):
 
         self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
-        self.bind("<Escape>", self.on_cancel)
 
     def on_open(self, selected_request):
         """

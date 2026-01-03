@@ -22,7 +22,6 @@ class UI(ChildView):
         super().__init__(parent, name="conservation")
 
         self.index = index
-        self.resizable(0, 0)
 
         self.description = tk.StringVar()
         self.status = tk.BooleanVar()
@@ -59,7 +58,6 @@ class UI(ChildView):
 
         self.engine.create_button(bf, _("Close"), self.on_cancel).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", self.on_cancel)
-        self.bind("<Escape>", self.on_cancel)
 
     def on_open(self, selected_item=None):
         """

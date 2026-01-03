@@ -101,6 +101,12 @@ class ParentView(tk.Toplevel):
         self.parent = parent
         self.engine = self.nametowidget(".").engine
 
+        # Escape closes the window
+        self.bind("<Escape>", self.on_cancel)
+
+        # Window close button calls on_cancel
+        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
+
     def show(self):
         """
         Center and show the window after UI construction.

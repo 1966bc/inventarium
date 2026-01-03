@@ -21,8 +21,6 @@ class UI(ChildView):
     def __init__(self, parent):
         super().__init__(parent, name="settings")
 
-        self.protocol("WM_DELETE_WINDOW", self.on_cancel)
-        self.resizable(0, 0)
 
         # Form variables
         self.company_name = tk.StringVar()
@@ -126,7 +124,6 @@ class UI(ChildView):
 
         self.engine.create_button(bf, _("Close"), self.on_cancel, width=12).pack(side=tk.LEFT, padx=5)
         self.bind("<Alt-c>", lambda e: self.on_cancel())
-        self.bind("<Escape>", lambda e: self.on_cancel())
 
     def on_open(self):
         """Initialize and show the dialog."""
