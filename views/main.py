@@ -534,7 +534,7 @@ class Main(tk.Toplevel):
         # Ask to restart
         if messagebox.askyesno(
             self.engine.app_title,
-            _("Restart required"),
+            _("Application restart is required to apply the new language.\n\nRestart now?"),
             parent=self
         ):
             self.nametowidget(".").on_exit(silent=True)
