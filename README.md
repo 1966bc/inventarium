@@ -276,16 +276,22 @@ class Engine(..., metaclass=_EngineMeta):
 
 To create a standalone `.exe` that runs without Python installed:
 
+1. Install dependencies:
+```cmd
+pip install -r requirements.txt
+pip install nuitka
+```
+
+2. Run the build script:
 ```cmd
 build_on_windows.cmd
 ```
 
 **Requirements:**
 - Python 3.7+
-- Nuitka (`pip install nuitka`)
 - MinGW64 (downloaded automatically by Nuitka if missing)
 
-The executable is created in `dist\inventarium.dist\`. Copy the entire folder to distribute.
+The executable is created in `dist\inventarium.dist\`. Copy the entire folder to distribute - no Python installation needed on target machines.
 
 ## Contributing
 
