@@ -25,7 +25,6 @@ class UI(ParentView):
         self.bind("<Escape>", self.on_cancel)
 
         self._build_ui()
-        self.engine.center_window(self)
         self.show()
 
     def _build_ui(self):

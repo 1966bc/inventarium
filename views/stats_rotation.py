@@ -29,7 +29,6 @@ class UI(ParentView):
         self.minsize(900, 550)
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

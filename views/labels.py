@@ -30,7 +30,6 @@ class UI(ChildView):
         self.expiration = tk.StringVar()
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

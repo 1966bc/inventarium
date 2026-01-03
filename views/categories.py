@@ -42,7 +42,6 @@ class UI(ParentView):
         self.dict_items = {}
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

@@ -34,7 +34,6 @@ class UI(ChildView):
         self.dict_conservations = {}
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

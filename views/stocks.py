@@ -35,7 +35,6 @@ class UI(ParentView):
         self.dict_locations = {}
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

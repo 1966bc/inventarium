@@ -59,7 +59,6 @@ class UI(ParentView):
         self.selected_item = None
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

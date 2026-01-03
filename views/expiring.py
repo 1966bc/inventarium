@@ -30,7 +30,6 @@ class UI(ParentView):
         self.protocol("WM_DELETE_WINDOW", self.on_cancel)
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

@@ -15,8 +15,7 @@ Usage:
                 return  # reusing existing window
 
             # ... setup and init_ui() ...
-            self.engine.center_window(self)
-            self.show()
+            self.show()  # centers and shows the window
 
 Author: 1966bc (Giuseppe Costanzi)
 License: GNU GPL v3
@@ -35,7 +34,7 @@ class ParentView(tk.Toplevel):
     Subclasses should:
         1. Call super().__init__(parent, name="unique_name")
         2. Check `if self._reusing: return` to handle reuse
-        3. Call self.show() after init_ui() and center_window()
+        3. Call self.show() after init_ui() (auto-centers)
         4. Call super().on_cancel() in their on_cancel() method
 
     Attributes:
@@ -104,11 +103,12 @@ class ParentView(tk.Toplevel):
 
     def show(self):
         """
-        Show the window after UI construction and centering.
+        Center and show the window after UI construction.
 
-        Call this at the end of subclass __init__ after
-        init_ui() and center_window().
+        Call this at the end of subclass __init__ after init_ui().
+        Automatically centers the window before showing.
         """
+        self.engine.center_window(self)
         self.deiconify()
         self.attributes("-alpha", 1.0)
 

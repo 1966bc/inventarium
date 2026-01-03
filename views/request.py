@@ -28,7 +28,6 @@ class UI(ChildView):
         self.reference = tk.StringVar()
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
     def init_ui(self):

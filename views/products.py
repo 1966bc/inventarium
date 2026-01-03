@@ -43,7 +43,6 @@ class UI(ParentView):
         self.search_text = tk.StringVar()
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

@@ -34,7 +34,6 @@ class UI(ChildView):
         self.status = tk.BooleanVar()
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
     def init_ui(self):

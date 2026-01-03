@@ -26,7 +26,6 @@ class UI(ChildView):
         self.count = tk.StringVar()
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

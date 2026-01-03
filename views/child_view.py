@@ -14,8 +14,7 @@ Usage:
             super().__init__(parent, name="myentity")
 
             # ... setup and init_ui() ...
-            self.engine.center_window(self)
-            self.show()
+            self.show()  # centers and shows the window
 
     # In the caller (ParentView):
     def on_add(self):
@@ -39,7 +38,7 @@ class ChildView(tk.Toplevel):
 
     Subclasses should:
         1. Call super().__init__(parent, name="unique_name")
-        2. Call self.show() after init_ui() and center_window()
+        2. Call self.show() after init_ui() (auto-centers)
         3. Call super().on_cancel() in their on_cancel() method
 
     The caller should check engine.get_instance(name) before creating
@@ -80,11 +79,12 @@ class ChildView(tk.Toplevel):
 
     def show(self):
         """
-        Show the window after UI construction and centering.
+        Center and show the window after UI construction.
 
-        Call this at the end of subclass __init__ after
-        init_ui() and center_window().
+        Call this at the end of subclass __init__ after init_ui().
+        Automatically centers the window before showing.
         """
+        self.engine.center_window(self)
         self.deiconify()
 
     def on_cancel(self, evt=None):

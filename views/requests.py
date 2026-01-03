@@ -40,7 +40,6 @@ class UI(ParentView):
         self.selected_request = None
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

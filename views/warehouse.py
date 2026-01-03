@@ -53,7 +53,6 @@ class UI(ParentView):
         self.primary_key = "package_id"
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
     def init_ui(self):

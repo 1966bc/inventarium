@@ -35,7 +35,6 @@ class UI(ParentView):
         self.action = tk.IntVar(value=0)  # 0=Unload, 1=Info
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
     def init_ui(self):

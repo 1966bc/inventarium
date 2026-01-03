@@ -34,7 +34,6 @@ class UI(ParentView):
         self.status = tk.IntVar(value=1)
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
     def init_ui(self):

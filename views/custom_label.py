@@ -46,7 +46,6 @@ class UI(ParentView):
         self.templates = self.load_templates()
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 

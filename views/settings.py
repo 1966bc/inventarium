@@ -36,7 +36,6 @@ class UI(ChildView):
         self.printer_enabled = tk.BooleanVar()
 
         self.init_ui()
-        self.engine.center_window(self)
         self.show()
 
 
