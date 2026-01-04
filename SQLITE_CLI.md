@@ -94,23 +94,49 @@ SELECT * FROM v_expiring WHERE days_left BETWEEN 0 AND 30;
 SELECT * FROM v_open_requests;
 ```
 
-## Maintenance Scripts
+## SQL Scripts Structure
 
-### Check orphan items
+The `sql/` folder is organized by SQL statement type:
 
-```sql
-.read check_pending.sql
+```
+sql/
+├── ddl/    # Data Definition Language (ALTER, CREATE, DROP)
+├── dml/    # Data Manipulation Language (INSERT, UPDATE, DELETE)
+├── dql/    # Data Query Language (SELECT)
+└── init.sql
 ```
 
-Shows items still active in closed requests.
+### Available Scripts
 
-### Fix orphan items
+**DQL (Queries):**
+- `queries.sql` - General inventory queries
+- `stock_by_location.sql` - Stock grouped by location
+- `expiring_with_value.sql` - Expiring batches with pricing
+- `supplier_summary.sql` - Supplier overview
+- `consumption_monthly.sql` - Monthly consumption analysis
+- `batch_status_report.sql` - Batch lifecycle report
+- `reorder_alert.sql` - Products below threshold
+- `check_pending.sql` - Check orphan items
+- `count_pending.sql` - Count orphan items
+
+**DML (Data Changes):**
+- `fix_pending.sql` - Fix orphan items
+- `archive_expired.sql` - Archive expired batches
+- `update_prices.sql` - Price update workflow
+- `bulk_location_update.sql` - Move packages between locations
+
+**DDL (Schema):**
+- `add_note_to_items.sql` - Add note column
+- `add_label_text.sql` - Add label customization
+- `add_shelf.sql` - Add shelf column
+
+### Running Scripts
 
 ```sql
-.read fix_pending.sql
+.read dql/queries.sql
+.read dql/check_pending.sql
+.read dml/fix_pending.sql
 ```
-
-Shows preview, then uncomment the UPDATE statement to fix.
 
 ## Backup and Restore
 

@@ -151,9 +151,15 @@ For network databases, use the path from `config.ini`:
 .\sqlite3 -init setconsole "\\server\share\inventarium.db"
 ```
 
-The `sql/` folder also contains utility scripts for database maintenance (e.g., `check_pending.sql`, `fix_pending.sql`). Run them with:
+The `sql/` folder is organized by SQL statement type:
+- `ddl/` - Schema changes (ALTER, CREATE)
+- `dml/` - Data manipulation (INSERT, UPDATE, DELETE)
+- `dql/` - Queries (SELECT)
+
+Run utility scripts with:
 ```sql
-.read check_pending.sql
+.read dql/check_pending.sql
+.read dml/fix_pending.sql
 ```
 
 For a complete reference of SQLite CLI commands and useful queries, see [SQLITE_CLI.md](SQLITE_CLI.md).
@@ -210,9 +216,11 @@ inventarium/
 │   └── ...
 ├── reports/            # Report generators
 ├── sql/                # Database scripts
+│   ├── ddl/            # Schema changes (ALTER, CREATE)
+│   ├── dml/            # Data manipulation (UPDATE, DELETE)
+│   ├── dql/            # Queries (SELECT)
 │   ├── init.sql        # Schema + demo data
-│   ├── setconsole      # SQLite CLI settings
-│   └── *.sql           # Utility scripts
+│   └── setconsole      # SQLite CLI settings
 └── images/             # Application icons
 ```
 
