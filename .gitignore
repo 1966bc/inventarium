@@ -22,11 +22,11 @@ log.txt
 # Barcode images (generated at runtime)
 barcodes/
 
-# Database backups (keep only demo database in sql/)
+# Database backups
+sql/backups/
 sql/inventarium_backup.db
 sql/*.bak
 *.db
-!sql/inventarium.db
 inventarium_backup_*.db
 
 # Config with sensitive data (template is tracked)
