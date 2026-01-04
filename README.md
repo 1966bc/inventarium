@@ -24,8 +24,15 @@ Inventarium is designed for small laboratory teams who need a simple, fast, and 
 
 ## Screenshots
 
-![Dashboard](screenshots/dashboard.png)
-*Statistics Dashboard showing stock overview, reorder alerts, and expiration tracking*
+| Dashboard | Warehouse |
+|:---------:|:---------:|
+| ![Dashboard](screenshots/dashboard.png) | ![Warehouse](screenshots/warehouse.png) |
+| *Stock overview, alerts, expiration tracking* | *Products, batches, labels management* |
+
+| Barcode Scanner | Deliveries |
+|:---------------:|:----------:|
+| ![Barcodes](screenshots/barcodes.png) | ![Deliveries](screenshots/deliveries.png) |
+| *Scan labels, view details* | *Register deliveries, create batches* |
 
 ## Installation
 

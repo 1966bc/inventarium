@@ -139,6 +139,7 @@ TRANSLATIONS = {
     "Edit": {"it": "Modifica", "en": "Edit", "es": "Editar", "de": "Bearbeiten", "fr": "Modifier"},
     "Delete": {"it": "Elimina", "en": "Delete", "es": "Eliminar", "de": "Löschen", "fr": "Supprimer"},
     "Search": {"it": "Cerca", "en": "Search", "es": "Buscar", "de": "Suchen", "fr": "Rechercher"},
+    "Copied!": {"it": "Copiato!", "en": "Copied!", "es": "¡Copiado!", "de": "Kopiert!", "fr": "Copié !"},
     "Refresh": {"it": "Aggiorna", "en": "Refresh", "es": "Actualizar", "de": "Aktualisieren", "fr": "Actualiser"},
     "Print": {"it": "Stampa", "en": "Print", "es": "Imprimir", "de": "Drucken", "fr": "Imprimer"},
     "Export CSV": {"it": "Esporta CSV", "en": "Export CSV", "es": "Exportar CSV", "de": "CSV exportieren", "fr": "Exporter CSV"},

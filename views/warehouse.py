@@ -156,6 +156,7 @@ class UI(ParentView):
         self.lstLabels.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
         sb.pack(side=tk.RIGHT, fill=tk.Y)
 
+        self.lstLabels.bind("<<ListboxSelect>>", self.on_selected_label)
         self.lstLabels.bind("<Double-Button-1>", self.on_activated_label)
 
         self.lbfLabels.pack(side=tk.TOP, fill=tk.BOTH, expand=1, pady=5)
@@ -611,6 +612,16 @@ class UI(ParentView):
             batch_id = int(selection[0])
             self.selected_batch_id = batch_id
             self.load_labels(batch_id)
+
+    def on_selected_label(self, evt=None):
+        """Handle label selection - copy barcode to clipboard."""
+        if self.lstLabels.curselection():
+            idx = self.lstLabels.curselection()[0]
+            barcode = self.lstLabels.get(idx)
+            self.clipboard_clear()
+            self.clipboard_append(barcode)
+            # Update label frame to show feedback
+            self.lbfLabels.config(text=f"{_('Labels')} ({self.lstLabels.size()}) - {_('Copied!')}")
 
     def on_activated_batch(self, evt=None):
         """Handle batch double-click - open edit dialog."""
