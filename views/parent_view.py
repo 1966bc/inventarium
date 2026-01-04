@@ -95,8 +95,8 @@ class ParentView(tk.Toplevel):
         super().__init__(name=name)
         self._is_init = True
 
-        # Anti-flash: make transparent during construction (not withdraw)
-        self.attributes("-alpha", 0.0)
+        # Anti-flash: hide completely during construction
+        self.withdraw()
 
         self.parent = parent
         self.engine = self.nametowidget(".").engine
@@ -116,7 +116,6 @@ class ParentView(tk.Toplevel):
         """
         self.engine.center_window(self)
         self.deiconify()
-        self.attributes("-alpha", 1.0)
 
     def on_cancel(self, evt=None):
         """

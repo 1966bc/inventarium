@@ -211,8 +211,11 @@ class Tools:
         parent_y = parent.winfo_rooty()
         parent_width = parent.winfo_width()
         parent_height = parent.winfo_height()
-        width = window.winfo_width()
-        height = window.winfo_height()
+        # Use reqwidth/reqheight - works even when window is withdrawn
+        # Also consider minsize if set (returns (0,0) if not set)
+        min_w, min_h = window.wm_minsize()
+        width = max(window.winfo_reqwidth(), min_w)
+        height = max(window.winfo_reqheight(), min_h)
         x = parent_x + (parent_width - width) // 2
         y = parent_y + (parent_height - height) // 2
-        window.geometry(f"+{x}+{y}")
+        window.geometry(f"{width}x{height}+{x}+{y}")

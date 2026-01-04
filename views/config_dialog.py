@@ -12,6 +12,7 @@ Version: I (SQLite Edition)
 """
 import os
 import sqlite3
+import time
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -187,10 +188,10 @@ class ConfigDialog(tk.Toplevel):
     def _create_database(self, path):
         """
         Create a new database with schema and demo data.
-        
+
         Args:
             path: Path for new database file
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -201,13 +202,13 @@ class ConfigDialog(tk.Toplevel):
                 os.path.join(app_dir, "sql", "init.sql"),
                 os.path.join(app_dir, "init.sql"),
             ]
-            
+
             sql_file = None
             for p in sql_paths:
                 if os.path.exists(p):
                     sql_file = p
                     break
-            
+
             if not sql_file:
                 messagebox.showerror(
                     _("Error"),
@@ -215,17 +216,23 @@ class ConfigDialog(tk.Toplevel):
                     parent=self
                 )
                 return False
-            
+
+            # Remove existing file to ensure clean creation
+            if os.path.exists(path):
+                os.remove(path)
+
             # Read SQL script
             with open(sql_file, 'r', encoding='utf-8') as f:
                 sql_script = f.read()
-            
+
             # Create database and execute script
+            t0 = time.perf_counter()
             conn = sqlite3.connect(path)
             conn.executescript(sql_script)
             conn.commit()
             conn.close()
-            
+            print(f"[INFO] Database created in {time.perf_counter() - t0:.3f}s")
+
             return True
             
         except Exception as e:

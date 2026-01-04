@@ -4,6 +4,10 @@
 -- Execute this file to create a new empty database with sample data
 -- =============================================================================
 
+-- Speed up initial creation (safe for new database)
+PRAGMA synchronous = OFF;
+PRAGMA journal_mode = MEMORY;
+
 PRAGMA foreign_keys = OFF;
 
 -- =============================================================================
@@ -261,6 +265,8 @@ PRAGMA foreign_keys = ON;
 -- DEMO DATA
 -- =============================================================================
 
+BEGIN TRANSACTION;
+
 -- Categories (reference_id: 1=Products, 2=Locations)
 INSERT INTO categories (category_id, reference_id, description, status) VALUES
 (1, 1, 'Chemical Reagents', 1),
@@ -494,3 +500,5 @@ INSERT INTO settings (key, value) VALUES
 ('language', 'en'),
 ('idle_timeout', '30'),
 ('default_vat', '22');
+
+COMMIT;
