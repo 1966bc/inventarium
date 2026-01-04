@@ -146,7 +146,7 @@ class UI(ParentView):
         self.lstLabels = tk.Listbox(
             self.lbfLabels,
             height=8,
-            font=("Courier", 9),
+            font=("TkFixedFont", 10),
             relief=tk.GROOVE,
             selectmode=tk.SINGLE,
             exportselection=0,

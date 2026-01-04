@@ -15,6 +15,7 @@ from tkinter import ttk
 from tkinter import messagebox
 
 from app_config import load_db_path, save_db_path, log_to_file, APP_ICON
+from i18n import _
 from engine import Engine
 from views.main import Main
 from views.config_dialog import ConfigDialog
@@ -153,7 +154,7 @@ class App(tk.Tk):
 
         # Ask confirmation only if not silent
         if not silent:
-            msg = "Do you want to quit Inventarium?"
+            msg = _("Do you want to quit Inventarium?")
             if not messagebox.askokcancel("Inventarium", msg):
                 self._exit_in_progress = False
                 # Restart monitor if user cancels
@@ -186,7 +187,7 @@ def main():
         log_to_file(f"Fatal error: {e}", "ERROR")
         import traceback
         traceback.print_exc()
-        messagebox.showerror("Inventarium", f"Fatal error:\n{e}")
+        messagebox.showerror("Inventarium", _("Fatal error:") + f"\n{e}")
     finally:
         log_to_file("Inventarium terminated.")
 

@@ -20,7 +20,7 @@ Inventarium is designed for small laboratory teams who need a simple, fast, and 
 - **Reorder Alerts**: Automatic notifications when stock falls below threshold
 - **Request Workflow**: Create purchase requests and track deliveries
 - **Statistics Dashboard**: Consumption analysis, rotation index, ABC classification
-- **Multi-language**: Italian, English, and Spanish UI
+- **Multi-language**: Italian, English, Spanish, German, and French UI
 
 ## Screenshots
 

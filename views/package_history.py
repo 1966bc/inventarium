@@ -20,7 +20,7 @@ class UI(ChildView):
     def __init__(self, parent):
         super().__init__(parent, name="package_history")
 
-        self.minsize(500, 300)
+        self.minsize(450, 300)
 
         self.count = tk.StringVar()
 
@@ -33,28 +33,32 @@ class UI(ChildView):
         f0 = ttk.Frame(self, padding=8)
         f0.pack(fill=tk.BOTH, expand=1)
 
-        # History listbox
+        # History treeview
         w = ttk.LabelFrame(f0, text=_("Order History"), style="App.TLabelframe")
 
-        # Header
-        header = ttk.Label(
-            w,
-            text=f"{_('Date'):<12} {_('Request Ref.'):<20} {_('Ord.'):>5} {_('Del.'):>5}",
-            font=("Courier", 9, "bold")
-        )
-        header.pack(fill=tk.X, padx=2)
+        cols = ("date", "reference", "ordered", "delivered")
+        self.treeHistory = ttk.Treeview(w, columns=cols, show="headings", height=10)
 
-        scrollbar = ttk.Scrollbar(w, orient=tk.VERTICAL)
-        self.lstHistory = tk.Listbox(
-            w,
-            height=12,
-            font=("Courier", 9),
-            selectmode=tk.SINGLE,
-            yscrollcommand=scrollbar.set
-        )
-        scrollbar.config(command=self.lstHistory.yview)
-        self.lstHistory.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.treeHistory.column("date", width=90, minwidth=80, anchor=tk.W)
+        self.treeHistory.heading("date", text=_("Date"), anchor=tk.W)
+
+        self.treeHistory.column("reference", width=150, minwidth=100, anchor=tk.W)
+        self.treeHistory.heading("reference", text=_("Request Ref."), anchor=tk.W)
+
+        self.treeHistory.column("ordered", width=50, minwidth=40, anchor=tk.CENTER)
+        self.treeHistory.heading("ordered", text=_("Ord."), anchor=tk.CENTER)
+
+        self.treeHistory.column("delivered", width=50, minwidth=40, anchor=tk.CENTER)
+        self.treeHistory.heading("delivered", text=_("Deliv."), anchor=tk.CENTER)
+
+        sb = ttk.Scrollbar(w, orient=tk.VERTICAL, command=self.treeHistory.yview)
+        self.treeHistory.configure(yscrollcommand=sb.set)
+        self.treeHistory.pack(side=tk.LEFT, fill=tk.BOTH, expand=1)
+        sb.pack(side=tk.RIGHT, fill=tk.Y)
+
+        # Tag for completed orders
+        self.treeHistory.tag_configure("completed", foreground="gray")
+
         w.pack(fill=tk.BOTH, expand=1, pady=(0, 5))
 
         # Bottom frame - count and button
@@ -81,7 +85,8 @@ class UI(ChildView):
 
     def load_history(self):
         """Load order history for the package."""
-        self.lstHistory.delete(0, tk.END)
+        for item in self.treeHistory.get_children():
+            self.treeHistory.delete(item)
 
         # Query to get order history from items/requests/deliveries
         sql = """
@@ -104,34 +109,33 @@ class UI(ChildView):
         total_delivered = 0
 
         if rs:
-            for idx, row in enumerate(rs):
+            for row in rs:
                 ordered = row["ordered"] or 0
                 delivered = row["delivered"] or 0
 
                 total_ordered += ordered
                 total_delivered += delivered
 
-                # Format date
+                # Format date dd-mm-yyyy
                 issued = row["issued"] or ""
                 if issued and "-" in issued:
                     parts = issued.split("-")
                     if len(parts) == 3:
                         issued = f"{parts[2]}-{parts[1]}-{parts[0]}"
 
-                # Format line
-                date_str = issued[:12].ljust(12)
-                ref = (row["reference"] or "")[:20].ljust(20)
-                ord_str = str(ordered).rjust(5)
-                del_str = str(delivered).rjust(5)
+                reference = row["reference"] or ""
 
-                line = f"{date_str} {ref} {ord_str} {del_str}"
-                self.lstHistory.insert(tk.END, line)
+                # Determine tag
+                tag = ("completed",) if delivered >= ordered and ordered > 0 else ()
 
-                # Color fully delivered
-                if delivered >= ordered and ordered > 0:
-                    self.lstHistory.itemconfig(idx, fg="gray")
+                self.treeHistory.insert(
+                    "", tk.END,
+                    values=(issued, reference, ordered, delivered),
+                    tags=tag
+                )
 
-        self.count.set(f"{_('Rows')}: {self.lstHistory.size()} | {_('Tot. Ord')}: {total_ordered} | {_('Tot. Delivered')}: {total_delivered}")
+        row_count = len(self.treeHistory.get_children())
+        self.count.set(f"{_('Rows')}: {row_count} | {_('Tot. Ord')}: {total_ordered} | {_('Tot. Deliv')}: {total_delivered}")
 
     def on_cancel(self, evt=None):
         """Close the window."""

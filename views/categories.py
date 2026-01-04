@@ -60,7 +60,7 @@ class UI(ParentView):
         header = ttk.Label(
             w,
             text=f"{'Descrizione':<40}",
-            font=("Courier", 9, "bold")
+            font=("TkFixedFont", 10, "bold")
         )
         header.pack(fill=tk.X, padx=2)
 
@@ -68,7 +68,7 @@ class UI(ParentView):
         self.lstItems = tk.Listbox(
             w,
             height=15,
-            font=("Courier", 9),
+            font=("TkFixedFont", 10),
             selectmode=tk.SINGLE,
             yscrollcommand=scrollbar.set
         )
