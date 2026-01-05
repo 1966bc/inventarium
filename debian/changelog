@@ -1,0 +1,19 @@
+inventarium (0.1.1-1) unstable; urgency=low
+
+  * Add configurable label printer name in Settings
+  * Add Memos board feature for quick notes
+  * Improve user configuration path (~/.config/inventarium/)
+  * Set English as default language
+
+ -- Giuseppe Costanzi <giuseppecostanzi@gmail.com>  Sun, 05 Jan 2025 12:00:00 +0100
+
+inventarium (0.1.0-1) unstable; urgency=low
+
+  * Initial release
+  * Product hierarchy management (Products, Packages, Batches, Labels)
+  * Barcode generation with code128
+  * Expiration tracking with FEFO management
+  * Multi-language support (Italian, English, Spanish)
+  * SQLite database backend
+
+ -- Giuseppe Costanzi <giuseppecostanzi@gmail.com>  Sat, 21 Dec 2024 12:00:00 +0100

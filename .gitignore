@@ -53,9 +53,13 @@ imgs/
 # Nuitka distribution (Windows executable)
 dist/
 
-# Debian packaging
+# Debian packaging build artifacts
 .pybuild/
-debian/
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/*.substvars
+debian/inventarium/
 
 # Claude local settings
 .claude/

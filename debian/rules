@@ -1,0 +1,54 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	# Niente da compilare, è Python
+
+override_dh_auto_install:
+	# Crea directory
+	install -d $(CURDIR)/debian/inventarium/usr/share/inventarium
+	install -d $(CURDIR)/debian/inventarium/usr/share/inventarium/views
+	install -d $(CURDIR)/debian/inventarium/usr/share/inventarium/reports
+	install -d $(CURDIR)/debian/inventarium/usr/share/inventarium/sql
+	install -d $(CURDIR)/debian/inventarium/usr/share/inventarium/images
+	install -d $(CURDIR)/debian/inventarium/usr/share/inventarium/fonts
+
+	# Copia file Python principali
+	install -m 644 *.py $(CURDIR)/debian/inventarium/usr/share/inventarium/
+
+	# Copia sottocartelle
+	cp -r views/*.py $(CURDIR)/debian/inventarium/usr/share/inventarium/views/
+	cp -r reports/*.py $(CURDIR)/debian/inventarium/usr/share/inventarium/reports/
+	cp -r sql/*.db $(CURDIR)/debian/inventarium/usr/share/inventarium/sql/ || true
+	cp -r sql/*.sql $(CURDIR)/debian/inventarium/usr/share/inventarium/sql/ || true
+	cp -r sql/ddl $(CURDIR)/debian/inventarium/usr/share/inventarium/sql/ || true
+	cp -r sql/dml $(CURDIR)/debian/inventarium/usr/share/inventarium/sql/ || true
+	cp -r sql/dql $(CURDIR)/debian/inventarium/usr/share/inventarium/sql/ || true
+	cp -r images/* $(CURDIR)/debian/inventarium/usr/share/inventarium/images/
+	cp -r fonts/* $(CURDIR)/debian/inventarium/usr/share/inventarium/fonts/ || true
+
+	# Copia config esempio e templates
+	install -m 644 config.ini.example $(CURDIR)/debian/inventarium/usr/share/inventarium/
+	install -m 644 label_templates.json $(CURDIR)/debian/inventarium/usr/share/inventarium/ || true
+
+	# Installa script di avvio
+	install -d $(CURDIR)/debian/inventarium/usr/bin
+	install -m 755 debian/inventarium.sh $(CURDIR)/debian/inventarium/usr/bin/inventarium
+
+	# Installa file desktop
+	install -d $(CURDIR)/debian/inventarium/usr/share/applications
+	install -m 644 debian/inventarium.desktop $(CURDIR)/debian/inventarium/usr/share/applications/
+
+	# Installa icona
+	install -d $(CURDIR)/debian/inventarium/usr/share/pixmaps
+	install -m 644 images/inventarium_48.png $(CURDIR)/debian/inventarium/usr/share/pixmaps/inventarium.png
+
+override_dh_auto_test:
+	# Salta i test
+
+override_dh_auto_clean:
+	# Niente da pulire

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Inventarium
+Comment=Laboratory Inventory Management System
+Comment[it]=Sistema di Gestione Inventario di Laboratorio
+Comment[es]=Sistema de Gestión de Inventario de Laboratorio
+Exec=inventarium
+Icon=inventarium
+Terminal=false
+Type=Application
+Categories=Science;Education;Office;
+Keywords=inventory;laboratory;barcode;stock;

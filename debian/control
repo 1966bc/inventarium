@@ -1,0 +1,27 @@
+Source: inventarium
+Section: science
+Priority: optional
+Maintainer: Giuseppe Costanzi <giuseppecostanzi@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Homepage: https://github.com/1966bc/inventarium
+Rules-Requires-Root: no
+
+Package: inventarium
+Architecture: all
+Depends: ${misc:Depends},
+         python3,
+         python3-tk,
+         python3-pil,
+         python3-pil.imagetk
+Description: Laboratory inventory management system
+ Inventarium is a lightweight inventory management system designed
+ for small laboratory teams who need a simple, fast, and reliable
+ way to track consumables, reagents, and supplies.
+ .
+ Features:
+  - Product hierarchy: Products, Packages, Batches, Labels
+  - Barcode generation and scanning
+  - Expiration tracking (FEFO management)
+  - Reorder alerts
+  - Multi-language support (Italian, English, Spanish)
