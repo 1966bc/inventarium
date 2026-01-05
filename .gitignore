@@ -53,6 +53,10 @@ imgs/
 # Nuitka distribution (Windows executable)
 dist/
 
+# Debian packaging
+.pybuild/
+debian/
+
 # Claude local settings
 .claude/
 
