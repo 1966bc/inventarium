@@ -754,6 +754,7 @@ TRANSLATIONS = {
     "Default VAT %:": {"it": "IVA predefinita %:", "en": "Default VAT %:", "es": "IVA predeterminado %:", "de": "Standard-MwSt. %:", "fr": "TVA par défaut % :"},
     "Idle timeout (min):": {"it": "Timeout inattività (min):", "en": "Idle timeout (min):", "es": "Tiempo de espera inactivo (min):", "de": "Leerlauf-Timeout (Min.):", "fr": "Délai d'inactivité (min) :"},
     "(0 = disabled)": {"it": "(0 = disabilitato)", "en": "(0 = disabled)", "es": "(0 = deshabilitado)", "de": "(0 = deaktiviert)", "fr": "(0 = désactivé)"},
+    "(empty = default)": {"it": "(vuoto = predefinita)", "en": "(empty = default)", "es": "(vacío = predeterminado)", "de": "(leer = Standard)", "fr": "(vide = défaut)"},
     "Settings saved.": {"it": "Impostazioni salvate.", "en": "Settings saved.", "es": "Configuración guardada.", "de": "Einstellungen gespeichert.", "fr": "Paramètres enregistrés."},
 
     # ==========================================================================
@@ -811,6 +812,7 @@ TRANSLATIONS = {
     "Label font:": {"it": "Font etichetta:", "en": "Label font:", "es": "Fuente de etiqueta:", "de": "Etikettenschrift:", "fr": "Police de l'étiquette :"},
     "Label {} has already been unloaded.\nUse 'Unload' to restore.": {"it": "L'etichetta {} è già stata scaricata.\nUsare 'Scarica' per ripristinare.", "en": "Label {} has already been unloaded.\nUse 'Unload' to restore.", "es": "La etiqueta {} ya ha sido descargada.\nUse 'Descargar' para restaurar.", "de": "Etikett {} wurde bereits entladen.\nVerwenden Sie 'Entladen' zum Wiederherstellen.", "fr": "L'étiquette {} a déjà été déchargée.\nUtilisez 'Décharger' pour restaurer."},
     "Label {} is already cancelled.\nRestore?": {"it": "L'etichetta {} è già annullata.\nRipristinare?", "en": "Label {} is already cancelled.\nRestore?", "es": "La etiqueta {} ya está cancelada.\n¿Restaurar?", "de": "Etikett {} ist bereits storniert.\nWiederherstellen?", "fr": "L'étiquette {} est déjà annulée.\nRestaurer ?"},
+    "Label Printer:": {"it": "Stampante Etichette:", "en": "Label Printer:", "es": "Impresora de Etiquetas:", "de": "Etikettendrucker:", "fr": "Imprimante d'étiquettes :"},
     "Label Printing:": {"it": "Stampa Etichette:", "en": "Label Printing:", "es": "Impresión de Etiquetas:", "de": "Etikettendruck:", "fr": "Impression d'étiquettes :"},
     "labels": {"it": "etichette", "en": "labels", "es": "etiquetas", "de": "Etiketten", "fr": "étiquettes"},
     "Labels:": {"it": "Etichette:", "en": "Labels:", "es": "Etiquetas:", "de": "Etiketten:", "fr": "Étiquettes :"},

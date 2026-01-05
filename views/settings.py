@@ -32,6 +32,7 @@ class UI(ChildView):
         self.default_vat = tk.StringVar()
         self.language = tk.StringVar()
         self.printer_enabled = tk.BooleanVar()
+        self.barcode_printer = tk.StringVar()
 
         self.init_ui()
         self.show()
@@ -114,6 +115,15 @@ class UI(ChildView):
                                            variable=self.printer_enabled, style="App.TCheckbutton")
         self.chkPrinter.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
+        # Barcode printer name (local setting - config.ini)
+        r += 1
+        ttk.Label(w, text=_("Label Printer:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        printer_frame = ttk.Frame(w)
+        printer_frame.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+        self.txtPrinter = ttk.Entry(printer_frame, textvariable=self.barcode_printer, width=20)
+        self.txtPrinter.pack(side=tk.LEFT)
+        ttk.Label(printer_frame, text=_("(empty = default)")).pack(side=tk.LEFT, padx=5)
+
         # Buttons
         r += 1
         bf = ttk.Frame(w)
@@ -144,8 +154,9 @@ class UI(ChildView):
         lang_code = self.engine.get_setting("language", "it")
         self.language.set(LANGUAGES.get(lang_code, "Italiano"))
         self._original_language = lang_code
-        # Load printer setting from config.ini (local)
+        # Load printer settings from config.ini (local)
         self.printer_enabled.set(self.engine.is_printer_enabled())
+        self.barcode_printer.set(self.engine.get_printer_name())
 
     def on_save(self, evt=None):
         """Save settings."""
@@ -171,8 +182,9 @@ class UI(ChildView):
                     break
             self.engine.set_setting("language", lang_code)
 
-            # Save printer setting to config.ini (local)
+            # Save printer settings to config.ini (local)
             self.engine.set_printer_enabled(self.printer_enabled.get())
+            self.engine.set_printer_name(self.barcode_printer.get())
 
             # Update idle monitor with new timeout
             self._update_monitor()

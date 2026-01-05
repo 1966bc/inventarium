@@ -258,13 +258,16 @@ class LotLabel:
             return False
 
         try:
+            # Get printer name from local config
+            printer_name = self.engine.get_printer_name()
+
             if sys.platform == 'win32':
                 # Windows: use ShellExecute
                 try:
                     import win32api
-                    # Try to print to BARCODE printer (same as barcode labels)
-                    printer_name = self.engine.get_setting("barcode_printer", "BARCODE")
-                    win32api.ShellExecute(0, "printto", path, printer_name, ".", 0)
+                    # Use configured printer or fallback to "BARCODE"
+                    printer = printer_name if printer_name else "BARCODE"
+                    win32api.ShellExecute(0, "printto", path, printer, ".", 0)
                     return True
                 except ImportError:
                     # win32api not available, show image
@@ -274,13 +277,21 @@ class LotLabel:
 
             elif sys.platform == 'darwin':
                 # macOS: use lpr
-                subprocess.run(['lpr', path], check=True)
+                cmd = ['lpr']
+                if printer_name:
+                    cmd.extend(['-P', printer_name])
+                cmd.append(path)
+                subprocess.run(cmd, check=True)
                 return True
 
             else:
                 # Linux: use lpr
                 try:
-                    subprocess.run(['lpr', path], check=True)
+                    cmd = ['lpr']
+                    if printer_name:
+                        cmd.extend(['-P', printer_name])
+                    cmd.append(path)
+                    subprocess.run(cmd, check=True)
                     return True
                 except (subprocess.CalledProcessError, FileNotFoundError):
                     # lpr not available, show image

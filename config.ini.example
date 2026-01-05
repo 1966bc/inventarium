@@ -6,3 +6,7 @@ path = sql/inventarium.db
 [printer]
 # Set to 0 to disable label printing on this workstation
 enabled = 1
+# Label printer name (leave empty for system default)
+# Windows: use the printer name as shown in Control Panel (e.g., BARCODE)
+# Linux: use the CUPS printer name (e.g., Zebra_LP2844)
+name =

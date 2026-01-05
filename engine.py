@@ -437,6 +437,42 @@ class Engine(DBMS, Controller, Tools, Launcher, metaclass=_EngineMeta):
             self.on_log("set_printer_enabled", e, type(e), __import__(__name__))
             return False
 
+    def get_printer_name(self) -> str:
+        """Get the label printer name for this workstation."""
+        config_path = self._get_config_path()
+
+        if not os.path.exists(config_path):
+            return ""  # Default to system default printer
+
+        config = configparser.ConfigParser()
+        config.read(config_path)
+
+        try:
+            return config.get("printer", "name", fallback="")
+        except (configparser.NoSectionError, configparser.NoOptionError):
+            return ""
+
+    def set_printer_name(self, name: str) -> bool:
+        """Set the label printer name for this workstation."""
+        config_path = self._get_config_path()
+
+        config = configparser.ConfigParser()
+        if os.path.exists(config_path):
+            config.read(config_path)
+
+        if not config.has_section("printer"):
+            config.add_section("printer")
+
+        config.set("printer", "name", name.strip())
+
+        try:
+            with open(config_path, "w") as f:
+                config.write(f)
+            return True
+        except Exception as e:
+            self.on_log("set_printer_name", e, type(e), __import__(__name__))
+            return False
+
 
 def main():
     """Test/debug entry point."""
