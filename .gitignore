@@ -70,5 +70,6 @@ debian/inventarium/
 # Local files (not to be shared)
 GIT_CHEATSHEET.md
 PROMOTION.md
+DEBIAN_SUBMISSION.md
 report_fonti.csv
 CLAUDE.md
