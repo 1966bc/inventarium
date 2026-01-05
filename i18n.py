@@ -19,7 +19,7 @@ LANGUAGES = {
 }
 
 # Default language
-DEFAULT_LANGUAGE = "it"
+DEFAULT_LANGUAGE = "en"
 
 # Translation dictionary
 TRANSLATIONS = {

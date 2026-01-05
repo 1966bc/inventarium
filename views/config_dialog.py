@@ -18,7 +18,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
 
-from app_config import DEFAULT_DB_PATH
+from app_config import DEFAULT_DB_PATH, USER_CONFIG_DIR
 from i18n import _
 
 
@@ -100,7 +100,11 @@ class ConfigDialog(tk.Toplevel):
 
     def on_find_database(self):
         """Browse for existing database file."""
-        initial_dir = os.path.dirname(os.path.dirname(__file__))
+        # Prefer user config directory, fallback to app directory
+        if os.path.exists(USER_CONFIG_DIR):
+            initial_dir = USER_CONFIG_DIR
+        else:
+            initial_dir = os.path.dirname(os.path.dirname(__file__))
 
         filename = filedialog.askopenfilename(
             parent=self,
@@ -126,7 +130,15 @@ class ConfigDialog(tk.Toplevel):
 
     def on_create_database(self):
         """Create a new database with demo data."""
-        initial_dir = os.path.dirname(os.path.dirname(__file__))
+        # Prefer user config directory, fallback to app directory
+        if os.path.exists(USER_CONFIG_DIR):
+            initial_dir = USER_CONFIG_DIR
+        else:
+            initial_dir = os.path.dirname(os.path.dirname(__file__))
+            # Create user config dir if we're in system install
+            if "/usr/share" in initial_dir:
+                os.makedirs(USER_CONFIG_DIR, exist_ok=True)
+                initial_dir = USER_CONFIG_DIR
 
         filename = filedialog.asksaveasfilename(
             parent=self,
@@ -196,11 +208,12 @@ class ConfigDialog(tk.Toplevel):
             True if successful, False otherwise
         """
         try:
-            # Find demo_data.sql
+            # Find init.sql
             app_dir = os.path.dirname(os.path.dirname(__file__))
             sql_paths = [
                 os.path.join(app_dir, "sql", "init.sql"),
                 os.path.join(app_dir, "init.sql"),
+                "/usr/share/inventarium/sql/init.sql",  # System install
             ]
 
             sql_file = None

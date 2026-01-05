@@ -1,0 +1,8 @@
+[database]
+# Path to SQLite database
+# For system install, this will be updated to ~/.config/inventarium/inventarium.db
+path = sql/inventarium.db
+
+[printer]
+# Set to 0 to disable label printing on this workstation
+enabled = 1

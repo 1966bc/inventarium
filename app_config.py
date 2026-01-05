@@ -18,6 +18,8 @@ import configparser
 CONFIG_FILE = "config.ini"
 # Default database path (fallback)
 DEFAULT_DB_PATH = "sql/inventarium.db"
+# User config directory (for system-wide install)
+USER_CONFIG_DIR = os.path.expanduser("~/.config/inventarium")
 
 # Application icon (base64 PNG)
 APP_ICON = (
@@ -52,8 +54,29 @@ def log_to_file(message: str, level: str = "INFO") -> None:
 
 
 def get_config_path() -> str:
-    """Get the full path to config.ini."""
-    return os.path.join(os.path.dirname(__file__), CONFIG_FILE)
+    """
+    Get the full path to config.ini.
+
+    Search order:
+    1. ~/.config/inventarium/config.ini (user config, for system install)
+    2. ./config.ini (local development)
+    """
+    # First check user config directory (for system-wide install)
+    user_config = os.path.join(USER_CONFIG_DIR, CONFIG_FILE)
+    if os.path.exists(user_config):
+        return user_config
+
+    # Then check app directory (for local development)
+    app_config = os.path.join(os.path.dirname(__file__), CONFIG_FILE)
+    if os.path.exists(app_config):
+        return app_config
+
+    # If neither exists, prefer user config directory (will be created)
+    if os.path.exists(USER_CONFIG_DIR):
+        return user_config
+
+    # Fallback to app directory (local development)
+    return app_config
 
 
 def load_db_path() -> str:
@@ -102,7 +125,12 @@ def save_db_path(db_path: str) -> bool:
     Returns:
         bool: True if saved successfully
     """
-    config_path = get_config_path()
+    # Prefer user config directory for saving
+    if os.path.exists(USER_CONFIG_DIR):
+        config_path = os.path.join(USER_CONFIG_DIR, CONFIG_FILE)
+    else:
+        config_path = get_config_path()
+
     config = configparser.ConfigParser()
 
     # Preserve existing config if present
@@ -115,6 +143,11 @@ def save_db_path(db_path: str) -> bool:
     config.set("database", "path", db_path)
 
     try:
+        # Create user config directory if needed
+        config_dir = os.path.dirname(config_path)
+        if config_dir and not os.path.exists(config_dir):
+            os.makedirs(config_dir)
+
         with open(config_path, "w") as f:
             f.write("[database]\n")
             f.write("# Percorso del database SQLite\n")
