@@ -7,6 +7,7 @@ A lightweight laboratory inventory management system built with Python and Tkint
 ![SQLite](https://img.shields.io/badge/SQLite-3-07405e.svg)
 ![License](https://img.shields.io/badge/License-GPL%20v3-green.svg)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-lightgrey.svg)
+[![Release](https://img.shields.io/github/v/release/1966bc/inventarium)](https://github.com/1966bc/inventarium/releases/latest)
 
 ## Overview
 
@@ -19,6 +20,7 @@ Inventarium is designed for small laboratory teams who need a simple, fast, and 
 - **Expiration Tracking**: FEFO (First Expired, First Out) management with alerts
 - **Reorder Alerts**: Automatic notifications when stock falls below threshold
 - **Request Workflow**: Create purchase requests and track deliveries
+- **Memos Board**: Quick notes for items to order ("bulletin board")
 - **Statistics Dashboard**: Consumption analysis, rotation index, ABC classification
 - **Multi-language**: Italian, English, Spanish, German, and French UI
 
@@ -55,7 +57,17 @@ On Debian/Ubuntu, ensure you have the required packages:
 sudo apt install python3 python3-venv python3-tk
 ```
 
-### Setup (Linux Debian 12)
+### Quick Install (Debian/Ubuntu)
+
+Download the `.deb` package from [Releases](https://github.com/1966bc/inventarium/releases/latest) and install:
+
+```bash
+sudo apt install ./inventarium_0.1.0-1_all.deb
+```
+
+This installs Inventarium system-wide with all dependencies. Launch from the application menu (Science → Inventarium) or run `inventarium` from terminal.
+
+### Setup from Source (Linux Debian 12)
 
 1. **Clone the repository:**
 ```bash
