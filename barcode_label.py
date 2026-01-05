@@ -275,21 +275,28 @@ class BarcodeLabel:
                 font=title_font
             )
 
-        # Draw barcode value below barcode (centered)
+        # Draw barcode value below barcode (left side)
         draw.text((40, 165), str(barcode_value), fill=(0, 0, 0), font=lot_font)
 
-        # Draw conservation info on separate line
+        # Draw conservation info aligned to right edge
         if conservation:
             cons_text = conservation[:20]
             if in_the_dark:
                 cons_text += " | Al buio"
-            draw.text((40, 188), cons_text, fill=(0, 0, 0), font=footer_font)
+            # Calculate position from right edge
+            bbox = draw.textbbox((0, 0), cons_text, font=footer_font)
+            cons_width = bbox[2] - bbox[0]
+            cons_x = self.LABEL_WIDTH - cons_width - 30  # 30px margin from right
+            draw.text((cons_x, 165), cons_text, fill=(0, 0, 0), font=footer_font)
 
-        # Draw footer (lab name) at bottom - use parameter or fall back to settings
+        # Draw footer (lab name) at bottom - centered
         if not footer:
             footer = self.engine.get_setting("lab_name", "")
         if footer:
-            draw.text((40, 210), footer, fill=(0, 0, 0), font=footer_font)
+            bbox = draw.textbbox((0, 0), footer, font=footer_font)
+            text_width = bbox[2] - bbox[0]
+            x_centered = (self.LABEL_WIDTH - text_width) // 2
+            draw.text((x_centered, 210), footer, fill=(0, 0, 0), font=footer_font)
 
         return image
 
