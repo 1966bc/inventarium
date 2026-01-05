@@ -103,6 +103,9 @@ class UI(ParentView):
             # Other reports - hide location selector
             self.lfLocation.pack_forget()
 
+        self.update_idletasks()
+        self.geometry('') 
+
     def set_locations(self):
         """Load locations into combobox."""
         self.dict_locations = {}
