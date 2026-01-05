@@ -395,3 +395,63 @@ class Controller:
         """
         sql = "INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)"
         return self.write(sql, (key, value))
+
+    # -------------------------------------------------------------------------
+    # Memos (informal notes - "foglio sul frigo")
+    # -------------------------------------------------------------------------
+
+    def get_memos(self, include_done: bool = False) -> List[Dict[str, Any]]:
+        """
+        Get memos (active by default).
+
+        Args:
+            include_done: If True, include completed memos
+
+        Returns:
+            List of memo records
+        """
+        if include_done:
+            sql = "SELECT * FROM memos ORDER BY status DESC, created_at DESC"
+            return self.read(True, sql) or []
+        else:
+            sql = "SELECT * FROM memos WHERE status = 1 ORDER BY created_at DESC"
+            return self.read(True, sql) or []
+
+    def add_memo(self, text: str) -> Optional[int]:
+        """
+        Add a new memo.
+
+        Args:
+            text: Memo text
+
+        Returns:
+            New memo_id or None on error
+        """
+        sql = "INSERT INTO memos (text) VALUES (?)"
+        return self.write(sql, (text.strip(),))
+
+    def complete_memo(self, memo_id: int) -> Optional[int]:
+        """
+        Mark a memo as done.
+
+        Args:
+            memo_id: Memo to complete
+
+        Returns:
+            Rows affected or None on error
+        """
+        sql = "UPDATE memos SET status = 0 WHERE memo_id = ?"
+        return self.write(sql, (memo_id,))
+
+    def delete_memo(self, memo_id: int) -> Optional[int]:
+        """
+        Delete a memo permanently.
+
+        Args:
+            memo_id: Memo to delete
+
+        Returns:
+            Rows affected or None on error
+        """
+        sql = "DELETE FROM memos WHERE memo_id = ?"
+        return self.write(sql, (memo_id,))

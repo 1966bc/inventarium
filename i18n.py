@@ -883,6 +883,15 @@ TRANSLATIONS = {
     "Unknown": {"it": "Sconosciuto", "en": "Unknown", "es": "Desconocido", "de": "Unbekannt", "fr": "Inconnu"},
     "Unloaded on:": {"it": "Scaricato il:", "en": "Unloaded on:", "es": "Descargado el:", "de": "Entladen am:", "fr": "Déchargé le :"},
     "Warning: the batch expires in {} days.\nProceed anyway?": {"it": "Attenzione: il lotto scade tra {} giorni.\nProcedere comunque?", "en": "Warning: the batch expires in {} days.\nProceed anyway?", "es": "Advertencia: el lote vence en {} días.\n¿Continuar de todos modos?", "de": "Warnung: Die Charge läuft in {} Tagen ab.\nTrotzdem fortfahren?", "fr": "Attention : le lot expire dans {} jours.\nContinuer quand même ?"},
+
+    # ==========================================================================
+    # Memos view
+    # ==========================================================================
+    "Memos": {"it": "Promemoria", "en": "Memos", "es": "Notas", "de": "Notizen", "fr": "Mémos"},
+    "Add": {"it": "Aggiungi", "en": "Add", "es": "Añadir", "de": "Hinzufügen", "fr": "Ajouter"},
+    "Done": {"it": "Fatto", "en": "Done", "es": "Hecho", "de": "Erledigt", "fr": "Terminé"},
+    "Show completed": {"it": "Mostra completati", "en": "Show completed", "es": "Mostrar completados", "de": "Erledigte anzeigen", "fr": "Afficher terminés"},
+    "Delete this memo?": {"it": "Eliminare questo promemoria?", "en": "Delete this memo?", "es": "¿Eliminar esta nota?", "de": "Diese Notiz löschen?", "fr": "Supprimer ce mémo ?"},
 }
 
 

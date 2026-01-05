@@ -178,6 +178,13 @@ CREATE TABLE IF NOT EXISTS package_fundings (
     FOREIGN KEY (deliberation_id) REFERENCES deliberations(deliberation_id)
 );
 
+CREATE TABLE IF NOT EXISTS memos (
+    memo_id INTEGER PRIMARY KEY,
+    text TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    status INTEGER DEFAULT 1  -- 1=active, 0=done
+);
+
 -- =============================================================================
 -- SCHEMA: Indexes
 -- =============================================================================
@@ -195,6 +202,7 @@ CREATE INDEX IF NOT EXISTS idx_items_package ON items(package_id);
 CREATE INDEX IF NOT EXISTS idx_deliveries_item ON deliveries(item_id);
 CREATE INDEX IF NOT EXISTS idx_prices_package ON prices(package_id);
 CREATE INDEX IF NOT EXISTS idx_prices_supplier ON prices(supplier_id);
+CREATE INDEX IF NOT EXISTS idx_memos_status ON memos(status);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_unique ON categories(reference_id, description);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_products_reference_unique ON products(reference);
@@ -500,5 +508,13 @@ INSERT INTO settings (key, value) VALUES
 ('language', 'en'),
 ('idle_timeout', '30'),
 ('default_vat', '22');
+
+-- Memos (demo data with different ages)
+INSERT INTO memos (text, created_at, status) VALUES
+('Order nitrile gloves size M', datetime('now'), 1),
+('Check acetonitrile stock level', datetime('now', '-2 days'), 1),
+('Request quote for new HPLC column', datetime('now', '-5 days'), 1),
+('Call supplier about delayed delivery', datetime('now', '-10 days'), 1),
+('Update safety data sheets', datetime('now', '-15 days'), 0);
 
 COMMIT;

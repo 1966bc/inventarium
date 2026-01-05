@@ -36,6 +36,7 @@ from views import stats_suppliers
 from views import stats_expiring
 from views import custom_label
 from views import funding_sources
+from views import memos
 from views import deliberations
 from views import prices
 from views import package_fundings
@@ -134,6 +135,7 @@ class Main(tk.Toplevel):
         m_warehouse.add_command(label=_("Unload"), underline=0, command=self.on_barcode)
         m_warehouse.add_separator()
         m_warehouse.add_command(label=_("Expiring"), underline=0, command=self.on_expiring)
+        m_warehouse.add_command(label=_("Memos"), underline=0, command=self.on_memos)
 
         # Requests menu
         m_requests = tk.Menu(menubar, tearoff=0)
@@ -226,6 +228,10 @@ class Main(tk.Toplevel):
         """Show expiring batches."""
         obj = expiring.UI(self)
         obj.on_open()
+
+    def on_memos(self):
+        """Open memos board."""
+        memos.UI(self)
 
     def on_barcode(self):
         """Open barcode scanner to unload labels."""
