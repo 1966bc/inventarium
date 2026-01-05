@@ -50,6 +50,9 @@ documents/
 # Screenshots (optional - remove if you want to keep them)
 imgs/
 
+# Nuitka distribution (Windows executable)
+dist/
+
 # Claude local settings
 .claude/
 
