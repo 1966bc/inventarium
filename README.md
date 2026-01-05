@@ -62,7 +62,7 @@ sudo apt install python3 python3-venv python3-tk
 Download the `.deb` package from [Releases](https://github.com/1966bc/inventarium/releases/latest) and install:
 
 ```bash
-sudo apt install ./inventarium_0.1.0-1_all.deb
+sudo apt install ./inventarium_0.1.1-1_all.deb
 ```
 
 This installs Inventarium system-wide with all dependencies. Launch from the application menu (Science → Inventarium) or run `inventarium` from terminal.
@@ -192,12 +192,15 @@ You can also edit `config.ini` manually:
 ```ini
 [database]
 path = sql/inventarium.db
+
+[printer]
+enabled = 1
+name = BARCODE
 ```
 
-For shared network access, use a network path:
-```ini
-path = //server/share/inventarium.db
-```
+- `path`: Database location. For shared network access use `//server/share/inventarium.db`
+- `enabled`: Set to `0` to disable label printing on this workstation
+- `name`: Label printer name (leave empty for system default)
 
 ## Usage
 
