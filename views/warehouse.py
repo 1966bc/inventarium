@@ -42,6 +42,7 @@ class UI(ParentView):
         self.search_option = tk.IntVar()
         # 0=Print, 1=Dispatch, 2=Cancel
         self.label_action = tk.IntVar(value=0)
+        self.show_all_labels = tk.BooleanVar(value=False)
         self.dict_categories = {}
         self.dict_labels = {}  # Maps listbox index to label_id
         self.selected_package_id = None
@@ -142,9 +143,22 @@ class UI(ParentView):
         # Labels list
         self.lbfLabels = ttk.LabelFrame(f2, text=_("Labels"), style="App.TLabelframe")
 
-        sb = ttk.Scrollbar(self.lbfLabels, orient=tk.VERTICAL)
-        self.lstLabels = tk.Listbox(
+        # Checkbox to show all labels (including used/cancelled)
+        self.chkShowAll = ttk.Checkbutton(
             self.lbfLabels,
+            text=_("Show all"),
+            variable=self.show_all_labels,
+            command=self.on_toggle_show_all
+        )
+        self.chkShowAll.pack(anchor=tk.W, padx=2, pady=2)
+
+        # Listbox container
+        list_frame = ttk.Frame(self.lbfLabels)
+        list_frame.pack(fill=tk.BOTH, expand=1)
+
+        sb = ttk.Scrollbar(list_frame, orient=tk.VERTICAL)
+        self.lstLabels = tk.Listbox(
+            list_frame,
             height=8,
             font=("TkFixedFont", 10),
             relief=tk.GROOVE,
@@ -209,6 +223,7 @@ class UI(ParentView):
         self.engine.subscribe("batch_cancelled", self.on_batch_cancelled)
         self.engine.subscribe("category_changed", self.on_category_changed)
         self.engine.subscribe("package_changed", self.on_package_changed)
+        self.engine.subscribe("product_changed", self.on_product_changed)
 
         self.set_categories()
         # Don't load all products at startup - wait for category selection
@@ -235,6 +250,10 @@ class UI(ParentView):
 
     def on_package_changed(self, data=None):
         """Handle package_changed event from package."""
+        self.refresh()
+
+    def on_product_changed(self, data=None):
+        """Handle product_changed event from product."""
         self.refresh()
 
     def on_refresh(self, evt=None):
@@ -434,12 +453,19 @@ class UI(ParentView):
         self.lstLabels.delete(0, tk.END)
         self.dict_labels.clear()
 
-        sql = """SELECT label_id, tick, status
-                 FROM labels
-                 WHERE batch_id = ?
-                 ORDER BY label_id"""
-
-        rs = self.engine.read(True, sql, (batch_id,))
+        # Filter by status if not showing all
+        if self.show_all_labels.get():
+            sql = """SELECT label_id, tick, status
+                     FROM labels
+                     WHERE batch_id = ?
+                     ORDER BY label_id"""
+            rs = self.engine.read(True, sql, (batch_id,))
+        else:
+            sql = """SELECT label_id, tick, status
+                     FROM labels
+                     WHERE batch_id = ? AND status = 1
+                     ORDER BY label_id"""
+            rs = self.engine.read(True, sql, (batch_id,))
 
         if rs:
             for idx, row in enumerate(rs):
@@ -479,6 +505,11 @@ class UI(ParentView):
         if term:
             self.cbCategories.set("")
             self.load_products(search_term=term)
+
+    def on_toggle_show_all(self):
+        """Handle show all labels checkbox toggle."""
+        if self.selected_batch_id:
+            self.load_labels(self.selected_batch_id)
 
     def on_selected_product(self, evt=None):
         """Handle product selection - load batches."""
@@ -931,6 +962,7 @@ class UI(ParentView):
         self.engine.unsubscribe("batch_cancelled", self.on_batch_cancelled)
         self.engine.unsubscribe("category_changed", self.on_category_changed)
         self.engine.unsubscribe("package_changed", self.on_package_changed)
+        self.engine.unsubscribe("product_changed", self.on_product_changed)
 
         if "warehouse" in self.engine.dict_instances:
             del self.engine.dict_instances["warehouse"]

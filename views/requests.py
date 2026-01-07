@@ -728,7 +728,7 @@ class UI(ParentView):
             # Get items with full details
             sql = """
                 SELECT
-                    p.description AS product_name,
+                    COALESCE(NULLIF(pk.commercial_name, ''), p.description) AS product_name,
                     p.reference AS product_ref,
                     SUBSTR(s.description, 1, 15) AS supplier,
                     i.quantity
@@ -737,7 +737,7 @@ class UI(ParentView):
                 INNER JOIN products p ON p.product_id = pk.product_id
                 LEFT JOIN suppliers s ON s.supplier_id = pk.supplier_id
                 WHERE i.request_id = ? AND i.status = 1
-                ORDER BY p.description
+                ORDER BY product_name
             """
             items = self.engine.read(True, sql, (request_id,))
 

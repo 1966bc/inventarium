@@ -152,6 +152,9 @@ class UI(ChildView):
                 sql = self.engine.build_sql(self.parent.table, op="insert")
                 pk = self.engine.write(sql, tuple(args))
 
+            # Notify subscribers that a product changed
+            self.engine.notify("product_changed", pk)
+
             self.parent.refresh_and_select(pk)
 
             self.on_cancel()

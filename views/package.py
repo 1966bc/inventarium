@@ -30,6 +30,7 @@ class UI(ChildView):
         self.label_text = tk.StringVar()  # Text for batch label
         self.label_font_size = tk.IntVar(value=36)  # Label font size
         self.shelf = tk.StringVar()  # Shelf
+        self.commercial_name = tk.StringVar()  # Commercial name on box
         self.order_by_piece = tk.IntVar(value=1)  # 1=by piece, 0=by package
         self.pieces_per_label = tk.IntVar(value=1)
         self.labels_per_unit = tk.IntVar(value=1)
@@ -100,6 +101,11 @@ class UI(ChildView):
         ttk.Label(w, text=_("Shelf:")).grid(row=r, column=0, sticky=tk.W, pady=2)
         self.txtShelf = ttk.Entry(w, textvariable=self.shelf, width=10)
         self.txtShelf.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
+
+        r += 1
+        ttk.Label(w, text=_("Commercial name:")).grid(row=r, column=0, sticky=tk.W, pady=2)
+        self.txtCommercialName = ttk.Entry(w, textvariable=self.commercial_name, width=field_width)
+        self.txtCommercialName.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         # Ordinazione
         r += 1
@@ -333,6 +339,7 @@ class UI(ChildView):
         self.label_text.set(self.selected_package.get("label_text", "") or "")
         self.label_font_size.set(self.selected_package.get("label_font_size", 36) or 36)
         self.shelf.set(self.selected_package.get("shelf", "") or "")
+        self.commercial_name.set(self.selected_package.get("commercial_name", "") or "")
         self.order_by_piece.set(self.selected_package.get("order_by_piece", 1))
         self.pieces_per_label.set(self.selected_package.get("pieces_per_label", 1) or 1)
         self.labels_per_unit.set(self.selected_package.get("labels_per_unit", 1) or 1)
@@ -362,7 +369,6 @@ class UI(ChildView):
             1 if self.in_the_dark.get() else 0,       # in_the_dark
             self.dict_categories.get(category_idx, 0),  # category_id
             self.dict_locations.get(location_idx),    # location_id
-            1 if self.status.get() else 0,            # status
             1 if self.order_by_piece.get() else 0,    # order_by_piece
             self.pieces_per_label.get(),              # pieces_per_label
             self.reorder.get(),                       # reorder
@@ -371,6 +377,8 @@ class UI(ChildView):
             self.label_text.get().strip() or None,    # label_text
             self.label_font_size.get(),               # label_font_size
             self.shelf.get().strip() or None,         # shelf
+            self.commercial_name.get().strip() or None,  # commercial_name
+            1 if self.status.get() else 0,            # status (always last)
         ]
 
     def on_save(self, evt=None):

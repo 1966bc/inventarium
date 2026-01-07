@@ -64,9 +64,19 @@ class UI(ParentView):
             rf, text=_("Info"), variable=self.action, value=1
         ).pack(side=tk.LEFT, padx=10)
 
-        # Result label
-        self.lblResult = ttk.Label(w, text="", foreground="gray")
-        self.lblResult.pack(fill=tk.X, pady=10)
+        # Result frame with fixed height to prevent window resizing
+        result_frame = ttk.Frame(w, height=50)
+        result_frame.pack(fill=tk.X, pady=10)
+        result_frame.pack_propagate(False)
+
+        self.lblResult = ttk.Label(
+            result_frame,
+            text="",
+            foreground="gray",
+            wraplength=250,
+            justify=tk.LEFT
+        )
+        self.lblResult.pack(fill=tk.BOTH, expand=True)
 
         # Buttons
         bf = ttk.Frame(w)

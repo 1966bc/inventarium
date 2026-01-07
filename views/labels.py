@@ -57,7 +57,15 @@ class UI(ChildView):
 
         r += 1
         ttk.Label(w, text=_("Number of labels:")).grid(row=r, column=0, sticky=tk.W, pady=2)
-        self.spnLabels = ttk.Spinbox(w, from_=1, to=100, textvariable=self.labels_count, width=5)
+        self.spnLabels = ttk.Spinbox(
+            w,
+            from_=1,
+            to=100,
+            textvariable=self.labels_count,
+            width=5,
+            validate="key",
+            validatecommand=self.engine.get_validate_integer(self)
+        )
         self.spnLabels.grid(row=r, column=1, sticky=tk.W, padx=5, pady=2)
 
         # Buttons

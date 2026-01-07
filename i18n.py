@@ -92,6 +92,7 @@ TRANSLATIONS = {
     "Print Stock": {"it": "Stampa Giacenze", "en": "Print Stock", "es": "Imprimir Existencias", "de": "Bestand drucken", "fr": "Imprimer le stock"},
     "Unload": {"it": "Scarico", "en": "Unload", "es": "Descarga", "de": "Entladen", "fr": "Décharger"},
     "Expiring": {"it": "Scadenze", "en": "Expiring", "es": "Caducidades", "de": "Ablaufend", "fr": "Expirations"},
+    "Show all": {"it": "Mostra tutte", "en": "Show all", "es": "Mostrar todas", "de": "Alle anzeigen", "fr": "Afficher tout"},
 
     # ==========================================================================
     # Menu - Requests
@@ -230,6 +231,7 @@ TRANSLATIONS = {
     "Suppl.Code": {"it": "Cod.Forn.", "en": "Suppl.Code", "es": "Cód.Prov.", "de": "Lief.Code", "fr": "Code fourn."},
     "Lab.": {"it": "Et.", "en": "Lab.", "es": "Et.", "de": "Et.", "fr": "Ét."},
     "D": {"it": "B", "en": "D", "es": "O", "de": "D", "fr": "O"},
+    "Commercial name:": {"it": "Nome commerciale:", "en": "Commercial name:", "es": "Nombre comercial:", "de": "Handelsname:", "fr": "Nom commercial :"},
 
     # ==========================================================================
     # Report Fundings

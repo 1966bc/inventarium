@@ -104,6 +104,7 @@ class Engine(DBMS, Controller, Tools, Launcher, metaclass=_EngineMeta):
         - "batch_cancelled": Fired when a batch is cancelled (expiring)
         - "category_changed": Fired when a category is modified (category)
         - "package_changed": Fired when a package is modified (package)
+        - "product_changed": Fired when a product is modified (product)
         - "request_changed": Fired when a request is modified (requests)
 
     Attributes:
