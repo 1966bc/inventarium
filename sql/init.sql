@@ -72,10 +72,10 @@ CREATE TABLE IF NOT EXISTS deliberations (
     reference VARCHAR(50) NOT NULL,
     issued DATE,
     description VARCHAR(200),
-    status INTEGER DEFAULT 1,
     supplier_id INTEGER REFERENCES suppliers(supplier_id),
     amount REAL DEFAULT 0,
-    cig VARCHAR(20)
+    cig VARCHAR(20),
+    status INTEGER DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS packages (
@@ -89,7 +89,6 @@ CREATE TABLE IF NOT EXISTS packages (
     in_the_dark INTEGER NOT NULL DEFAULT 0,
     category_id INTEGER NOT NULL DEFAULT 0,
     location_id INTEGER,
-    status INTEGER NOT NULL DEFAULT 1,
     order_by_piece INTEGER NOT NULL DEFAULT 1,
     pieces_per_label INTEGER NOT NULL DEFAULT 1,
     reorder INTEGER NOT NULL DEFAULT 0,
@@ -98,6 +97,8 @@ CREATE TABLE IF NOT EXISTS packages (
     label_text VARCHAR(40),
     label_font_size INTEGER DEFAULT 36,
     shelf VARCHAR(20),
+    commercial_name TEXT,
+    status INTEGER NOT NULL DEFAULT 1,
     FOREIGN KEY (product_id) REFERENCES products(product_id),
     FOREIGN KEY (supplier_id) REFERENCES suppliers(supplier_id),
     FOREIGN KEY (conservation_id) REFERENCES conservations(conservation_id),
@@ -119,8 +120,8 @@ CREATE TABLE IF NOT EXISTS labels (
     batch_id INTEGER NOT NULL,
     loaded DATE DEFAULT CURRENT_DATE,
     unloaded DATE,
-    status INTEGER NOT NULL DEFAULT 1,
     tick INTEGER,
+    status INTEGER NOT NULL DEFAULT 1,
     FOREIGN KEY (batch_id) REFERENCES batches(batch_id)
 );
 
@@ -129,8 +130,8 @@ CREATE TABLE IF NOT EXISTS items (
     request_id INTEGER NOT NULL,
     package_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
-    status INTEGER NOT NULL DEFAULT 1,
     note TEXT DEFAULT NULL,
+    status INTEGER NOT NULL DEFAULT 1,
     FOREIGN KEY (request_id) REFERENCES requests(request_id),
     FOREIGN KEY (package_id) REFERENCES packages(package_id)
 );
@@ -206,8 +207,8 @@ CREATE INDEX IF NOT EXISTS idx_memos_status ON memos(status);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_categories_unique ON categories(reference_id, description);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_products_reference_unique ON products(reference);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_suppliers_description_unique ON suppliers(description);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_products_description_unique ON products(description);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_suppliers_description_unique ON suppliers(description);
 
 -- =============================================================================
 -- SCHEMA: Views
@@ -267,62 +268,57 @@ LEFT JOIN batches b ON b.package_id = pk.package_id
 LEFT JOIN labels lb ON lb.batch_id = b.batch_id
 GROUP BY pk.package_id;
 
-PRAGMA foreign_keys = ON;
-
 -- =============================================================================
 -- DEMO DATA
 -- =============================================================================
 
 BEGIN TRANSACTION;
 
--- Categories (reference_id: 1=Products, 2=Locations)
+-- Categories (reference_id groups categories)
 INSERT INTO categories (category_id, reference_id, description, status) VALUES
-(1, 1, 'Chemical Reagents', 1),
-(2, 1, 'Reference Standards', 1),
+(1, 1, 'Reagents', 1),
+(2, 1, 'Standards & Controls', 1),
 (3, 1, 'Solvents', 1),
-(4, 1, 'Technical Gases', 1),
-(5, 1, 'Consumables', 1),
-(6, 2, 'Reagent Cabinet', 1),
-(7, 2, 'Refrigerator', 1),
-(8, 2, 'Freezer', 1);
+(4, 2, 'Equipment', 1),
+(5, 2, 'Consumables', 1),
+(6, 3, 'Archived', 0);
 
--- Conservations (Storage conditions)
+-- Conservations (storage conditions)
 INSERT INTO conservations (conservation_id, description, status) VALUES
 (1, 'Room temperature (15-25°C)', 1),
 (2, 'Refrigerated (2-8°C)', 1),
 (3, 'Frozen (-20°C)', 1),
-(4, 'Deep frozen (-80°C)', 1),
-(5, 'Under nitrogen', 1);
-
--- Locations
-INSERT INTO locations (location_id, code, room, description, category_id, conservation_id, status) VALUES
-(1, 'CAB-01', 'Spectrometry Lab', 'Main reagent cabinet', 6, 1, 1),
-(2, 'FRG-01', 'Spectrometry Lab', 'Liebherr refrigerator', 7, 2, 1),
-(3, 'FRZ-01', 'Spectrometry Lab', 'Freezer -20', 8, 3, 1),
-(4, 'CAB-02', 'Spectrometry Lab', 'Solvent cabinet', 6, 1, 1),
-(5, 'FRZ-02', 'Spectrometry Lab', 'Thermo -80 freezer', 8, 4, 1);
-
--- Funding Sources
-INSERT INTO funding_sources (funding_id, code, description, status) VALUES
-(1, 'ORD', 'Regular Budget', 1),
-(2, 'PRJ-001', 'Research Project Alpha', 1),
-(3, 'PRJ-002', 'EU Horizon Project', 1),
-(4, 'CONTO', 'Conto Capitale', 1);
+(4, 'Deep frozen (-80°C)', 1);
 
 -- Suppliers
 INSERT INTO suppliers (supplier_id, description, reference, status) VALUES
-(1, 'Sigma-Aldrich', 'SIGMA', 1),
-(2, 'Thermo Fisher Scientific', 'THERMO', 1),
+(1, 'Sigma-Aldrich', 'SA', 1),
+(2, 'Honeywell', 'HW', 1),
 (3, 'VWR International', 'VWR', 1),
-(4, 'Merck KGaA', 'MERCK', 1),
-(5, 'Agilent Technologies', 'AGILENT', 1),
-(6, 'Waters Corporation', 'WATERS', 1),
-(7, 'ChromSystems', 'CHROMSYS', 1),
-(8, 'Abbott Diagnostics', 'ABBOTT', 1);
+(4, 'Merck', 'MRK', 1),
+(5, 'Agilent Technologies', 'AGI', 1),
+(6, 'Waters Corporation', 'WAT', 1),
+(7, 'Chromsystems', 'CHR', 1),
+(8, 'Abbott Diagnostics', 'ABT', 1);
 
--- Deliberations
+-- Locations
+INSERT INTO locations (location_id, category_id, code, room, description, conservation_id, status) VALUES
+(1, 1, 'A1-01', 'Lab 101', 'Main reagent cabinet', 1, 1),
+(2, 2, 'B2-01', 'Lab 101', 'Standards refrigerator', 2, 1),
+(3, 3, 'C1-01', 'Lab 102', 'Solvent cabinet', 1, 1),
+(4, 3, 'C2-01', 'Lab 102', 'Flammables cabinet', 1, 1),
+(5, 5, 'D1-01', 'Storage', 'Consumables shelf', 1, 1);
+
+-- Funding sources
+INSERT INTO funding_sources (funding_id, code, description, status) VALUES
+(1, 'ORD', 'Ordinary Budget', 1),
+(2, 'RES', 'Research Funds', 1),
+(3, 'EXT', 'External Funding', 1),
+(4, 'IVD', 'IVD Diagnostics', 1);
+
+-- Deliberations (procurement acts)
 INSERT INTO deliberations (deliberation_id, reference, issued, description, supplier_id, amount, cig, status) VALUES
-(1, 'DEL-2024-0125', '2024-01-15', 'Gara solventi e reagenti chimici 2024-2026', 1, 85000.00, 'Z4F3A2B1C0D9', 1),
+(1, 'DEL-2024-0045', '2024-01-15', 'Gara reagenti e solventi per laboratorio', 1, 85000.00, 'Z4F3A2B1C0D9', 1),
 (2, 'DEL-2024-0126', '2024-01-20', 'Gara materiale di consumo laboratorio', 3, 45000.00, 'Z5G4B3C2D1E0', 1),
 (3, 'DEL-2024-0340', '2024-03-10', 'Gara colonne cromatografiche e accessori', 5, 120000.00, 'Z6H5C4D3E2F1', 1),
 (4, 'DEL-2024-0455', '2024-04-25', 'Gara standard certificati IVD', 7, 65000.00, 'Z7I6D5E4F3G2', 1),
@@ -351,26 +347,26 @@ INSERT INTO products (product_id, reference, description, status) VALUES
 (17, 'VIT-D', 'Vitamin D Calibrator Set', 1),
 (18, 'CTRL-ABB', 'Abbott Multichem Control', 1);
 
--- Packages (with new fields: label_text, label_font_size, shelf)
-INSERT INTO packages (package_id, product_id, supplier_id, reference, labels, packaging, conservation_id, in_the_dark, category_id, location_id, order_by_piece, pieces_per_label, labels_per_unit, reorder, funding_id, label_text, label_font_size, shelf, status) VALUES
-(1, 1, 1, '34851-2.5L', 1, '2.5L', 1, 0, 3, 4, 1, 1, 1, 2, 1, 'ACETONITRILE HPLC', 44, '1', 1),
-(2, 2, 1, '34860-2.5L', 1, '2.5L', 1, 0, 3, 4, 1, 1, 1, 2, 1, 'METHANOL HPLC', 44, '1', 1),
-(3, 3, 2, 'W6-4', 1, '4L', 1, 0, 3, 4, 1, 1, 1, 2, 1, 'WATER LC-MS', 44, '2', 1),
-(4, 4, 1, '56302-50ML', 1, '50mL', 1, 0, 1, 1, 1, 1, 1, 1, 1, 'FORMIC ACID', 44, '1', 1),
-(5, 5, 1, '45754-100ML', 1, '100mL', 1, 0, 1, 1, 1, 1, 1, 1, 1, 'ACETIC ACID', 44, '1', 1),
-(6, 6, 4, '1.01116.0500', 1, '500g', 1, 0, 1, 1, 1, 1, 1, 1, 1, NULL, 36, '2', 1),
-(7, 7, 1, '09830-500G', 1, '500g', 1, 0, 1, 1, 1, 1, 1, 1, 1, NULL, 36, '2', 1),
-(8, 8, 1, 'C0750-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 1, 2, 2, 'CAFFEINE STD', 40, '1', 1),
-(9, 9, 1, 'PHR1005-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 1, 2, 2, 'PARACETAMOL STD', 40, '1', 1),
-(10, 10, 1, 'PHR1004-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 1, 2, 2, 'IBUPROFEN STD', 40, '1', 1),
-(11, 11, 5, '959758-902', 1, '1 pc', 1, 0, 5, 1, 1, 1, 1, 1, 1, 'COLONNA C18', 44, '3', 1),
-(12, 12, 6, '186003462', 1, '1 pc', 1, 0, 5, 1, 1, 1, 1, 1, 1, 'COLONNA HILIC', 44, '3', 1),
-(13, 13, 3, '548-0053', 100, 'Box 100', 1, 0, 5, 1, 0, 100, 1, 1, 1, 'VIALS 2ML', 44, '4', 1),
-(14, 14, 3, '514-0061', 100, 'Box 100', 1, 0, 5, 1, 0, 100, 1, 1, 1, 'FILTRI 0.2um', 44, '4', 1),
-(15, 15, 3, '613-2697', 96, 'Rack 96', 1, 0, 5, 1, 0, 96, 1, 2, 1, 'TIPS 1000uL', 44, '4', 1),
-(16, 16, 7, '55000', 1, 'Kit 100 tests', 2, 1, 2, 2, 1, 1, 1, 1, 4, 'KIT AMINOACIDI', 40, '2', 1),
-(17, 17, 7, '62000', 1, 'Set 6x1mL', 2, 1, 2, 2, 1, 1, 1, 2, 4, 'CALIBRATORI VIT D', 36, '2', 1),
-(18, 18, 8, '09P2301', 1, 'Kit 4x5mL', 2, 0, 2, 2, 1, 1, 1, 2, 1, 'CONTROLLI ABBOTT', 40, '3', 1);
+-- Packages (with commercial_name and status as last field)
+INSERT INTO packages (package_id, product_id, supplier_id, reference, labels, packaging, conservation_id, in_the_dark, category_id, location_id, order_by_piece, pieces_per_label, labels_per_unit, reorder, funding_id, label_text, label_font_size, shelf, commercial_name, status) VALUES
+(1, 1, 1, '34851-2.5L', 1, '2.5L', 1, 0, 3, 4, 1, 1, 1, 2, 1, 'ACETONITRILE HPLC', 44, '1', 'Chromasolv Plus for HPLC', 1),
+(2, 2, 1, '34860-2.5L', 1, '2.5L', 1, 0, 3, 4, 1, 1, 1, 2, 1, 'METHANOL HPLC', 44, '1', 'Chromasolv for HPLC', 1),
+(3, 3, 2, 'W6-4', 1, '4L', 1, 0, 3, 4, 1, 1, 1, 2, 1, 'WATER LC-MS', 44, '2', 'LC-MS Chromasolv', 1),
+(4, 4, 1, '56302-50ML', 1, '50mL', 1, 0, 1, 1, 1, 1, 1, 1, 1, 'FORMIC ACID', 44, '1', NULL, 1),
+(5, 5, 1, '45754-100ML', 1, '100mL', 1, 0, 1, 1, 1, 1, 1, 1, 1, 'ACETIC ACID', 44, '1', NULL, 1),
+(6, 6, 4, '1.01116.0500', 1, '500g', 1, 0, 1, 1, 1, 1, 1, 1, 1, NULL, 36, '2', NULL, 1),
+(7, 7, 1, '09830-500G', 1, '500g', 1, 0, 1, 1, 1, 1, 1, 1, 1, NULL, 36, '2', NULL, 1),
+(8, 8, 1, 'C0750-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 1, 2, 2, 'CAFFEINE STD', 40, '1', 'Caffeine analytical standard', 1),
+(9, 9, 1, 'PHR1005-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 1, 2, 2, 'PARACETAMOL STD', 40, '1', 'Paracetamol pharmaceutical secondary standard', 1),
+(10, 10, 1, 'PHR1004-1ML', 1, '1mL', 2, 1, 2, 2, 1, 1, 1, 2, 2, 'IBUPROFEN STD', 40, '1', 'Ibuprofen pharmaceutical secondary standard', 1),
+(11, 11, 5, '959758-902', 1, '1 pc', 1, 0, 5, 1, 1, 1, 1, 1, 1, 'COLONNA C18', 44, '3', 'ZORBAX Eclipse Plus C18 RRHD', 1),
+(12, 12, 6, '186003462', 1, '1 pc', 1, 0, 5, 1, 1, 1, 1, 1, 1, 'COLONNA HILIC', 44, '3', 'ACQUITY UPLC BEH HILIC', 1),
+(13, 13, 3, '548-0053', 100, 'Box 100', 1, 0, 5, 1, 0, 100, 1, 1, 1, 'VIALS 2ML', 44, '4', NULL, 1),
+(14, 14, 3, '514-0061', 100, 'Box 100', 1, 0, 5, 1, 0, 100, 1, 1, 1, 'FILTRI 0.2um', 44, '4', NULL, 1),
+(15, 15, 3, '613-2697', 96, 'Rack 96', 1, 0, 5, 1, 0, 96, 1, 2, 1, 'TIPS 1000uL', 44, '4', NULL, 1),
+(16, 16, 7, '55000', 1, 'Kit 100 tests', 2, 1, 2, 2, 1, 1, 1, 1, 4, 'KIT AMINOACIDI', 40, '2', 'MassChrom Amino Acids and Acylcarnitines', 1),
+(17, 17, 7, '62000', 1, 'Set 6x1mL', 2, 1, 2, 2, 1, 1, 1, 2, 4, 'CALIBRATORI VIT D', 36, '2', 'MassChrom 25-OH-Vitamin D3/D2 Calibrator Set', 1),
+(18, 18, 8, '09P2301', 1, 'Kit 4x5mL', 2, 0, 2, 2, 1, 1, 1, 2, 1, 'CONTROLLI ABBOTT', 40, '3', 'Multichem S Plus', 1);
 
 -- Prices
 INSERT INTO prices (price_id, package_id, supplier_id, price, vat, valid_from, status) VALUES
@@ -437,39 +433,39 @@ INSERT INTO batches (batch_id, package_id, description, expiration, status) VALU
 (17, 18, 'ABT2024A', '2025-08-31', 1);
 
 -- Labels (Stock units with barcode tick - timestamp in microseconds)
-INSERT INTO labels (batch_id, loaded, unloaded, status, tick) VALUES
-(1, '2024-01-15', NULL, 1, 1705312800123456),
-(1, '2024-01-15', NULL, 1, 1705312801234567),
-(1, '2024-01-15', '2024-06-20', 0, 1705312802345678),
-(2, '2024-03-10', NULL, 1, 1710028800456789),
-(2, '2024-03-10', NULL, 1, 1710028801567890),
-(3, '2024-02-01', NULL, 1, 1706745600678901),
-(3, '2024-02-01', '2024-05-15', 0, 1706745601789012),
-(4, '2024-06-01', NULL, 1, 1717200000890123),
-(5, '2024-04-01', NULL, 1, 1711929600901234),
-(5, '2024-04-01', NULL, 1, 1711929601012345),
-(6, '2024-01-10', NULL, 1, 1704844800123456),
-(7, '2024-09-01', NULL, 1, 1725148800234567),
-(7, '2024-09-01', NULL, 1, 1725148801345678),
-(8, '2024-03-15', NULL, 1, 1710460800456789),
-(9, '2024-05-20', NULL, 1, 1716163200567890),
-(9, '2024-05-20', NULL, 1, 1716163201678901),
-(10, '2024-02-01', NULL, 1, 1706745602789012),
-(11, '2024-04-15', NULL, 1, 1713139200890123),
-(12, '2024-01-01', NULL, 1, 1704067200901234),
-(12, '2024-01-01', NULL, 1, 1704067201012345),
-(12, '2024-01-01', '2024-08-01', 0, 1704067202123456),
-(13, '2024-03-01', NULL, 1, 1709251200234567),
-(13, '2024-03-01', NULL, 1, 1709251201345678),
-(14, '2024-02-15', NULL, 1, 1707955200456789),
-(14, '2024-02-15', NULL, 1, 1707955201567890),
-(14, '2024-02-15', NULL, 1, 1707955202678901),
-(14, '2024-02-15', '2024-07-01', 0, 1707955203789012),
-(15, '2024-05-10', NULL, 1, 1715299200890123),
-(15, '2024-05-10', NULL, 1, 1715299201901234),
-(16, '2024-06-20', NULL, 1, 1718841600012345),
-(17, '2024-07-01', NULL, 1, 1719792000123456),
-(17, '2024-07-01', NULL, 1, 1719792001234567);
+INSERT INTO labels (batch_id, loaded, unloaded, tick, status) VALUES
+(1, '2024-01-15', NULL, 1705312800123456, 1),
+(1, '2024-01-15', NULL, 1705312801234567, 1),
+(1, '2024-01-15', '2024-06-20', 1705312802345678, 0),
+(2, '2024-03-10', NULL, 1710028800456789, 1),
+(2, '2024-03-10', NULL, 1710028801567890, 1),
+(3, '2024-02-01', NULL, 1706745600678901, 1),
+(3, '2024-02-01', '2024-05-15', 1706745601789012, 0),
+(4, '2024-06-01', NULL, 1717200000890123, 1),
+(5, '2024-04-01', NULL, 1711929600901234, 1),
+(5, '2024-04-01', NULL, 1711929601012345, 1),
+(6, '2024-01-10', NULL, 1704844800123456, 1),
+(7, '2024-09-01', NULL, 1725148800234567, 1),
+(7, '2024-09-01', NULL, 1725148801345678, 1),
+(8, '2024-03-15', NULL, 1710460800456789, 1),
+(9, '2024-05-20', NULL, 1716163200567890, 1),
+(9, '2024-05-20', NULL, 1716163201678901, 1),
+(10, '2024-02-01', NULL, 1706745602789012, 1),
+(11, '2024-04-15', NULL, 1713139200890123, 1),
+(12, '2024-01-01', NULL, 1704067200901234, 1),
+(12, '2024-01-01', NULL, 1704067201012345, 1),
+(12, '2024-01-01', '2024-08-01', 1704067202123456, 0),
+(13, '2024-03-01', NULL, 1709251200234567, 1),
+(13, '2024-03-01', NULL, 1709251201345678, 1),
+(14, '2024-02-15', NULL, 1707955200456789, 1),
+(14, '2024-02-15', NULL, 1707955201567890, 1),
+(14, '2024-02-15', NULL, 1707955202678901, 1),
+(14, '2024-02-15', '2024-07-01', 1707955203789012, 0),
+(15, '2024-05-10', NULL, 1715299200890123, 1),
+(15, '2024-05-10', NULL, 1715299201901234, 1),
+(16, '2024-06-20', NULL, 1718841600012345, 1),
+(17, '2024-07-01', NULL, 1719792000123456, 1),
+(17, '2024-07-01', NULL, 1719792001234567, 1);
 
 -- Requests (Purchase orders)
 INSERT INTO requests (request_id, reference, issued, status) VALUES
@@ -479,16 +475,16 @@ INSERT INTO requests (request_id, reference, issued, status) VALUES
 (4, 'REQ-2024-004', '2024-09-20', 2);
 
 -- Items (Request line items)
-INSERT INTO items (item_id, request_id, package_id, quantity, status, note) VALUES
-(1, 1, 1, 3, 1, NULL),
-(2, 1, 2, 2, 1, NULL),
-(3, 2, 8, 2, 1, NULL),
-(4, 2, 13, 3, 1, NULL),
-(5, 3, 3, 2, 1, NULL),
-(6, 3, 15, 4, 1, NULL),
-(9, 3, 6, 1, 2, 'Product discontinued by supplier'),
-(7, 4, 11, 1, 1, NULL),
-(8, 4, 4, 2, 1, NULL);
+INSERT INTO items (item_id, request_id, package_id, quantity, note, status) VALUES
+(1, 1, 1, 3, NULL, 1),
+(2, 1, 2, 2, NULL, 1),
+(3, 2, 8, 2, NULL, 1),
+(4, 2, 13, 3, NULL, 1),
+(5, 3, 3, 2, NULL, 1),
+(6, 3, 15, 4, NULL, 1),
+(9, 3, 6, 1, 'Product discontinued by supplier', 2),
+(7, 4, 11, 1, NULL, 1),
+(8, 4, 4, 2, NULL, 1);
 
 -- Deliveries
 INSERT INTO deliveries (delivery_id, item_id, package_id, ddt, delivered, quantity, status) VALUES
